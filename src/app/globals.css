@@ -1,0 +1,29 @@
+@import "primereact/resources/themes/lara-light-blue/theme.css"; 
+@import "primereact/resources/primereact.min.css"; 
+@import "primeicons/primeicons.css"; 
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f4f5fa;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 32px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.manageTable ::-webkit-scrollbar {
+  display: none !important;
+  width: 5px;
+}
