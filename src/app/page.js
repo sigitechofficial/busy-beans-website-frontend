@@ -1,5 +1,6 @@
 import CustomerCarousel from "@/components/ui/Carousel";
 import CoffeSolution from "@/components/ui/CoffeSolution";
+import SwiperSider from "@/components/ui/SwiperSlider";
 
 export default function Home() {
   return (
@@ -122,7 +123,7 @@ export default function Home() {
         </div>
         {/* ==Coffee Solution for== */}
 
-        <CoffeSolution/>
+        <CoffeSolution />
 
         {/* ==Our mission== */}
 
@@ -158,7 +159,7 @@ export default function Home() {
             What Our Customers Say About Our Products
           </h4>
           <div className="w-[78%] mx-auto">
-            <CustomerCarousel />
+            <SwiperSider />
           </div>
         </div>
       </div>

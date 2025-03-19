@@ -27,3 +27,15 @@
   display: none !important;
   width: 5px;
 }
+
+.swiper-pagination-bullet {
+  background-color: white !important;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: white !important;
+}
+
+/* .swiper-slide-active {
+  transform: scale(1.1); 
+} */

@@ -1,12 +1,13 @@
 import CoffeSolution from "@/components/ui/CoffeSolution";
 import ProductCard from "@/components/ui/ProductCard";
+import SwiperSider from "@/components/ui/SwiperSlider";
 import React from "react";
 
 const page = () => {
   return (
     <div className="w-full ">
       <div className=" bg-themeLight pt-[140px] relative">
-        <h2 className="font-playfairDisplay text-[7.2rem] font-bold text-center text-white mb-10">
+        <h2 className="font-playfairDisplay text-8xl font-bold text-center text-white mb-10">
           Products
         </h2>
 
@@ -27,8 +28,16 @@ const page = () => {
           <ProductCard />
           <ProductCard />
         </div>
-
         <CoffeSolution />
+
+        <div className="w-full bg-themeDark pt-24 pb-10">
+          <h4 className="text-6xl text-white text-center font-robotoSerif font-bold mx-auto">
+            What Our Customers Say About Our Products
+          </h4>
+          <div className="w-[78%] mx-auto">
+            <SwiperSider />
+          </div>
+        </div>
       </div>
     </div>
   );
