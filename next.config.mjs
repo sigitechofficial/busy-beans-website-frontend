@@ -8,6 +8,7 @@ const nextConfig = {
     reactStrictMode: true,
     experimental: {
       appDir: true,
+      turbopack: false
     },
     output: "standalone",
     eslint: {

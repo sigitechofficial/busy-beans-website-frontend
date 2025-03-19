@@ -1,7 +1,6 @@
-'use client'
+"use client";
 import localFont from "next/font/local";
-import { Inter, Nunito } from "next/font/google";
-import { Geist, Geist_Mono } from "next/font/google";
+import {  Inter, Nunito , Geist, Geist_Mono, Roboto_Serif } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import Header from "@/components/ui/Header";
@@ -87,16 +86,23 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const robotoSerif = Roboto_Serif({
+  variable: "--font-roboto-serif",
+  subsets: ["latin"],
+});
+
 export default function RootLayout({ children }) {
-  const pathname = usePathname()
-  const isAuth =  pathname.startsWith(['/sign-in'])
+  const pathname = usePathname();
+  const isAuth = pathname.startsWith("/sign");
+
   return (
     <html lang="en">
       <body
-        className={`${switzer.variable} ${satoshi.variable} ${inter.variable} ${nunito.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${switzer.variable} ${satoshi.variable} ${inter.variable} ${nunito.variable} ${geistSans.variable} ${geistMono.variable} ${robotoSerif.variable}  antialiased`}
       >
         <ToastContainer />
         {!isAuth && <Header />}
+
         <section>{children}</section>
       </body>
     </html>

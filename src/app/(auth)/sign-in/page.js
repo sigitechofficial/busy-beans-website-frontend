@@ -1,5 +1,5 @@
 "use client"
-import Link from "next/navigation";
+import Link from "next/link";
 import { Checkbox } from "primereact/checkbox";
 
 export default function SignIn() {
@@ -85,7 +85,7 @@ export default function SignIn() {
                 Sign In
               </button>
             </div>
-            <p className="font-switzer text-white"><span className="">New Customer?</span> Signup</p>
+            <p className="font-switzer"><span className="text-opacity-70 text-white">New Customer?</span> <Link href={"/signup-step1"}><u className="text-white">Signup</u></Link></p>
           </div>
         </div>
       </div>

@@ -14,6 +14,7 @@ export default {
         geistMono: "var(--font-geist-mono)",
         nunito: "var(--font-nunito)",
         switzer: "var(--font-switzer)",
+        robotoSerif: "var(--font-roboto-serif)",
       },
       backgroundImage: {
         texture: "url('/images/texture.webp')",
