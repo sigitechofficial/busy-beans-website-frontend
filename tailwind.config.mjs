@@ -46,6 +46,7 @@ export default {
         themeYellowLight: "#FDE24F",
         themeYellowDark: "#E9C607",
         headerColor: "#645548",
+        cardBorderColor: "#FFF3DDCC",
       },
       colors: {
         theme: "#86644C",
@@ -66,7 +67,8 @@ export default {
         buttonBorderColor: "#D0D5DD",
         themeYellowLight: "#FDE24F",
         themeYellowDark: "#E9C607",
-        quantityBtn:"#F8E4BECC"
+        quantityBtn: "#F8E4BECC",
+        cardBorderColor: "#FFF3DDCC",
       },
       boxShadow: {
         textShadow:

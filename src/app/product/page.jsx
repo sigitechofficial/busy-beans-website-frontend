@@ -1,6 +1,5 @@
 import CoffeSolution from "@/components/ui/CoffeSolution";
 import ProductCard from "@/components/ui/ProductCard";
-import React from "react";
 
 const page = () => {
   return (
@@ -10,8 +9,8 @@ const page = () => {
           Products
         </h2>
 
-        <div className="h-96 bg-[#F4E9DC]"></div>
-        <div className="flex justify-center gap-4 text-white mt-14 [&>button]:border [&>button]:border-[#F4E9DC] [&>button]:rounded-full [&>button]:px-4 [&>button]:py-1.5">
+        <div className="h-96 bg-[#FFF3DDCC]"></div>
+        <div className="flex justify-center gap-4 text-white mt-14 [&>button]:border [&>button]:border-[#FFF3DDCC] [&>button]:rounded-full [&>button]:px-4 [&>button]:py-1.5">
           <button>Coffee Bean</button>
           <button>Coffee Bean</button>
           <button>Coffee Bean</button>
