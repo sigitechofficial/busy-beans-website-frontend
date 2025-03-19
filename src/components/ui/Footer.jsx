@@ -5,7 +5,7 @@ import { IoLogoTwitter } from "react-icons/io5";
 const Footer = () => {
   return (
     <div className="w-full bg-[#3D332B] ">
-      <div className="w-[90%] lg:w-[77%] mx-auto grid grid-cols-1 md:grid-cols-3 gap-y-12 text-white font-robotoSerif pt-14">
+      <div className="w-[90%] lg:w-[77%] mx-auto grid grid-cols-1 md:grid-cols-3 gap-y-12 text-white font-robotoSerif pt-8 sm:pt-14">
         <div>
           <div className="">
             <img src="/images/mafsi.png" alt="" />
@@ -55,7 +55,7 @@ const Footer = () => {
           <p className="font-light underline underline-offset-4 mt-2">BLOG</p>
         </div>
       </div>
-      <p className="md:text-xl text-center text-white mt-28 pb-10 font-robotoSerif">
+      <p className="md:text-xl text-center text-white mt-16 sm:mt-28 pb-10 font-robotoSerif">
         Mailing Address: PO Box 350, Mount Pleasant, SC 29464
       </p>
     </div>
