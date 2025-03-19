@@ -1,11 +1,17 @@
-'use client'
+"use client";
 import localFont from "next/font/local";
-import { Inter, Nunito } from "next/font/google";
+import {
+  Inter,
+  Nunito,
+  Roboto_Serif,
+  Playfair_Display,
+} from "next/font/google";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import Header from "@/components/ui/Header";
 import { usePathname } from "next/navigation";
+import Footer from "@/components/ui/Footer";
 
 const satoshi = localFont({
   src: [
@@ -87,17 +93,30 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const robotoSerif = Roboto_Serif({
+  subsets: ["latin"],
+  variable: "--font-roboto-serif",
+  display: "swap",
+});
+const playfairDisplay = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair-display",
+  display: "swap",
+});
+
 export default function RootLayout({ children }) {
-  const pathname = usePathname()
-  const isAuth =  pathname.startsWith(['/sign-in'])
+  const pathname = usePathname();
+  const isAuth = pathname.startsWith(["/sign-in"]);
   return (
     <html lang="en">
       <body
-        className={`${switzer.variable} ${satoshi.variable} ${inter.variable} ${nunito.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${switzer.variable} ${satoshi.variable} ${inter.variable} ${nunito.variable} ${geistSans.variable} ${geistMono.variable} ${robotoSerif.variable} ${playfairDisplay.variable} antialiased`}
       >
         <ToastContainer />
         {!isAuth && <Header />}
+
         <section>{children}</section>
+        <Footer />
       </body>
     </html>
   );

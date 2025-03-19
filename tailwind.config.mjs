@@ -14,6 +14,8 @@ export default {
         geistMono: "var(--font-geist-mono)",
         nunito: "var(--font-nunito)",
         switzer: "var(--font-switzer)",
+        robotoSerif: "var(--font-roboto-serif)",
+        playfairDisplay: "var(--font-playfair-display)",
       },
       backgroundImage: {
         texture: "url('/images/texture.webp')",
@@ -43,6 +45,7 @@ export default {
         dottedLine: "#22151866",
         themeYellowLight: "#FDE24F",
         themeYellowDark: "#E9C607",
+        headerColor: "#645548",
       },
       colors: {
         theme: "#86644C",
@@ -63,6 +66,7 @@ export default {
         buttonBorderColor: "#D0D5DD",
         themeYellowLight: "#FDE24F",
         themeYellowDark: "#E9C607",
+        quantityBtn:"#F8E4BECC"
       },
       boxShadow: {
         textShadow:
@@ -70,6 +74,7 @@ export default {
         tabShadow: " 0px 0px 2px 0px #0000001F",
         tableShadow: "0px 8px 13px -3px #00000012",
         buttonShadow: "0px 1px 2px 0px #1018280D",
+        customYellow: "0 0px 6px rgba(248, 228, 190, 0.5)",
       },
     },
   },
