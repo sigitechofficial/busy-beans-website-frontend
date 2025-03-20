@@ -8,9 +8,9 @@ const nextConfig = {
     reactStrictMode: true,
     experimental: {
       appDir: true,
-      turbopack: false
+      // turbopack: false
     },
-    output: "standalone",
+    output: "export",
     eslint: {
       ignoreDuringBuilds: true,
     },

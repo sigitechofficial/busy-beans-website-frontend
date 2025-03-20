@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@next/font": "^14.2.15",
+    "axios": "^1.8.4",
+    "formik": "^2.4.6",
     "next": "15.1.7",
     "primeicons": "^7.0.0",
     "primereact": "^10.9.2",
@@ -22,7 +24,8 @@
     "react-select": "^5.10.0",
     "react-toastify": "^11.0.3",
     "swiper": "^11.2.5",
-    "world-countries": "^5.0.0"
+    "world-countries": "^5.0.0",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
