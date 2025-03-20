@@ -58,16 +58,15 @@ export default function Home() {
 
         {/* ==Trusted partners== */}
 
-        <div className="bg-themeLight pb-20">
-          <h4 className="text-2xl sm:text-4xl lg:text-6xl 2xl:text-8xl text-white text-center font-robotoSerif font-bold mx-auto leading-[125px]">
+        <div className="bg-themeLight pb-10 sm:pb-20">
+          <h4 className="text-2xl sm:text-4xl lg:text-6xl 2xl:text-8xl text-white text-center font-robotoSerif font-bold mx-auto leading-[100px] sm:leading-[125px]">
             Our Trusted Partners
           </h4>
 
-          <div className="flex justify-center items-center gap-x-5  sm:mt-20">
-
+          <div className="flex justify-center items-center gap-x-5 sm:mt-20">
             <BrandsMarquee images={brandImages} speed={60} gradient={false} />
           </div>
-          <div className="flex justify-center items-center gap-x-5 mt-8">
+          <div className="flex justify-center items-center gap-x-5 mt-5 sm:mt-8">
             <BrandsMarquee images={brandImages1} speed={50} gradient={false} />
           </div>
         </div>
@@ -90,12 +89,13 @@ export default function Home() {
           </div>
         </div>
         {/* ==Coffee Solution for== */}
-
-        <CoffeSolution />
+        <div className="w-full">
+          <CoffeSolution />
+        </div>
 
         {/* ==Our mission== */}
 
-        <div className="w-full bg-themeLight py-10 sm:pt-32 sm:pb-14 max-lg:px-5">
+        <div className="w-full bg-themeLight py-10 sm:pt-10 sm:pb-14 max-lg:px-5">
           <h4 className="text-xl sm:text-4xl lg:text-6xl  2xl:text-7xl text-white text-center font-robotoSerif font-bold mx-auto">
             Our Mission and Promise to You
           </h4>
