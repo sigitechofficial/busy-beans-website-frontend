@@ -63,7 +63,7 @@ export default function App() {
         </SwiperSlide>
         <SwiperSlide>
           {" "}
-          <div className="border-1 surface-border border-round m-2 text-center pt-6 pb-8 pt-3 sm:pt-6 pb-4 px-3 bg-white rounded-lg my-10 sm:my-24  font-switzer font-thin text-themeDark">
+          <div className="border-1 surface-border border-round m-2 text-center pb-8 pt-3 sm:pt-6 px-3 bg-white rounded-lg my-10 sm:my-24  font-switzer font-thin text-themeDark">
             <div className="mb-3 flex flex-col items-center">
               <img
                 src="/images/Imageb.png"
@@ -87,7 +87,7 @@ export default function App() {
         </SwiperSlide>
         <SwiperSlide>
           {" "}
-          <div className="border-1 surface-border border-round m-2 text-center pt-6 pb-8 pt-3 sm:pt-6 pb-4 px-3 bg-white rounded-lg my-10 sm:my-24  font-switzer font-thin text-themeDark">
+          <div className="border-1 surface-border border-round m-2 text-center pb-8 pt-3 sm:pt-6 px-3 bg-white rounded-lg my-10 sm:my-24  font-switzer font-thin text-themeDark">
             <div className="mb-3 flex flex-col items-center">
               <img
                 src="/images/Imagec.png"
@@ -111,7 +111,7 @@ export default function App() {
         </SwiperSlide>
         <SwiperSlide>
           {" "}
-          <div className="border-1 surface-border border-round m-2 text-center pt-6 pb-8 pt-3 sm:pt-6 pb-4 px-3 bg-white rounded-lg my-10 sm:my-24  font-switzer font-thin text-themeDark">
+          <div className="border-1 surface-border border-round m-2 text-center pb-8 pt-3 sm:pt-6 px-3 bg-white rounded-lg my-10 sm:my-24  font-switzer font-thin text-themeDark">
             <div className="mb-3 flex flex-col items-center">
               <img
                 src="/images/Imagea.png"
@@ -135,7 +135,7 @@ export default function App() {
         </SwiperSlide>
         <SwiperSlide>
           {" "}
-          <div className="border-1 surface-border border-round m-2 text-center pt-6 pb-8 pt-3 sm:pt-6 pb-4 px-3 bg-white rounded-lg my-10 sm:my-24  font-switzer font-thin text-themeDark">
+          <div className="border-1 surface-border border-round m-2 text-center  pb-8 pt-3 sm:pt-6 px-3 bg-white rounded-lg my-10 sm:my-24  font-switzer font-thin text-themeDark">
             <div className="mb-3 flex flex-col items-center">
               <img
                 src="/images/Imageb.png"
@@ -159,7 +159,7 @@ export default function App() {
         </SwiperSlide>
         <SwiperSlide>
           {" "}
-          <div className="border-1 surface-border border-round m-2 text-center pt-6 pb-8 pt-3 sm:pt-6 pb-4 px-3 bg-white rounded-lg my-10 sm:my-24  font-switzer font-thin text-themeDark">
+          <div className="border-1 surface-border border-round m-2 text-center pb-8 pt-3 sm:pt-6 px-3 bg-white rounded-lg my-10 sm:my-24  font-switzer font-thin text-themeDark">
             <div className="mb-3 flex flex-col items-center">
               <img
                 src="/images/Imagec.png"
@@ -183,7 +183,7 @@ export default function App() {
         </SwiperSlide>
         <SwiperSlide>
           {" "}
-          <div className="border-1 surface-border border-round m-2 text-center pt-6 pb-8 pt-3 sm:pt-6 pb-4 px-3 bg-white rounded-lg my-10 sm:my-24  font-switzer font-thin text-themeDark">
+          <div className="border-1 surface-border border-round m-2 text-center pb-8 pt-3 sm:pt-6 px-3 bg-white rounded-lg my-10 sm:my-24  font-switzer font-thin text-themeDark">
             <div className="mb-3 flex flex-col items-center">
               <img
                 src="/images/Imagea.png"
@@ -207,7 +207,7 @@ export default function App() {
         </SwiperSlide>
         <SwiperSlide>
           {" "}
-          <div className="border-1 surface-border border-round m-2 text-center pt-6 pb-8 pt-3 sm:pt-6 pb-4 px-3 bg-white rounded-lg my-10 sm:my-24  font-switzer font-thin text-themeDark">
+          <div className="border-1 surface-border border-round m-2 text-center pb-8 pt-3 sm:pt-6 px-3 bg-white rounded-lg my-10 sm:my-24  font-switzer font-thin text-themeDark">
             <div className="mb-3 flex flex-col items-center">
               <img
                 src="/images/Imagea.png"
@@ -231,7 +231,7 @@ export default function App() {
         </SwiperSlide>
         <SwiperSlide>
           {" "}
-          <div className="border-1 surface-border border-round m-2 text-center pt-6 pb-8 pt-3 sm:pt-6 pb-4 px-3 bg-white rounded-lg my-10 sm:my-24  font-switzer font-thin text-themeDark">
+          <div className="border-1 surface-border border-round m-2 text-center pb-8 pt-3 sm:pt-6 px-3 bg-white rounded-lg my-10 sm:my-24  font-switzer font-thin text-themeDark">
             <div className="mb-3 flex flex-col items-center">
               <img
                 src="/images/Imagea.png"
