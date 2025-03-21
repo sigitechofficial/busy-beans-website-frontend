@@ -5,22 +5,22 @@ import { IoLogoTwitter } from "react-icons/io5";
 const Footer = () => {
   return (
     <div className="w-full bg-[#3D332B] ">
-      <div className="w-[90%] lg:w-[77%] mx-auto grid grid-cols-1 md:grid-cols-3 gap-y-12 text-white font-robotoSerif pt-14">
+      <div className="w-[90%] lg:w-[77%] mx-auto grid grid-cols-1 md:grid-cols-3 gap-y-5 sm:gap-y-12 text-white font-robotoSerif pt-4 sm:pt-14">
         <div>
-          <div className="">
+          <div className="w-20 sm:w-max">
             <img src="/images/mafsi.png" alt="" />
           </div>
-          <div className="my-4">
+          <div className="sm:my-4 w-28 sm:w-max">
             <img src="/images/aq.png" alt="" />
           </div>
 
-          <p className="font-extralight">
+          <p className="font-extralight text-xs sm:text-base mt-3 sm:mt-0">
             We stand behind the quality of all of our product and are happy to
             answer any questions.
           </p>
         </div>
 
-        <div className="md:justify-self-center space-y-4">
+        <div className="md:justify-self-center space-y-1 sm:space-y-4 text-xs sm:text-base">
           <p>Questions or Concerns?</p>
           <p>Call (833) THE-BEAN</p>
           <p>
@@ -31,21 +31,21 @@ const Footer = () => {
           </p>
         </div>
 
-        <div className="md:justify-self-end">
+        <div className="md:justify-self-end text-xs sm:text-base">
           <p>FOLLOW US ON MEDIA</p>
           <div>
-            <div className="flex [&>div]:flex [&>div]:justify-center [&>div]:items-center gap-2 [&>div]:rounded-md [&>div]:bg-gradient-to-b [&>div]:from-themeLight [&>div]:to-theme [&>div]:p-1 [&>div]:size-10 [&>div]:my-7">
+            <div className="flex [&>div]:flex [&>div]:justify-center [&>div]:items-center gap-2 [&>div]:rounded-md [&>div]:bg-gradient-to-b [&>div]:from-themeLight [&>div]:to-theme [&>div]:p-1 [&>div]:size-10 [&>div]:my-2 sm:[&>div]:my-7">
               <div>
-                <FaFacebookF />
+                <FaFacebookF className="text-xl" />
               </div>
               <div>
-                <IoLogoTwitter />
+                <IoLogoTwitter className="text-xl"  />
               </div>
               <div>
-                <FaLinkedinIn />
+                <FaLinkedinIn className="text-xl"  />
               </div>
               <div>
-                <FaPinterest />
+                <FaPinterest className="text-xl"  />
               </div>
             </div>
           </div>
@@ -55,7 +55,7 @@ const Footer = () => {
           <p className="font-light underline underline-offset-4 mt-2">BLOG</p>
         </div>
       </div>
-      <p className="md:text-xl text-center text-white mt-28 pb-10 font-robotoSerif">
+      <p className="font-extralight sm:font-normal text-xs md:text-xl text-center text-white mt-8 sm:mt-16 md:mt-28 pb-5 sm:pb-10 font-robotoSerif">
         Mailing Address: PO Box 350, Mount Pleasant, SC 29464
       </p>
     </div>

@@ -32,12 +32,12 @@ export default function Header() {
           </ul>
         </div>
 
-        <div className="hidden md:flex gap-x-3 lg:gap-x-5">
-          <div className="rounded-xl flex items-center gap-x-2 text-themeLight bg-white px-4 py-2 text-lg">
+        <div className="hidden md:flex gap-x-2 md:gap-x-3 lg:gap-x-5">
+          <div className="rounded-xl flex items-center gap-x-2 text-themeLight bg-white px-2 lg:px-4 py-2 text-lg">
             <IoCart className="text-white bg-themeLight rounded-full p-1 text-3xl" />
             <p>Cart</p>
           </div>
-          <button onClick={() => router.push('/sign-in')} className="border border-white rounded-xl px-4 py-2 text-white">
+          <button onClick={() => router.push('/sign-in')} className="border border-white rounded-xl px-2 lg:px-4 py-2 text-white">
             Log in
           </button>
         </div>
