@@ -13,6 +13,8 @@ import { ToastContainer } from "react-toastify";
 import Header from "@/components/ui/Header";
 import { usePathname } from "next/navigation";
 import Footer from "@/components/ui/Footer";
+import { Provider } from "@/components/ui/provider"
+
 
 const satoshi = localFont({
   src: [
@@ -39,6 +41,7 @@ const satoshi = localFont({
     },
   ],
   variable: "--font-satoshi",
+  display: "swap",
 });
 
 const switzer = localFont({
@@ -71,6 +74,7 @@ const switzer = localFont({
     },
   ],
   variable: "--font-switzer",
+  display: "swap",
 });
 
 const inter = Inter({
@@ -82,16 +86,19 @@ const inter = Inter({
 const nunito = Nunito({
   subsets: ["latin"],
   variable: "--font-nunito",
+  display: "swap",
 });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const robotoSerif = Roboto_Serif({
@@ -114,11 +121,13 @@ export default function RootLayout({ children }) {
       <body
         className={`${switzer.variable} ${satoshi.variable} ${inter.variable} ${nunito.variable} ${geistSans.variable} ${geistMono.variable} ${robotoSerif.variable} ${playfairDisplay.variable} antialiased`}
       >
+        <Provider>
         <ToastContainer />
         {!isAuth && <Header />}
 
         <section>{children}</section>
         {!isAuth && <Footer />}
+        </Provider>
       </body>
     </html>
   );
