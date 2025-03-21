@@ -1,13 +1,20 @@
-'use client'
+"use client";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoCart } from "react-icons/io5";
 import { FaBars } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import ToggleMenu from "./ToggleMenu";
+import { useState } from "react";
+import DrawerBeans from "./DrawerBeans";
 
 export default function Header() {
-  const router = useRouter()
+  const router = useRouter();
+  const [show, setShow] = useState(false);
+
+  const toggleMenu = () => {
+    setShow(!show);
+  };
   return (
     <>
       <div className="w-[90%] lg:w-[77%] h-[65px] sm:h-[80px] mx-auto bg-headerColor rounded-2xl my-7 flex justify-between items-center px-[18px] absolute left-1/2 -translate-x-1/2 z-50">
@@ -37,14 +44,20 @@ export default function Header() {
             <IoCart className="text-white bg-themeLight rounded-full p-1 text-3xl" />
             <p>Cart</p>
           </div>
-          <button onClick={() => router.push('/sign-in')} className="border border-white rounded-xl px-2 lg:px-4 py-2 text-white">
+          <button
+            onClick={() => router.push("/sign-in")}
+            className="border border-white rounded-xl px-2 lg:px-4 py-2 text-white"
+          >
             Log in
           </button>
         </div>
-        <div className="hidden max-md:flex">
+        <div className="hidden max-md:flex" onClick={toggleMenu}>
           <FaBars size="25" color="white" />
         </div>
       </div>
+
+      <ToggleMenu show={show} toggleMenu={toggleMenu} />
+      {/* <DrawerBeans /> */}
     </>
   );
 }
