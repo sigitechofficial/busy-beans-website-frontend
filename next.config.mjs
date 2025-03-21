@@ -10,7 +10,7 @@ const nextConfig = {
       appDir: true,
       // turbopack: false
     },
-    output: "export",
+    output: "standalone",
     eslint: {
       ignoreDuringBuilds: true,
     },

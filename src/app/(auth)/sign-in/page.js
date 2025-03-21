@@ -4,9 +4,11 @@ import { loginAPI } from "@/utilities/PostAPI";
 import { error_toaster, success_toaster } from "@/utilities/Toaster";
 import { useFormik } from "formik";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Checkbox } from "primereact/checkbox";
 
 export default function SignIn() {
+  const router = useRouter();
   const initialValues = {
     email: "",
     password: "",
@@ -16,20 +18,22 @@ export default function SignIn() {
       initialValues,
       validationSchema: loginSchema,
       onSubmit: async (values, action) => {
-        let res = await loginAPI("signin", {
+        let res = await loginAPI("api/v1/users/login", {
           email: values.email,
           password: values.password,
-          dvToken: "2179be7w9sk19",
         });
-        console.log("🚀 ~ onSubmit: ~ res:", res?.data?.data);
-        if (res?.data?.status === "1") {
-          // localStorage.setItem("accessToken", res?.data?.data?.accessToken);
-          // localStorage.setItem("userType", res?.data?.data?.adminType);
-          // localStorage.setItem("userName", res?.data?.data?.userName);
+        console.log("🚀 ~ onSubmit: ~ res:", res?.data);
+        if (res?.data?.status === "success") {
+          router.push("/");
+          localStorage.setItem("accessToken", res?.data?.data?.token);
+          localStorage.setItem("loginStatus", true);
+          localStorage.setItem("userName", res?.data?.data?.user?.name);
+          localStorage.setItem("userEmail", res?.data?.data?.user?.email);
+          localStorage.setItem("userID", res?.data?.data?.user?.id);
           // setLoginStatus(true);
-          success_toaster(res?.data?.message);
-        } else {
-          error_toaster(res?.data?.error);
+          success_toaster("Login Successfully");
+        } else if (res?.data?.status === "error") {
+          error_toaster(res?.data?.message);
         }
         action.resetForm();
       },
@@ -114,7 +118,7 @@ export default function SignIn() {
             </div>
             <p className="font-switzer">
               <span className="text-opacity-70 text-white">New Customer?</span>{" "}
-              <Link href={"/signup-step1"}>
+              <Link href={"/sign-up"}>
                 <u className="text-white">Signup</u>
               </Link>
             </p>
