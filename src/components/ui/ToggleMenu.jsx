@@ -19,7 +19,7 @@ const ToggleMenu = ({ show, toggleMenu }) => {
   return (
     <>
       <div
-        className={`w-full h-[500px] bg-theme transition-all duration-300 absolute z-50 ${
+        className={`w-full h-max pb-10 bg-theme transition-all duration-300 absolute rounded-b-lg z-50 ${
           show ? "top-0 " : "top-[-600px]"
         } left-0`}
       >
@@ -45,11 +45,11 @@ const ToggleMenu = ({ show, toggleMenu }) => {
             <li>
               Products <MdKeyboardArrowDown size="20" />
             </li>
-            <li className="w-full flex justify-between items-center">
-              <div className="rounded-xl flex items-center gap-x-2 text-themeLight bg-white px-3  py-1.5 text-sm sm:px-4 sm:py-2 sm:text-lg">
+            <li>
+              {/* <div className="rounded-xl flex items-center gap-x-2 text-themeLight bg-white px-3  py-1.5 text-sm sm:px-4 sm:py-2 sm:text-lg">
                 <IoCart className="text-white bg-themeLight rounded-full p-1 text-xl sm:text-3xl" />
                 <p>Cart</p>
-              </div>
+              </div> */}
 
               <Link
                 href="/sign-in"
@@ -59,9 +59,6 @@ const ToggleMenu = ({ show, toggleMenu }) => {
                 Log in
               </Link>
             </li>
-            {/* <li>
-             
-            </li> */}
           </ul>
 
           <div

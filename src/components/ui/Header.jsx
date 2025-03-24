@@ -11,6 +11,7 @@ import DrawerBeans from "./DrawerBeans";
 export default function Header() {
   const router = useRouter();
   const [show, setShow] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const toggleMenu = () => {
     setShow(!show);
@@ -40,7 +41,10 @@ export default function Header() {
         </div>
 
         <div className="hidden md:flex gap-x-2 md:gap-x-3 lg:gap-x-5">
-          <div className="rounded-xl flex items-center gap-x-2 text-themeLight bg-white px-2 lg:px-4 py-2 text-lg">
+          <div
+            className="rounded-xl flex items-center gap-x-2 text-themeLight bg-white px-2 lg:px-4 py-2 text-lg cursor-pointer"
+            onClick={() => setDrawerOpen(true)}
+          >
             <IoCart className="text-white bg-themeLight rounded-full p-1 text-3xl" />
             <p>Cart</p>
           </div>
@@ -51,13 +55,14 @@ export default function Header() {
             Log in
           </button>
         </div>
-        <div className="hidden max-md:flex" onClick={toggleMenu}>
-          <FaBars size="25" color="white" />
+        <div className="hidden max-md:flex items-center gap-x-2">
+        <IoCart className="text-white bg-themeLight rounded-full p-1 text-3xl"     onClick={() => setDrawerOpen(true)}/>
+          <FaBars size="25" color="white"  onClick={toggleMenu} />
         </div>
       </div>
 
       <ToggleMenu show={show} toggleMenu={toggleMenu} />
-      {/* <DrawerBeans /> */}
+      <DrawerBeans drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
     </>
   );
 }
