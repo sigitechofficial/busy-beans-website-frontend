@@ -71,6 +71,8 @@ export default {
         quantityBtn: "#F8E4BECC",
         cardBorderColor: "#FFF3DDCC",
         checkoutGrayBorder: "#e4e4e5",
+        goldenLight:"#F8E4BE",
+        goldenDark:"#F9C06A38"
       },
       boxShadow: {
         textShadow:

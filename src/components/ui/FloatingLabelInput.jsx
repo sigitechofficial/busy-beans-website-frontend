@@ -21,11 +21,11 @@ const FloatingLabelInput = ({
         value={value}
         onChange={onChange}
         placeholder=" "
-        className={`rounded-lg py-3  px-4 peer block w-full  pt-[22px] pb-1 text-smw-full resize-none    bg-white border-2 focus:border-3 border-theme-gray-12 placeholder:text-theme-black-2 placeholder:text-opacity-40 focus:outline-none focus:border-2 focus:border-green-700 hover:border-2 hover:border-green-700 hover:${cursor}`}
+        className={`rounded-lg py-3  px-4 peer block w-full  pt-[22px] pb-1 text-smw-full resize-none  text-white  bg-themeLight border-2 focus:border-3 border-theme-gray-12 placeholder:text-theme-black-2 placeholder:text-opacity-40 focus:outline-none focus:border-2 focus:border-goldenLight hover:border-2 hover:border-goldenLight hover:${cursor}`}
       />
       <label
         htmlFor={id}
-        className="absolute left-4 top-[6px] text-gray-400 text-xs transition-all peer-placeholder-shown:top-[16px] peer-placeholder-shown:text-base peer-placeholder-shown:text-black peer-placeholder-shown:text-opacity-40 peer-focus:top-[7px] peer-focus:text-xs peer-focus:text-green-700 pointer-events-none"
+        className="absolute left-4 top-[6px] text-white text-xs transition-all peer-placeholder-shown:top-[16px] peer-placeholder-shown:text-base peer-placeholder-shown:text-white peer-placeholder-shown:text-opacity-40 peer-focus:top-[7px] peer-focus:text-xs peer-focus:text-goldenLight pointer-events-none"
       >
         {placeholder}
       </label>

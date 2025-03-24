@@ -1,6 +1,4 @@
-import BrandsMarquee from "@/components/ui/BrandsMarquee";
-import CustomerCarousel from "@/components/ui/Carousel";
-import CoffeSolution from "@/components/ui/CoffeSolution";
+"use client";
 import SwiperSider from "@/components/ui/SwiperSlider";
 
 export default function story() {
@@ -41,15 +39,55 @@ export default function story() {
   return (
     <>
       <div className="w-full ">
-        {/* <div className=" bg-themeLight pt-[140px] relative">
+        <div className=" bg-themeLight pt-[140px] relative">
           <h2 className="font-playfairDisplay text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-center text-white mb-10">
             Our Story
           </h2>
 
-          <div className="h-60 sm:h-96 bg-[#FFF3DDCC]">
-            <img src="/images/ourstory.png" alt="" />
+          <div className="h-[500px] md:h-[900px] bg-[url(/images/ourstory.png)] bg-cover bg-center bg-no-repeat"></div>
+        </div>
+        {/* ==meet out team== */}
+
+        <div className="w-full bg-themeLight py-10">
+          <h4 className="text-xl sm:text-4xl lg:text-6xl  2xl:text-7xl text-white text-center font-robotoSerif font-bold mx-auto pt-4">
+            Meet Our Team
+          </h4>
+
+          <div className="text-white grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-10 md:gap-y-4 justify-items-between items-center w-[90%] xl:w-[60%] mx-auto pt-20">
+            <div className="text-center">
+              <img className="mx-auto" src="/images/image 31.png" alt="" />
+              <h3 className="text-sm sm:text-xl font-semibold text-white text-center mt-3 font-playfairDisplay">
+                Travis Esters
+              </h3>
+              <p className="my-2 text-sm">Owner, Co-Founder</p>
+              <button className="bg-goldenLight rounded-full px-4 py-2 text-black mt-6">
+                Send Email
+              </button>
+            </div>
+            <div className="text-center">
+              <img className="mx-auto" src="/images/image 32.png" alt="" />
+              <h3 className="text-sm sm:text-xl font-semibold text-white text-center mt-3 font-playfairDisplay">
+                Joe Argyle
+              </h3>
+              <p className="my-2 text-sm">Sales</p>
+              <button className="bg-goldenLight rounded-full px-4 py-2 text-black mt-6">
+                Send Email
+              </button>
+            </div>
+            <div className="text-center">
+              <img className="mx-auto" src="/images/image 33.png" alt="" />
+              <h3 className="text-sm sm:text-xl font-semibold text-white text-center mt-3 font-playfairDisplay">
+                Leslie Cook
+              </h3>
+              <p className="my-2 text-sm">
+                Executive Chef <br /> Director of Technical Services
+              </p>
+              <button className="bg-goldenLight rounded-full px-4 py-2 text-black mt-2">
+                Send Email
+              </button>
+            </div>
           </div>
-        </div> */}
+        </div>
         {/* ==Our mission== */}
 
         <div className="w-full bg-themeLight py-10 sm:pt-10 sm:pb-14 max-lg:px-5">

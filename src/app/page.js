@@ -1,3 +1,4 @@
+"use client"
 import BrandsMarquee from "@/components/ui/BrandsMarquee";
 import CustomerCarousel from "@/components/ui/Carousel";
 import CoffeSolution from "@/components/ui/CoffeSolution";

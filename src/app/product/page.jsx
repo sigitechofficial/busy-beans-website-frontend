@@ -1,3 +1,4 @@
+"use client"
 import CoffeSolution from "@/components/ui/CoffeSolution";
 import ProductCard from "@/components/ui/ProductCard";
 import SwiperSider from "@/components/ui/SwiperSlider";

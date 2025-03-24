@@ -2,7 +2,7 @@
 import React from "react";
 
 const CustomDeliveryIcon = ({
-  color = "var(--cb-color-text-subdued)",
+  color = "#F8E4BE",
   size = "24",
 }) => {
   return (

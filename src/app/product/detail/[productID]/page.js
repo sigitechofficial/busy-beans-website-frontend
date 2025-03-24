@@ -1,3 +1,5 @@
+
+"use client"
 import CoffeSolution from "@/components/ui/CoffeSolution";
 import ProductCard from "@/components/ui/ProductCard";
 import ProductDetailImageCard from "@/components/ui/ProductDetailImageCard";

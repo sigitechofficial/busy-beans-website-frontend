@@ -1,3 +1,4 @@
+"use client"
 import { BASE_URL } from "./URL";
 
 export const PutAPI = async (url, postData) => {

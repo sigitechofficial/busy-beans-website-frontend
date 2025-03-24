@@ -154,8 +154,8 @@ const page = () => {
   };
 
   const destination = {
-    lat: parseFloat(localStorage.getItem("lat")) || 0,
-    lng: parseFloat(localStorage.getItem("lng")) || 0,
+    lat: 31.52037 || 0,
+    lng: 74.358749 || 0,
   };
 
   const checkCoupon = async () => {
@@ -177,22 +177,15 @@ const page = () => {
 
   return (
     <>
-      <div className="bg-white">
-        <section className="bg-theme-green font-sf">
+      <div className="bg-theme font-satoshi">
+        <section className="bg-theme-green font-satoshi">
           <div className="h-96 relative text-black hover:text-opacity-50">
             <div className="lg:hidden absolute z-10 bottom-0 w-full h-16 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
             <LoadScript googleMapsApiKey={googleApiKey}>
               <GoogleMap
                 key={`${deliveryData?.how}-${deliveryAddress?.lat}-${deliveryAddress?.lng}`}
                 zoom={deliveryData?.how === 1 ? 12 : 16}
-                center={
-                  deliveryData?.how === 1
-                    ? {
-                        lat: (origin.lat + destination.lat) / 2,
-                        lng: (origin.lng + destination.lng) / 2,
-                      }
-                    : origin
-                }
+                center={deliveryData?.how === 1 ? destination : origin}
                 mapContainerStyle={{
                   width: "100%",
                   height: "100%",
@@ -251,7 +244,7 @@ const page = () => {
                   Back
                 </p>
               </div> */}
-              <div className="font-omnes">
+              <div className="!font-satoshi">
                 <h3 className="text-4xl md:text-6xl font-bold">Checkout</h3>
                 <p className="text-xl md:text-3xl font-semibold">
                   {activeResData?.name || "name"}
@@ -264,7 +257,7 @@ const page = () => {
         <section className="max-w-[1200px] px-4 sm:px-[30px] xl:pr-11 grid grid-cols-1 lg:grid-cols-5 lg:gap-x-[10%] gap-y-5  mx-auto mt-10 pb-10 font-sf">
           <div className="lg:max-w-[570px] lg:col-span-3">
             <div className="space-y-3">
-              <div className="h-12 p-1 rounded-[6.25rem] bg-deliveryPickupBtn grid grid-cols-2 mb-6">
+              <div className="h-12 p-1 rounded-[6.25rem] bg-themeLight grid grid-cols-2 mb-6">
                 <button
                   onClick={() => {
                     setDeliveryData({ ...deliveryData, how: 1 });
@@ -272,15 +265,15 @@ const page = () => {
                   }}
                   className={`font-medium text-base flex items-center justify-center gap-x-2 rounded-[6.25rem] ${
                     deliveryData.how === 1
-                      ? "bg-white"
-                      : "bg-transparent text-[#202125a3]"
+                      ? "bg-theme"
+                      : "bg-transparent text-goldenLight"
                   }`}
                 >
                   <CustomDeliveryIcon
                     size={20}
-                    color={deliveryData.how === 2 && "#202125a3"}
+                    color={deliveryData.how === 2 ? "#F8E4BE":"#fff"}
                   />
-                  <span className={deliveryData.how === 1 && "font-bold"}>
+                  <span className={deliveryData.how === 1 && "font-bold text-white"}>
                     Delivery
                   </span>
                 </button>
@@ -291,25 +284,24 @@ const page = () => {
                   }}
                   className={`font-medium text-base flex items-center justify-center gap-x-2 rounded-[6.25rem] ${
                     deliveryData.how === 2
-                      ? "bg-white"
-                      : "bg-transparent text-[#202125a3]"
+                      ? "bg-theme"
+                      : "bg-transparent text-goldenLight"
                   }`}
                 >
-                  <FaWalking size={20} />
-                  <span className={deliveryData.how === 2 && "font-bold"}>
+                  <FaWalking size={20} color={deliveryData.how === 2 &&"#fff"}/>
+                  <span className={deliveryData.how === 2 && "font-bold text-white"}>
                     Pickup
                   </span>
                 </button>
               </div>
-         
 
               {deliveryData.how === 1 && (
                 <>
-                  <div className="w-full flex justify-between items-center p-4 cursor-pointer !my-4 !mb-12 rounded-lg border-2 border-checkoutGrayBorder">
+                  <div className="w-full flex justify-between items-center p-4 cursor-pointer !my-4 !mb-12 rounded-lg bg-themeLight">
                     <div className="flex items-center gap-x-4 p-2">
-                      <CustomDeliveryIcon size={20} />
+                      <CustomDeliveryIcon size={20} color="white" />
                       <div className=" font-sf">
-                        <h4 className="leading-6 text-base font-semibold">
+                        <h4 className="leading-6 text-base font-semibold text-white">
                           Delivery in approximately{" "}
                           <span className="text-gray-400">
                             {activeResData?.deliveryTime}
@@ -331,7 +323,7 @@ const page = () => {
                   )}
 
                   <div className="">
-                    <h1 className="font-semibold text-xl sm:text-[1.75rem] font-omnes">
+                    <h1 className="font-semibold text-xl sm:text-[1.75rem] text-white">
                       Delivery location
                     </h1>
                   </div>
@@ -340,11 +332,11 @@ const page = () => {
 
               {deliveryData.how === 2 && (
                 <>
-                  <div className="w-full flex justify-between items-center p-4 cursor-pointer !my-4  !mb-12 rounded-lg border-2 border-checkoutGrayBorder">
+                  <div className="w-full flex justify-between items-center p-4 cursor-pointer !my-4  !mb-12 rounded-lg bg-themeLight">
                     <div className="flex items-center gap-x-4 p-2">
-                      <GiCardPickup size={24} />
+                      <GiCardPickup size={24} color="white" />
                       <div className=" font-sf">
-                        <h4 className="leading-6 text-base font-semibold">
+                        <h4 className="leading-6 text-base font-semibold text-white">
                           Pickup in approximately{" "}
                           <span className="text-gray-400">
                             {activeResData?.pickupTime}
@@ -356,14 +348,14 @@ const page = () => {
                   </div>
 
                   <div className="">
-                    <h1 className="font-semibold text-xl sm:text-[1.75rem] font-omnes">
+                    <h1 className="font-semibold text-xl sm:text-[1.75rem]">
                       Pickup location
                     </h1>
                   </div>
                 </>
               )}
             </div>
-            <div className="bg-white rounded-lg border-2 border-checkoutGrayBorder  my-4 mb-12">
+            <div className="text-white rounded-lg bg-themeLight  my-4 mb-12">
               <div className="flex items-center justify-between gap-x-2 px-5 py-5">
                 <div className="flex items-center gap-x-3">
                   <span>
@@ -396,7 +388,7 @@ const page = () => {
                 </div>
 
                 {deliveryData.how === 1 && (
-                  <div className="bg-[#40875D24] text-theme-green-2 font-semibold font-sf rounded-md px-3 py-1">
+                  <div className="bg-theme text-theme-green-2 font-semibold font-sf rounded-md px-3 py-1">
                     <button
                     //  onClick={() => setAddressModal(true)}
                     >
@@ -434,9 +426,9 @@ const page = () => {
                   </div>
 
                   <div>
-                    <hr className="mx-5" />
+              
                     <div className="relative w-full group">
-                      <div className="font-sf font-normal text-base text-theme-black-2 flex items-center gap-3 px-5 py-[5px] duration-300 border-2 border-white hover:border-green-700 focus-within:border-green-700 rounded-lg">
+                      <div className="font-sf font-normal text-base text-theme-black-2 flex items-center gap-3 px-5 py-[5px] duration-300 border-2 border-white hover:border-goldenLight focus-within:border-goldenLight rounded-lg">
                         <MdInsertComment size={24} />
                         <div className="relative w-full">
                           <input
@@ -459,8 +451,8 @@ const page = () => {
                             htmlFor="courier-note"
                             className={`absolute left-0 top-4 text-gray-400 transition-all ${
                               deliveryAddress?.instructions
-                                ? "top-[5px] text-[13px] peer-focus:text-theme-green-2"
-                                : "peer-placeholder-shown:top-5 peer-placeholder-shown:text-gray-500 peer-focus:top-[7px] peer-focus:text-[13px] peer-focus:text-green-700"
+                                ? "top-[5px] text-[13px] peer-focus:text-goldenLight"
+                                : "peer-placeholder-shown:top-5 peer-placeholder-shown:text-goldenLight peer-focus:top-[7px] peer-focus:text-[13px] peer-focus:text-goldenLight"
                             }`}
                           >
                             Add note for the courier
@@ -476,7 +468,7 @@ const page = () => {
             {deliveryData.how === 1 && (
               <>
                 <div className="space-y-6">
-                  <h1 className="font-semibold text-xl sm:text-[1.75rem] font-omnes ">
+                  <h1 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
                     Delivery Time
                   </h1>
                 </div>
@@ -486,14 +478,14 @@ const page = () => {
             {deliveryData.how === 2 && (
               <>
                 <div className="space-y-6">
-                  <h1 className="font-semibold text-xl sm:text-[1.75rem] font-omnes ">
+                  <h1 className="font-semibold text-xl sm:text-[1.75rem] ">
                     Pickup Time
                   </h1>
                 </div>
               </>
             )}
             <div
-              className={`flex items-center space-x-4 px-4 py-3 mt-4 border-2 rounded-lg ${
+              className={`flex items-center space-x-4 px-4 py-3 mt-4 bg-themeLight text-white rounded-lg ${
                 deliveryData.when === 1 && "border-theme-green-2"
               }`}
             >
@@ -522,10 +514,10 @@ const page = () => {
                   </label>
                   <p className="text-sm font-light text-checkoutTextColor/65">
                     {deliveryData.how === 1
-                      ? activeResData?.deliveryTime.split(" ")[0] +
+                      ? activeResData?.deliveryTime?.split(" ")[0] +
                         "-" +
                         (parseInt(activeResData?.deliveryTime) + 10)
-                      : activeResData?.pickupTime.split(" ")[0] +
+                      : activeResData?.pickupTime?.split(" ")[0] +
                         "-" +
                         (parseInt(activeResData?.pickupTime) + 10)}{" "}
                     min
@@ -535,7 +527,7 @@ const page = () => {
             </div>
 
             <div
-              className={`flex items-center space-x-4 px-4 py-3 mt-2 border-2 rounded-lg ${
+              className={`flex items-center space-x-4 px-4 py-3 mt-2 bg-themeLight text-white rounded-lg ${
                 deliveryData.when === 2 && "border-theme-green-2"
               }`}
             >
@@ -645,7 +637,7 @@ const page = () => {
               {true && (
                 <>
                   {/* <FaDoorOpen /> */}
-                  <h3 className="font-semibold text-xl sm:text-[1.75rem] font-omnes ">
+                  <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
                     Selected items
                   </h3>
                 </>
@@ -734,19 +726,19 @@ const page = () => {
               className="flex items-center gap-x-2 mt-10 mb-16 cursor-pointer"
               onClick={navigateTo}
             >
-              <AiOutlinePlus size={18} />
-              <span className="text-sm font-medium">Add more items</span>
+              <AiOutlinePlus size={18} color="white" />
+              <span className="text-sm font-medium text-white font-satoshi">Add more items</span>
             </div>
 
             {/* ============Payment Method start============= */}
 
             <div className="flex items-center gap-x-2 mt-10 mb-8">
               {/* <MdOutlinePayment size={24} className="text-2xl" /> */}
-              <h3 className="font-semibold text-xl sm:text-[1.75rem] font-omnes ">
+              <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
                 Payment Method
               </h3>
             </div>
-            <div className="bg-white rounded-lg p-5 my-4 border cursor-pointer duration-200 hover:shadow-discoveryCardShadow">
+            <div className="bg-themeLight text-white rounded-lg p-5 my-4 cursor-pointer duration-200 hover:shadow-discoveryCardShadow">
               {selectedPayment?.name ? (
                 <div
                   className="flex items-center gap-3 justify-between"
@@ -792,7 +784,7 @@ const page = () => {
 
                   <div className="text-theme-black-2 text-xl">
                     <button>
-                      <FaAngleRight color="black" />
+                      <FaAngleRight color="white" />
                     </button>
                   </div>
                 </div>
@@ -818,7 +810,7 @@ const page = () => {
                   </div>
                   <div className="text-theme-black-2 text-xl">
                     <button>
-                      <FaAngleRight color="black" />
+                      <FaAngleRight color="white" />
                     </button>
                   </div>
                 </div>
@@ -863,11 +855,11 @@ const page = () => {
             {deliveryData.how === 1 && (
               <>
                 <div className="flex items-center gap-x-2 mt-10 mb-8">
-                  <h3 className="font-semibold text-xl sm:text-[1.75rem] font-omnes ">
+                  <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
                     Tip the courier
                   </h3>
                 </div>
-                <div className="bg-white rounded-lg border p-5 my-4">
+                <div className="bg-themeLight text-white rounded-lg  p-5 my-4">
                   <div>
                     <div className="flex justify-between items-center">
                       <p className="text-sm font-light text-checkoutTextColor/65 max-w-[70%]">
@@ -882,7 +874,7 @@ const page = () => {
                     <div className="grid grid-cols-5 gap-2 mt-5 cursor-pointer ">
                       <button
                         onClick={() => setTip({ ...tip, other: false, tip: 0 })}
-                        className={`h-8 font-medium text-sm text-black text-opacity-80 border-2 sm:px-5 rounded-full w-full hover:bg-theme-red hover:bg-opacity-20 hover:border-theme-red ${
+                        className={`h-8 font-medium text-sm text-white text-opacity-80 border-2 sm:px-5 rounded-full w-full hover:bg-theme-red hover:bg-opacity-20 hover:border-theme-red ${
                           tip.tip === 0
                             ? "border-theme-red"
                             : "border-checkoutGrayBorder text-checkoutTextColor/60"
@@ -892,7 +884,7 @@ const page = () => {
                       </button>
                       <button
                         onClick={() => setTip({ ...tip, other: false, tip: 1 })}
-                        className={`h-8 font-medium text-sm text-black text-opacity-80 border-2 sm:px-5 rounded-full w-full hover:bg-theme-red hover:bg-opacity-20 hover:border-theme-red ${
+                        className={`h-8 font-medium text-sm text-white text-opacity-80 border-2 sm:px-5 rounded-full w-full hover:bg-theme-red hover:bg-opacity-20 hover:border-theme-red ${
                           tip.tip === 1
                             ? "border-theme-red"
                             : "border-checkoutGrayBorder text-checkoutTextColor/60"
@@ -902,7 +894,7 @@ const page = () => {
                       </button>
                       <button
                         onClick={() => setTip({ ...tip, other: false, tip: 2 })}
-                        className={`h-8 font-medium text-sm text-black text-opacity-80 border-2 sm:px-5 rounded-full w-full hover:bg-theme-red hover:bg-opacity-20 hover:border-theme-red ${
+                        className={`h-8 font-medium text-sm text-white text-opacity-80 border-2 sm:px-5 rounded-full w-full hover:bg-theme-red hover:bg-opacity-20 hover:border-theme-red ${
                           tip.tip === 2
                             ? "border-theme-red"
                             : "border-checkoutGrayBorder text-checkoutTextColor/60"
@@ -912,7 +904,7 @@ const page = () => {
                       </button>
                       <button
                         onClick={() => setTip({ ...tip, other: false, tip: 5 })}
-                        className={`h-8 font-medium text-sm text-black text-opacity-80 border-2 sm:px-5 rounded-full w-full hover:bg-theme-red hover:bg-opacity-20 hover:border-theme-red ${
+                        className={`h-8 font-medium text-sm text-white text-opacity-80 border-2 sm:px-5 rounded-full w-full hover:bg-theme-red hover:bg-opacity-20 hover:border-theme-red ${
                           tip.tip === 5
                             ? "border-theme-red"
                             : "border-checkoutGrayBorder text-checkoutTextColor/60"
@@ -922,7 +914,7 @@ const page = () => {
                       </button>
                       <button
                         onClick={() => setTip({ ...tip, other: true, tip: 10 })}
-                        className={`h-8 font-medium text-sm text-black text-opacity-80 border-2 sm:px-5 rounded-full w-full hover:bg-theme-red hover:bg-opacity-20 hover:border-theme-red ${
+                        className={`h-8 font-medium text-sm text-white text-opacity-80 border-2 sm:px-5 rounded-full w-full hover:bg-theme-red hover:bg-opacity-20 hover:border-theme-red ${
                           tip.other
                             ? "border-theme-red"
                             : "border-checkoutGrayBorder text-checkoutTextColor/60"
@@ -971,7 +963,7 @@ const page = () => {
                 {/* =====Redeem code======= */}
 
                 <div className="flex items-center gap-x-2 mt-10 pb-5">
-                  <h3 className="font-semibold text-xl sm:text-[1.75rem] font-omnes ">
+                  <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
                     Redeem code
                   </h3>
                 </div>
@@ -989,7 +981,7 @@ const page = () => {
                     />
                     <button
                       //   onClick={checkCoupon}
-                      className="text-base text-center font-bold bg-red-700 rounded-lg h-[54px] text-white min-w-[115px] w-[40%] whitespace-nowrap"
+                      className="text-base text-center font-bold bg-themeDark rounded-lg h-[54px] text-white min-w-[115px] w-[40%] whitespace-nowrap"
                     >
                       Submit
                     </button>
@@ -997,24 +989,28 @@ const page = () => {
                 </div>
                 {/* order frequency */}
                 <div className="flex items-center gap-x-2 mt-10 pb-5">
-                  <h3 className="font-semibold text-xl sm:text-[1.75rem] font-omnes ">
+                  <h3 className="font-semibold text-xl sm:text-[1.75rem] ">
                     Order Frequency
                   </h3>
                 </div>
-                <div className="flex gap-x-2 [&>button]:border-checkoutGrayBorder [&>button]:rounded-lg [&>button]:px-4 [&>button]:py-2 ">
-                  <button className="text-black border-2">Just once</button>
-                  <button className="text-black border-2">Weekly</button>
-                  <button className="text-black border-2">Every two weeks</button>
-                  <button className="text-black border-2">Every four weeks</button>
+                <div className="flex gap-x-2 [&>button]:rounded-lg [&>button]:px-4 [&>button]:py-2 [&>button]:bg-themeLight">
+                  <button className="text-white">Just once</button>
+                  <button className="text-white">Weekly</button>
+                  <button className="text-white">
+                    Every two weeks
+                  </button>
+                  <button className="text-white">
+                    Every four weeks
+                  </button>
                 </div>
               </>
             )}
           </div>
           <div
-            className={`bg-white rounded-2xl relative xl:min-w-[399px] w-full lg:shadow-checkoutBoxShadow lg:p-6 lg:col-span-2 h-max space-y-6 lg:sticky lg:top-40 lg:right-7 lg:-mt-32`}
+            className={`bg-themeLight rounded-2xl text-white  relative xl:min-w-[399px] w-full lg:shadow-checkoutBoxShadow lg:p-6 lg:col-span-2 h-max space-y-6 lg:sticky lg:top-40 lg:right-7 lg:-mt-32`}
           >
-            <div className="flex flex-col text-xl md:text-2xl">
-              <h3 className="font-semibold font-omnes">Prices in CHF</h3>
+            <div className="flex flex-col text-xl md:text-2xl text-white ">
+              <h3 className="font-semibold">Prices in CHF</h3>
               <p className="text-sm font-light text-checkoutTextColor/65 pb-6">
                 incl. taxes (if applicable)
               </p>
@@ -1077,7 +1073,7 @@ const page = () => {
               <button
                 disabled={true ? true : false}
                 // onClick={createOrder}
-                className="bg-black w-full text-base font-bold text-white rounded-md h-[54px] flex justify-center items-center gap-x-2"
+                className="bg-theme w-full text-base font-bold text-white rounded-md h-[54px] flex justify-center items-center gap-x-2"
               >
                 {deliveryData?.how === 1 && !deliveryAddress?.lat
                   ? "Add Delivery Address"
