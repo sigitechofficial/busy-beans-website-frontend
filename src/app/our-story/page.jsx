@@ -41,8 +41,15 @@ export default function story() {
   return (
     <>
       <div className="w-full ">
-   
+        {/* <div className=" bg-themeLight pt-[140px] relative">
+          <h2 className="font-playfairDisplay text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-center text-white mb-10">
+            Our Story
+          </h2>
 
+          <div className="h-60 sm:h-96 bg-[#FFF3DDCC]">
+            <img src="/images/ourstory.png" alt="" />
+          </div>
+        </div> */}
         {/* ==Our mission== */}
 
         <div className="w-full bg-themeLight py-10 sm:pt-10 sm:pb-14 max-lg:px-5">
