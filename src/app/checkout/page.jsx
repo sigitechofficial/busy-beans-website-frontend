@@ -2,7 +2,7 @@
 import CustomDeliveryIcon from "@/components/ui/CustomDeliveryIcon";
 import CustomRadioBtn from "@/components/ui/CustomRadioBtn";
 // import { Switch } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaAngleRight,
   FaDoorOpen,
@@ -34,14 +34,14 @@ import {
 } from "@/utilities/Toaster";
 
 const page = () => {
-  const activeResData = JSON.parse(localStorage.getItem("activeResData")) || [];
-  const existingCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-  let getProfile = [];
+  const [activeResData, setActiveResData] = useState([]);
+  const [existingCartItems, setExistingCartItems] = useState([]);
   const [selectedPayment, setSelectedPayment] = useState({
-    name: JSON.parse(localStorage.getItem("paymentMethod"))?.name || "",
-    type: JSON.parse(localStorage.getItem("paymentMethod"))?.name || "",
+    name: "",
+    type: "",
   });
 
+  let getProfile = [];
   const [coupon, setCoupon] = useState("");
   const [feeWorks, setFeeWorks] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
@@ -175,6 +175,24 @@ const page = () => {
     }
   };
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const activeRes = JSON.parse(localStorage.getItem("activeResData")) || [];
+      const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+      const paymentMethod =
+        JSON.parse(localStorage.getItem("paymentMethod")) || {};
+
+      setActiveResData(activeRes);
+      setExistingCartItems(cartItems);
+      setSelectedPayment({
+        name: paymentMethod?.name || "",
+        type: paymentMethod?.type || "",
+      });
+
+   
+    }
+  }, [existingCartItems]);
+
   return (
     <>
       <div className="bg-theme font-satoshi">
@@ -271,9 +289,13 @@ const page = () => {
                 >
                   <CustomDeliveryIcon
                     size={20}
-                    color={deliveryData.how === 2 ? "#F8E4BE":"#fff"}
+                    color={deliveryData.how === 2 ? "#F8E4BE" : "#fff"}
                   />
-                  <span className={deliveryData.how === 1 && "font-bold text-white"}>
+                  <span
+                    className={
+                      deliveryData.how === 1 ? "font-bold text-white" : ""
+                    }
+                  >
                     Delivery
                   </span>
                 </button>
@@ -288,8 +310,15 @@ const page = () => {
                       : "bg-transparent text-goldenLight"
                   }`}
                 >
-                  <FaWalking size={20} color={deliveryData.how === 2 &&"#fff"}/>
-                  <span className={deliveryData.how === 2 && "font-bold text-white"}>
+                  <FaWalking
+                    size={20}
+                    color={deliveryData.how === 2 ? "#fff" : ""}
+                  />
+                  <span
+                    className={
+                      deliveryData.how === 2 ? "font-bold text-white" : ""
+                    }
+                  >
                     Pickup
                   </span>
                 </button>
@@ -426,7 +455,6 @@ const page = () => {
                   </div>
 
                   <div>
-              
                     <div className="relative w-full group">
                       <div className="font-sf font-normal text-base text-theme-black-2 flex items-center gap-3 px-5 py-[5px] duration-300 border-2 border-white hover:border-goldenLight focus-within:border-goldenLight rounded-lg">
                         <MdInsertComment size={24} />
@@ -644,7 +672,7 @@ const page = () => {
               )}
             </div>
             {true && (
-              <div className="bg-white rounded-lg my-4 space-y-3">
+              <div className="bg-theme text-white rounded-lg my-4 space-y-3">
                 {existingCartItems?.map((cart, index) => {
                   return (
                     <div key={index} className="flex justify-between gap-x-2">
@@ -665,7 +693,7 @@ const page = () => {
                               <b className="font-medium">{cart?.name}</b>
                             </h5>
                           </div>
-                          <div className="capitalize text-sm font-normal text-black text-opacity-60">
+                          <div className="capitalize text-sm font-normal text-white text-opacity-60">
                             <ul>
                               {cart?.addOnsCat && cart?.addOnsCat?.length > 0
                                 ? cart?.addOnsCat
@@ -727,7 +755,9 @@ const page = () => {
               onClick={navigateTo}
             >
               <AiOutlinePlus size={18} color="white" />
-              <span className="text-sm font-medium text-white font-satoshi">Add more items</span>
+              <span className="text-sm font-medium text-white font-satoshi">
+                Add more items
+              </span>
             </div>
 
             {/* ============Payment Method start============= */}
@@ -935,7 +965,7 @@ const page = () => {
                           }}
                           type="text"
                           min={1}
-                          className="py-3 px-5 w-full rounded-lg font-normal text-base text-center border-2 border-checkoutGrayBorder focus:outline-theme-red"
+                          className="py-3 px-5 w-full rounded-lg font-normal text-base text-center bg-theme focus:outline-theme-red"
                         />
                         <button
                           onClick={() => setTip({ ...tip, tip: tip.tip - 1 })}
@@ -968,7 +998,7 @@ const page = () => {
                   </h3>
                 </div>
                 <div className="">
-                  <p className="text-sm font-light text-checkoutTextColor mb-4">
+                  <p className="text-sm font-light text-checkoutTextColor mb-4 text-white">
                     If you have a Fomino gift card or promo code, enter it below
                     to claim your benefits.
                   </p>
@@ -996,12 +1026,8 @@ const page = () => {
                 <div className="flex gap-x-2 [&>button]:rounded-lg [&>button]:px-4 [&>button]:py-2 [&>button]:bg-themeLight">
                   <button className="text-white">Just once</button>
                   <button className="text-white">Weekly</button>
-                  <button className="text-white">
-                    Every two weeks
-                  </button>
-                  <button className="text-white">
-                    Every four weeks
-                  </button>
+                  <button className="text-white">Every two weeks</button>
+                  <button className="text-white">Every four weeks</button>
                 </div>
               </>
             )}

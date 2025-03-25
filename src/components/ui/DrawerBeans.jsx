@@ -11,9 +11,10 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
   const router = useRouter();
   const [counter, setCounter] = useState(null);
   const [drawerScroll, setDrawerScroll] = useState(0);
-  const cartItems = JSON.parse(localStorage.getItem("cartItems"))|| [];;
-  const activeResData = JSON.parse(localStorage.getItem("activeResData"));
-
+  if (typeof window !== 'undefined') {
+  var cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+  var activeResData = JSON.parse(localStorage.getItem("activeResData"));
+  }
   const handleCounterClick = (index) => {
     setCounter(index);
   };
