@@ -1,9 +1,9 @@
 import React from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
 
-const ProductCard = () => {
+const ProductCard = (props) => {
   return (
-    <div className="w-full max-w-[448px] rounded-md border border-quantityBtn overflow-hidden">
+    <div onClick={props.onClick} className="w-full max-w-[448px] rounded-md border border-quantityBtn overflow-hidden cursor-pointer">
       <div className="w-full h-auto [&>img]:w-full [&>img]:h-[130px] sm:[&>img]:h-auto [&>img]:object-cover">
         <img src="/images/prod.png" alt="" />
       </div>

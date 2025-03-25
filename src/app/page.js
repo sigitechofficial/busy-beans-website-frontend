@@ -1,10 +1,12 @@
-"use client"
+"use client";
 import BrandsMarquee from "@/components/ui/BrandsMarquee";
 import CustomerCarousel from "@/components/ui/Carousel";
 import CoffeSolution from "@/components/ui/CoffeSolution";
 import SwiperSider from "@/components/ui/SwiperSlider";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   const brandImages = [
     "/images/cafePrime.png",
     "/images/BistroElite.png",
@@ -50,7 +52,10 @@ export default function Home() {
             for Business
           </h4>
 
-          <p className="h-10 sm:h-14 w-36 sm:w-40 rounded-xl font-robotoSerif font-bold text-base text-[#F8E4BE] bg-themeLight mx-auto flex justify-center items-center mt-10 sm:mt-20 shadow-customYellow">
+          <p
+            onClick={() => router.push("/product/")}
+            className="h-10 sm:h-14 w-36 sm:w-40 rounded-xl font-robotoSerif font-bold text-base text-[#F8E4BE] bg-themeLight mx-auto flex justify-center items-center mt-10 sm:mt-20 shadow-customYellow"
+          >
             Order Now
           </p>
 

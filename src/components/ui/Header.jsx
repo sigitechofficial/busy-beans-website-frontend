@@ -16,27 +16,23 @@ export default function Header() {
   const toggleMenu = () => {
     setShow(!show);
   };
+
+  if (typeof window !== "undefined") {
+    var accessToken = JSON.parse(localStorage.getItem("accessToken"));
+  }
   return (
     <>
-      <div className="w-[90%] lg:w-[77%] h-[65px] sm:h-[80px] mx-auto bg-headerColor rounded-2xl my-7 flex justify-between items-center px-[18px] absolute left-1/2 -translate-x-1/2 z-50">
+      <div className="w-[90%] lg:w-[77%] h-[65px] sm:h-[80px] mx-auto bg-headerColor rounded-2xl my-7 flex justify-between items-center px-[18px] absolute left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
         <Link href="/" className="w-24 sm:w-28 lg:w-36 object-contain lg:ml-4">
-          <img src="/images/logo.png" alt="" />
+          <img src="/images/logowhite.png" alt="" />
         </Link>
 
         <div className="hidden md:flex gap-x-6">
           <ul className="flex gap-x-2 xl:gap-x-5 text-sm [&>li]:flex [&>li]:cursor-pointer [&>li]:items-center text-white">
-            <li>
-              Our Story <MdKeyboardArrowDown size="20" />
-            </li>
-            <li>
-              Financing <MdKeyboardArrowDown size="20" />
-            </li>
-            <li>
-              Resources <MdKeyboardArrowDown size="20" />
-            </li>
-            <li>
-              Products <MdKeyboardArrowDown size="20" />
-            </li>
+            <li onClick={() => router.push("/our-story")}>Our Story</li>
+            <li onClick={() => router.push("/Financing")}>Financing</li>
+            <li onClick={() => router.push("/recepies")}>Resources</li>
+            <li onClick={() => router.push("/product")}>Products</li>
           </ul>
         </div>
 
@@ -48,16 +44,21 @@ export default function Header() {
             <IoCart className="text-white bg-themeLight rounded-full p-1 text-3xl" />
             <p>Cart</p>
           </div>
-          <button
-            onClick={() => router.push("/sign-in")}
-            className="border border-white rounded-xl px-2 lg:px-4 py-2 text-white"
-          >
-            Log in
-          </button>
+          {!accessToken && (
+            <button
+              onClick={() => router.push("/sign-in")}
+              className="border border-white rounded-xl px-2 lg:px-4 py-2 text-white"
+            >
+              Log in
+            </button>
+          )}
         </div>
         <div className="hidden max-md:flex items-center gap-x-2">
-        <IoCart className="text-white bg-themeLight rounded-full p-1 text-3xl"     onClick={() => setDrawerOpen(true)}/>
-          <FaBars size="25" color="white"  onClick={toggleMenu} />
+          <IoCart
+            className="text-white bg-themeLight rounded-full p-1 text-3xl"
+            onClick={() => setDrawerOpen(true)}
+          />
+          <FaBars size="25" color="white" onClick={toggleMenu} />
         </div>
       </div>
 

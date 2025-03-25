@@ -3,8 +3,10 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { IoCart, IoClose } from "react-icons/io5";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { useRouter } from "next/navigation";
 
 const ToggleMenu = ({ show, toggleMenu }) => {
+  const router = useRouter();
   useEffect(() => {
     if (show) {
       document.body.style.overflow = "hidden";
@@ -33,17 +35,37 @@ const ToggleMenu = ({ show, toggleMenu }) => {
                 <img src="/images/logo.png" alt="" />
               </Link>
             </li>
-            <li>
-              Our Story <MdKeyboardArrowDown size="20" />
+            <li
+              onClick={() => {
+                router.push("/our-story");
+                toggleMenu();
+              }}
+            >
+              Our Story
             </li>
-            <li>
-              Financing <MdKeyboardArrowDown size="20" />
+            <li
+              onClick={() => {
+                router.push("/financing");
+                toggleMenu();
+              }}
+            >
+              Financing
             </li>
-            <li>
-              Resources <MdKeyboardArrowDown size="20" />
+            <li
+              onClick={() => {
+                router.push("/recepies");
+                toggleMenu();
+              }}
+            >
+              Resources
             </li>
-            <li>
-              Products <MdKeyboardArrowDown size="20" />
+            <li
+              onClick={() => {
+                router.push("/product");
+                toggleMenu();
+              }}
+            >
+              Products
             </li>
             <li>
               {/* <div className="rounded-xl flex items-center gap-x-2 text-themeLight bg-white px-3  py-1.5 text-sm sm:px-4 sm:py-2 sm:text-lg">

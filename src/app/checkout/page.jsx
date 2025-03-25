@@ -32,8 +32,10 @@ import {
   info_toaster,
   success_toaster,
 } from "@/utilities/Toaster";
+import { useRouter } from "next/navigation";
 
 const page = () => {
+  const router = useRouter();
   const [activeResData, setActiveResData] = useState([]);
   const [existingCartItems, setExistingCartItems] = useState([]);
   const [selectedPayment, setSelectedPayment] = useState({
@@ -103,7 +105,7 @@ const page = () => {
   };
 
   const navigateTo = () => {
-    console.log("navigate");
+    router.push("/product");
   };
 
   const normalizeTimeFormat = (time) => {
@@ -175,30 +177,28 @@ const page = () => {
     }
   };
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const activeRes = JSON.parse(localStorage.getItem("activeResData")) || [];
-      const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-      const paymentMethod =
-        JSON.parse(localStorage.getItem("paymentMethod")) || {};
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     const activeRes = JSON.parse(localStorage.getItem("activeResData")) || [];
+  //     const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+  //     const paymentMethod =
+  //       JSON.parse(localStorage.getItem("paymentMethod")) || {};
 
-      setActiveResData(activeRes);
-      setExistingCartItems(cartItems);
-      setSelectedPayment({
-        name: paymentMethod?.name || "",
-        type: paymentMethod?.type || "",
-      });
-
-   
-    }
-  }, [existingCartItems]);
+  //     setActiveResData(activeRes);
+  //     setExistingCartItems(cartItems);
+  //     setSelectedPayment({
+  //       name: paymentMethod?.name || "",
+  //       type: paymentMethod?.type || "",
+  //     });
+  //   }
+  // }, [existingCartItems]);
 
   return (
     <>
       <div className="bg-theme font-satoshi">
         <section className="bg-theme-green font-satoshi">
           <div className="h-96 relative text-black hover:text-opacity-50">
-            <div className="lg:hidden absolute z-10 bottom-0 w-full h-16 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+            <div className="lg:hidden absolute z-10 bottom-0 w-full h-16 bg-gradient-to-t from-white to-transparent"></div>
             <LoadScript googleMapsApiKey={googleApiKey}>
               <GoogleMap
                 key={`${deliveryData?.how}-${deliveryAddress?.lat}-${deliveryAddress?.lng}`}
@@ -250,7 +250,7 @@ const page = () => {
               )} */}
               </GoogleMap>
             </LoadScript>
-            <div className="max-w-[1200px] px-[30px] mx-auto -mt-20 md:-mt-48 z-40 relative pointer-events-none">
+            <div className="max-w-[1200px] px-[30px] mx-auto -mt-20 md:-mt-48 z-20 relative pointer-events-none">
               {/* <div
                 onClick={() => {
                   window.history.back();
@@ -1033,7 +1033,7 @@ const page = () => {
             )}
           </div>
           <div
-            className={`bg-themeLight rounded-2xl text-white  relative xl:min-w-[399px] w-full lg:shadow-checkoutBoxShadow lg:p-6 lg:col-span-2 h-max space-y-6 lg:sticky lg:top-40 lg:right-7 lg:-mt-32`}
+            className={`lg:bg-themeLight rounded-2xl text-white  relative xl:min-w-[399px] w-full lg:shadow-checkoutBoxShadow lg:p-6 lg:col-span-2 h-max space-y-6 lg:sticky lg:top-40 lg:right-7 lg:-mt-32`}
           >
             <div className="flex flex-col text-xl md:text-2xl text-white ">
               <h3 className="font-semibold">Prices in CHF</h3>
@@ -1099,7 +1099,7 @@ const page = () => {
               <button
                 disabled={true ? true : false}
                 // onClick={createOrder}
-                className="bg-theme w-full text-base font-bold text-white rounded-md h-[54px] flex justify-center items-center gap-x-2"
+                className="bg-themeLight lg:bg-theme w-full text-base font-bold text-white rounded-md h-[54px] flex justify-center items-center gap-x-2"
               >
                 {deliveryData?.how === 1 && !deliveryAddress?.lat
                   ? "Add Delivery Address"

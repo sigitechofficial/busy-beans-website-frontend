@@ -117,6 +117,9 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
+      <title>Busy Beans Coffee</title>
+      <link rel="icon" type="image/x-icon" href="/images/logo.png" />
+
       <body
         className={`${switzer.variable} ${satoshi.variable} ${inter.variable} ${nunito.variable} ${geistSans.variable} ${geistMono.variable} ${robotoSerif.variable} ${playfairDisplay.variable} antialiased`}
       >
