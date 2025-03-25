@@ -11,9 +11,10 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
   const router = useRouter();
   const [counter, setCounter] = useState(null);
   const [drawerScroll, setDrawerScroll] = useState(0);
-  const cartItems = JSON.parse(localStorage.getItem("cartItems"))|| [];;
-  const activeResData = JSON.parse(localStorage.getItem("activeResData"));
-
+  if (typeof window !== 'undefined') {
+  var cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+  var activeResData = JSON.parse(localStorage.getItem("activeResData"));
+  }
   const handleCounterClick = (index) => {
     setCounter(index);
   };
@@ -51,7 +52,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
       <Portal>
         <Drawer.Backdrop />
         <Drawer.Positioner>
-          <Drawer.Content className="rounded-tl-xl rounded-bl-xl">
+          <Drawer.Content className="rounded-tl-xl rounded-bl-xl bg-theme text-white">
             <Drawer.Header
               className="rounded-tl-xl"
               p={0}
@@ -63,7 +64,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
               top={drawerScroll > 100 ? "0" : "-60px"}
               left="0"
               right="0"
-              backgroundColor="#fff"
+              backgroundColor="#3e342c"
               zIndex={10}
               opacity={drawerScroll > 100 ? 1 : 0}
               visibility={drawerScroll > 100 ? "visible" : "hidden"}
@@ -84,7 +85,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
               px={0}
               onScroll={handleDrawerScroll}
             >
-              <div className="space-y-6 font-sf px-4 mb-28">
+              <div className="space-y-6 font-sf px-4 mb-28 bg-theme text-white">
                 <div>
                   <div className="flex justify-between items-center mb-10 mt-20 ">
                     <h2 className="text-[32px] font-black font-nunito text-theme-black-2">
@@ -93,10 +94,9 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
 
                     <button
                       onClick={() => setOpen(false)}
-                      className="absolute right-5 top-4 z-10 rounded-full bg-[#F4F5FA] w-10 h-10 text-xl flex justify-center items-center 
-            hover:bg-[#e5e5e5] focus:outline-none  focus:ring-[#e5e5e5]"
+                      className="absolute right-5 top-4 z-10 rounded-full bg-themeLight text-white w-10 h-10 text-xl flex justify-center items-center"
                     >
-                      <IoMdClose className="text-black text-2xl" />
+                      <IoMdClose className="text-2xl" />
                     </button>
                   </div>
 
@@ -124,7 +124,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                             <h3 className="capitalize font-semibold text-base">
                               {cartI?.name}
                             </h3>
-                            <div className="capitalize text-sm font-light text-[rgba(32,33,37,.9)]">
+                            <div className="capitalize text-sm font-light text-goldenLight">
                               <ul>
                                 {cartI?.addOnsCat &&
                                 cartI?.addOnsCat?.length > 0
@@ -177,7 +177,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                             </div>
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-x-3">
-                                <span className="font-semibold text-sm text-[#E13743] mt-1">
+                                <span className="font-semibold text-sm text-white mt-1">
                                   {parseFloat(
                                     (cartI?.unitPrice +
                                       cartI?.addOns?.reduce(
@@ -240,7 +240,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                     }}
                   >
                     <button
-                      className="bg-black font-bold text-white rounded-full px-5 min-h-14 w-full flex items-center justify-between"
+                      className="bg-themeLight font-bold text-white rounded-full px-5 min-h-14 w-full flex items-center justify-between"
                       // onClick={handleCartPage}
                     >
                       <div className="flex space-x-4 items-center">

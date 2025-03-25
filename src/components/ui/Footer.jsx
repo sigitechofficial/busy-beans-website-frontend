@@ -1,4 +1,5 @@
 import React from "react";
+import { BiLogoInstagramAlt } from "react-icons/bi";
 import { FaFacebookF, FaLinkedinIn, FaPinterest } from "react-icons/fa";
 import { IoLogoTwitter } from "react-icons/io5";
 
@@ -26,7 +27,7 @@ const Footer = () => {
           <p>
             Email: 
             <span className="underline underline-offset-3">
-              info@busybeancoffee.com{" "}
+              info@busybeancoffee.com
             </span>
           </p>
         </div>
@@ -34,18 +35,37 @@ const Footer = () => {
         <div className="md:justify-self-end text-xs sm:text-base">
           <p>FOLLOW US ON MEDIA</p>
           <div>
-            <div className="flex [&>div]:flex [&>div]:justify-center [&>div]:items-center gap-2 [&>div]:rounded-md [&>div]:bg-gradient-to-b [&>div]:from-themeLight [&>div]:to-theme [&>div]:p-1 [&>div]:size-10 [&>div]:my-2 sm:[&>div]:my-7">
-              <div>
+            <div className="flex [&>div]:cursor-pointer [&>div]:flex [&>div]:justify-center [&>div]:items-center gap-2 [&>div]:rounded-md [&>div]:bg-gradient-to-b [&>div]:from-themeLight [&>div]:to-theme [&>div]:p-1 [&>div]:size-10 [&>div]:my-2 sm:[&>div]:my-7">
+              <div
+                onClick={() =>
+                  (window.location.href =
+                    "https://www.facebook.com/busybeancoffeeinc/")
+                }
+              >
                 <FaFacebookF className="text-xl" />
               </div>
-              <div>
-                <IoLogoTwitter className="text-xl"  />
+              <div
+                onClick={() =>
+                  (window.location.href = "https://twitter.com/busybean_coffee")
+                }
+              >
+                <IoLogoTwitter className="text-xl" />
               </div>
-              <div>
-                <FaLinkedinIn className="text-xl"  />
+              <div
+                onClick={() =>
+                  (window.location.href =
+                    "https://www.linkedin.com/in/thecoffeeman")
+                }
+              >
+                <FaLinkedinIn className="text-xl" />
               </div>
-              <div>
-                <FaPinterest className="text-xl"  />
+              <div
+                onClick={() =>
+                  (window.location.href =
+                    "https://www.instagram.com/busybean_coffee/")
+                }
+              >
+                <BiLogoInstagramAlt className="text-xl" />
               </div>
             </div>
           </div>

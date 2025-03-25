@@ -1,6 +1,6 @@
-@import "primereact/resources/themes/lara-light-blue/theme.css"; 
-@import "primereact/resources/primereact.min.css"; 
-@import "primeicons/primeicons.css"; 
+@import "primereact/resources/themes/lara-light-blue/theme.css";
+@import "primereact/resources/primereact.min.css";
+@import "primeicons/primeicons.css";
 
 @tailwind base;
 @tailwind components;
@@ -36,3 +36,45 @@
   background-color: white !important;
 }
 
+/* swiper navigation buttons css here  */
+.swiper-button-prev,
+.swiper-button-next {
+  color: #F8E4BE !important;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  content: "";
+  position: absolute;
+  background-color: #86644C;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px !important;
+}
+
+.swiper-button-prev::after {
+  left: 20px;
+}
+
+.swiper-button-next::after {
+  right: 20px;
+}
+@media screen and (max-width:640px) {
+  .swiper-button-prev::after {
+    left: 0px;
+  }
+  
+  .swiper-button-next::after {
+    right: 0px;
+  }
+}
+
+/* swiper navigation buttons css end here  */
