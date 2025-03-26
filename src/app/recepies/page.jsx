@@ -48,13 +48,19 @@ export default function page() {
       <div className="w-full ">
         <div className=" bg-themeLight pt-[140px] relative">
           <h2 className="font-playfairDisplay text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-center text-white mb-10">
-            Busy Bean Coffee
+            Busy Bean Coffee <br /> Executive Chef Leslie
           </h2>
-          <h2 className="font-playfairDisplay text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-center text-white mb-10 mt-[-40px] sm:mt-[-30px]">
-            Executive Chef Leslie
-          </h2>
+          {/* <h2 className="font-playfairDisplay text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-center text-white mb-10 mt-[-40px] sm:mt-[-30px]"> */}
 
-          <div className="h-[300px] sm:h-[500px] md:h-[600px] 2xl:h-[900px] bg-[url(/images/recepies.png)] bg-cover bg-center bg-no-repeat"></div>
+          {/* </h2> */}
+
+          <div className="h-[300px] sm:h-[500px] md:h-[600px]">
+            <img
+              src="/images/recepies.png"
+              alt="checf image"
+              className="h-full w-full object-cover object-center"
+            />
+          </div>
         </div>
         {/* ==Carousel== */}
         <div className="w-full bg-themeLight py-5 sm:py-10">
@@ -78,7 +84,7 @@ export default function page() {
                   />
                 </div>
 
-                <div className="flex-1 rounded-lg max-lg:absolute bottom-[-100%] max-lg:group-hover:bg-theme/50 max-lg:group-hover:bottom-0 transition-all duration-300 left-0 px-4 sm:px-20 overflow-y-auto max-lg:pt-2 max-lg:h-full max-lg:backdrop-blur-xl lg:px-0 w-full lg:flex flex-col justify-center font-switzer text-sm 2xl:text-xl">
+                <div className="space-y-4 flex-1 rounded-lg max-lg:absolute bottom-[-100%] max-lg:group-hover:bg-theme/50 max-lg:group-hover:bottom-0 transition-all duration-300 left-0 px-4 sm:px-20 overflow-y-auto max-lg:pt-2 max-lg:h-full max-lg:backdrop-blur-xl lg:px-0 w-full lg:flex flex-col justify-center font-switzer text-sm 2xl:text-xl">
                   <p>
                     The Busy Bean Coffee universal dry rub has a diversity of
                     usage. Apply dry rub to any protein chicken, beef, pork,
@@ -87,7 +93,7 @@ export default function page() {
                     or braising. It can add flavor to French fries, potato
                     chips, soups, or sauces.
                   </p>
-                  <p className="my-5">
+                  <p className="">
                     This recipe can be used to add flavor to chicken, beef,
                     pork, fish or vegetables.
                   </p>
@@ -107,7 +113,7 @@ export default function page() {
                     <li>2 oz Black Pepper</li>
                     <li>2 oz Cumin</li>
                   </ul>
-                  <p className="mt-3">Step 1: Combine all ingredients.</p>
+                  <p className="">Step 1: Combine all ingredients.</p>
                 </div>
               </div>
             </SwiperSlide>
