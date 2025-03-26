@@ -1,7 +1,5 @@
 "use client";
 import SwiperSider from "@/components/ui/SwiperSlider";
-import dynamic from "next/dynamic";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -50,17 +48,20 @@ export default function page() {
           <h2 className="font-playfairDisplay text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-center text-white mb-10">
             Busy Bean Coffee <br /> Executive Chef Leslie
           </h2>
-          {/* <h2 className="font-playfairDisplay text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-center text-white mb-10 mt-[-40px] sm:mt-[-30px]"> */}
 
-          {/* </h2> */}
-
-          <div className="h-[300px] sm:h-[500px] md:h-[600px]">
+          {/* <div className="h-[300px] sm:h-[400px] md:h-[500px] 2xl:h-[800px]">
             <img
               src="/images/recepies.png"
-              alt="checf image"
+              alt="cheff image"
               className="h-full w-full object-cover object-center"
             />
-          </div>
+          </div> */}
+
+          <div
+            role="image"
+            aria-label="Busy Bean Coffee Executive Chef Leslie"
+            className="h-[300px] sm:h-[400px] md:h-[500px] 2xl:h-[800px] bg-[url(/images/recepies.png)] bg-cover bg-center bg-no-repeat"
+          ></div>
         </div>
         {/* ==Carousel== */}
         <div className="w-full bg-themeLight py-5 sm:py-10">
@@ -76,7 +77,7 @@ export default function page() {
             <SwiperSlide>
               {" "}
               <div className="w-[90%] 2xl:w-[80%] mx-auto flex gap-x-8 lg:gap-x-[8%] my-10 lg:my-20 text-white relative overflow-hidden group">
-                <div className="flex-1 h-[300px] sm:h-[450px] xl:h-[600px]">
+                <div className="flex-1 h-[300px] sm:h-[400px] xl:h-[500px] 2xl:h-[600px]">
                   <img
                     className="w-full h-full object-cover max-lg:rounded-lg"
                     src="/images/r2.png"
@@ -84,7 +85,7 @@ export default function page() {
                   />
                 </div>
 
-                <div className="space-y-4 flex-1 rounded-lg max-lg:absolute bottom-[-100%] max-lg:group-hover:bg-theme/50 max-lg:group-hover:bottom-0 transition-all duration-300 left-0 px-4 sm:px-20 overflow-y-auto max-lg:pt-2 max-lg:h-full max-lg:backdrop-blur-xl lg:px-0 w-full lg:flex flex-col justify-center font-switzer text-sm 2xl:text-xl">
+                <div className="space-y-3 flex-1 rounded-lg max-lg:absolute bottom-[-100%] max-lg:group-hover:bg-theme/50 max-lg:group-hover:bottom-0 transition-all duration-300 left-0 px-4 sm:px-20 overflow-y-auto max-lg:pt-2 max-lg:h-full max-lg:backdrop-blur-xl lg:px-0 w-full lg:flex flex-col justify-center font-switzer text-sm 2xl:text-xl">
                   <p>
                     The Busy Bean Coffee universal dry rub has a diversity of
                     usage. Apply dry rub to any protein chicken, beef, pork,
@@ -119,7 +120,8 @@ export default function page() {
             </SwiperSlide>
             <SwiperSlide>
               <div className="w-[90%] 2xl:w-[80%] mx-auto flex flex-row-reverse gap-x-8 lg:gap-x-[8%] my-10 lg:my-20 text-white relative overflow-hidden group">
-                <div className="flex-1 h-[300px] sm:h-[450px] xl:h-[600px]">
+                <div className="flex-1 h-[300px] sm:h-[400px] xl:h-[500px] 2xl:h-[600px]">
+                  {" "}
                   <img
                     className="w-full h-full object-cover max-lg:rounded-lg"
                     src="/images/r4.png"
@@ -127,19 +129,19 @@ export default function page() {
                   />
                 </div>
 
-                <div className="flex-1 rounded-lg max-lg:absolute bottom-[-100%] max-lg:group-hover:bg-theme/50 max-lg:group-hover:bottom-0 transition-all duration-300 left-0 px-4 sm:px-20 overflow-y-auto max-lg:pt-2 max-lg:h-full max-lg:backdrop-blur-xl lg:px-0 w-full lg:flex flex-col justify-center font-switzer text-sm 2xl:text-xl">
+                <div className="space-y-3 flex-1 rounded-lg max-lg:absolute bottom-[-100%] max-lg:group-hover:bg-theme/50 max-lg:group-hover:bottom-0 transition-all duration-300 left-0 px-4 sm:px-20 overflow-y-auto max-lg:pt-2 max-lg:h-full max-lg:backdrop-blur-xl lg:px-0 w-full lg:flex flex-col justify-center font-switzer text-sm 2xl:text-xl">
                   <ul className="leading-tight">
                     <li>Ingredients:</li>
                     <li>13 Egg Yolks </li>
                     <li>2 Quarts Heavy Crème</li>
                     <li>1 cup Busy Bean French Vanilla</li>
                   </ul>
-                  <p className="my-3">
+                  <p>
                     This recipe can be used to add flavor to chicken, beef,
                     pork, fish or vegetables.
                   </p>
 
-                  <ul className="space-y-3 mt-3 leading-tight">
+                  <ul className="space-y-3 leading-tight">
                     <li>
                       Step 1) <br />
                       Begin by steeping Heavy cream, bring to a boil and take
@@ -166,7 +168,7 @@ export default function page() {
             </SwiperSlide>
             <SwiperSlide>
               <div className="w-[90%] 2xl:w-[80%] mx-auto flex gap-x-8 lg:gap-x-[8%] my-10 lg:my-20 text-white relative overflow-hidden group">
-                <div className="flex-1 h-[300px] sm:h-[450px] xl:h-[600px]">
+                <div className="flex-1 h-[300px] sm:h-[400px] xl:h-[500px] 2xl:h-[600px]">
                   <img
                     className="w-full h-full object-cover max-lg:rounded-lg"
                     src="/images/r3.png"
@@ -174,7 +176,7 @@ export default function page() {
                   />
                 </div>
 
-                <div className="flex-1 rounded-lg max-lg:absolute bottom-[-100%] max-lg:group-hover:bg-theme/50 max-lg:group-hover:bottom-0 transition-all duration-300 left-0 px-4 sm:px-20 overflow-y-auto max-lg:pt-2 max-lg:h-full max-lg:backdrop-blur-xl lg:px-0 w-full lg:flex flex-col justify-center font-switzer text-sm 2xl:text-xl">
+                <div className="space-y-3 flex-1 rounded-lg max-lg:absolute bottom-[-100%] max-lg:group-hover:bg-theme/50 max-lg:group-hover:bottom-0 transition-all duration-300 left-0 px-4 sm:px-20 overflow-y-auto max-lg:pt-2 max-lg:h-full max-lg:backdrop-blur-xl lg:px-0 w-full lg:flex flex-col justify-center font-switzer text-sm 2xl:text-xl">
                   <ul className="leading-tight">
                     <li>Ingredients:</li>
                     <li>1 lb Unsweetened Choc</li>
@@ -187,7 +189,7 @@ export default function page() {
                     <li>1 lb Cake Flour</li>
                     <li>1-Pint Sugar</li>
                   </ul>
-                  <ul className="space-y-3 mt-3 leading-tight">
+                  <ul className="space-y-3 leading-tight">
                     <li>
                       Step 1) <br />
                       Using a wire whisk on kitchen aid mixer. Cream sugar, corn

@@ -20,8 +20,6 @@ const CoffeSolution = () => {
         <div className="">
           <img src="/images/cstores.png" />
         </div>
-      </div>
-      <div className="w-full grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 sm:[&>div]:h-[295px] [&>div>img]:w-full [&>div>img]:h-full [&>div>img]:object-cover">
         <div className="lg:col-start-2">
           <img src="/images/restaurants.png" />
         </div>

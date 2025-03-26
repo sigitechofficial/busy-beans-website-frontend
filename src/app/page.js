@@ -45,16 +45,13 @@ export default function Home() {
     <>
       <div className="w-full ">
         <div className="h-[550px] sm:h-[768px] 2xl:h-[950px] bg-theme bg-gradient-to-b from-themeDark to-[#5C4F4A] pt-[220px] sm:pt-[310px] relative">
-          <h4 className="bg-gradient-to-r from-[#F8E4BE] to-[#F9C06A38] w-max bg-clip-text text-transparent text-3xl sm:text-5xl lg:text-7xl 2xl:text-[120px] font-robotoSerif font-bold mx-auto lg:leading-[85px] 2xl:leading-[125px]">
-            The Future of Coffee
-          </h4>
-          <h4 className="bg-gradient-to-r from-[#F8E4BE] to-[#F9C06A38] w-max bg-clip-text text-transparent text-3xl sm:text-5xl lg:text-7xl 2xl:text-[120px] font-robotoSerif font-bold mx-auto lg:leading-[85px] 2xl:leading-[125px]">
-            for Business
+          <h4 className="text-center bg-gradient-to-r from-[#F8E4BE] to-[#F9C06A38] w-max bg-clip-text text-transparent text-3xl sm:text-5xl lg:text-7xl 2xl:text-[120px] font-robotoSerif font-bold mx-auto lg:leading-[85px] 2xl:leading-[125px]">
+            The Future of Coffee <br /> for Business
           </h4>
 
           <p
             onClick={() => router.push("/product/")}
-            className="h-10 sm:h-14 w-36 sm:w-40 rounded-xl font-robotoSerif font-bold text-base text-[#F8E4BE] bg-themeLight mx-auto flex justify-center items-center mt-10 sm:mt-20 shadow-customYellow"
+            className="h-10 sm:h-14 w-36 sm:w-40 rounded-xl font-robotoSerif font-bold text-base text-[#F8E4BE] bg-themeLight mx-auto flex justify-center items-center mt-10 sm:mt-20 shadow-customYellow cursor-pointer"
           >
             Order Now
           </p>
@@ -82,14 +79,10 @@ export default function Home() {
             <img src="/images/frame2foldtexture.png" />
           </div>
           <div className="relative z-20">
-            <h4 className="text-xl sm:text-4xl lg:text-6xl  2xl:text-7xl text-white text-center font-robotoSerif font-bold mx-auto sm:leading-[80px] 2xl:leading-[90px]">
-              Providing Services to
-            </h4>
-            <h4 className="text-xl sm:text-4xl lg:text-6xl  2xl:text-7xl text-white text-center font-robotoSerif font-bold mx-auto sm:leading-[80px] 2xl:leading-[90px]">
-              Millions of People Worldwide
+            <h4 className="text-xl sm:text-4xl lg:text-6xl  2xl:text-7xl text-white text-center font-robotoSerif font-bold mx-auto xl:leading-[70px] 2xl:leading-[85px]">
+              Providing Services to <br /> Millions of People Worldwide
             </h4>
             <div className="flex justify-center mt-10 sm:mt-24">
-              {" "}
               <img src="/images/Container.png" />
             </div>
           </div>

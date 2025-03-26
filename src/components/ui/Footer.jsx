@@ -7,15 +7,16 @@ const Footer = () => {
   return (
     <div className="w-full bg-[#3D332B] ">
       <div className="w-[90%] lg:w-[77%] mx-auto grid grid-cols-1 md:grid-cols-3 gap-y-5 sm:gap-y-12 text-white font-robotoSerif pt-4 sm:pt-14">
-        <div>
-          <div className="w-20 sm:w-max">
-            <img src="/images/mafsi.png" alt="" />
-          </div>
-          <div className="sm:my-4 w-28 sm:w-max">
-            <img src="/images/aq.png" alt="" />
+        <div className="space-y-1.5 sm:space-y-3">
+          <div className="w-24 sm:w-40">
+            <img src="/images/mafsi.png" alt="mafsi logo" />
           </div>
 
-          <p className="font-extralight text-xs sm:text-base mt-3 sm:mt-0">
+          <div className="sm:my-4 w-28 sm:w-40">
+            <img src="/images/aq.png" alt="auto quotes" />
+          </div>
+
+          <p className="font-extralight text-xs sm:text-base">
             We stand behind the quality of all of our product and are happy to
             answer any questions.
           </p>

@@ -19,6 +19,8 @@ export default {
       },
       backgroundImage: {
         texture: "url('/images/texture.webp')",
+        product:"url('/images/bgproduct.png')",
+        productDetail:"url('/images/prod-detail.png')",
         homeGradient:
           "linear-gradient(90deg, rgb(114, 84, 63) 0%, rgb(243, 215, 198) 75.52%)",
       },

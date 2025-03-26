@@ -7,6 +7,10 @@ import { useRouter } from "next/navigation";
 
 const ToggleMenu = ({ show, toggleMenu }) => {
   const router = useRouter();
+
+  if (typeof window !== "undefined") {
+    var accessToken = JSON.parse(localStorage.getItem("accessToken")) ?? "";
+  }
   useEffect(() => {
     if (show) {
       document.body.style.overflow = "hidden";
@@ -30,9 +34,9 @@ const ToggleMenu = ({ show, toggleMenu }) => {
             <li>
               <Link
                 href="/"
-                className="w-24 sm:w-28 lg:w-36 object-contain lg:ml-4"
+                className="w-32 lg:w-36 object-contain lg:ml-4"
               >
-                <img src="/images/logo.png" alt="" />
+                <img src="/images/logowhite.png" alt="" />
               </Link>
             </li>
             <li
@@ -68,18 +72,15 @@ const ToggleMenu = ({ show, toggleMenu }) => {
               Products
             </li>
             <li>
-              {/* <div className="rounded-xl flex items-center gap-x-2 text-themeLight bg-white px-3  py-1.5 text-sm sm:px-4 sm:py-2 sm:text-lg">
-                <IoCart className="text-white bg-themeLight rounded-full p-1 text-xl sm:text-3xl" />
-                <p>Cart</p>
-              </div> */}
-
-              <Link
-                href="/sign-in"
-                // onClick={() => router.push("/sign-in")}
-                className="border border-white rounded-xl px-3  py-1.5 text-sm sm:text-xl sm:px-4 sm:py-2  text-white"
-              >
-                Log in
-              </Link>
+              {!accessToken && (
+                <Link
+                  href="/sign-in"
+                  // onClick={() => router.push("/sign-in")}
+                  className="border border-white rounded-xl px-3  py-1.5 text-sm sm:text-xl sm:px-4 sm:py-2  text-white"
+                >
+                  Log in
+                </Link>
+              )}
             </li>
           </ul>
 
