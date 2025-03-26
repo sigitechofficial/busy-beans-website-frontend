@@ -18,8 +18,10 @@ export default function Header() {
   };
 
   if (typeof window !== "undefined") {
-    var accessToken = JSON.parse(localStorage.getItem("accessToken"));
+    var accessToken = JSON.parse(localStorage.getItem("accessToken")) ?? "";
   }
+
+
   return (
     <>
       <div className="w-[90%] lg:w-[77%] h-[65px] sm:h-[80px] mx-auto bg-headerColor rounded-2xl my-7 flex justify-between items-center px-[18px] absolute left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
