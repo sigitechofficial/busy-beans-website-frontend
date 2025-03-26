@@ -177,21 +177,19 @@ const page = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (typeof window !== "undefined") {
-  //     const activeRes = JSON.parse(localStorage.getItem("activeResData")) || [];
-  //     const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-  //     const paymentMethod =
-  //       JSON.parse(localStorage.getItem("paymentMethod")) || {};
+  useEffect(() => {
+    const activeRes = JSON.parse(localStorage.getItem("activeResData")) || [];
+    const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    const paymentMethod =
+      JSON.parse(localStorage.getItem("paymentMethod")) || {};
 
-  //     setActiveResData(activeRes);
-  //     setExistingCartItems(cartItems);
-  //     setSelectedPayment({
-  //       name: paymentMethod?.name || "",
-  //       type: paymentMethod?.type || "",
-  //     });
-  //   }
-  // }, [existingCartItems]);
+    setActiveResData(activeRes);
+    setExistingCartItems(cartItems);
+    setSelectedPayment({
+      name: paymentMethod?.name || "",
+      type: paymentMethod?.type || "",
+    });
+  }, []);
 
   return (
     <>
