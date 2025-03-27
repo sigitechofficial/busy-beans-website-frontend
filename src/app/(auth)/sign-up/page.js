@@ -104,7 +104,7 @@ export default function SignUpStep1() {
         )}
         <div className="w-80">
           <img
-            src="/images/logo.png"
+            src="/images/logocoffee.png"
             alt="logo"
             className="h-full w-full object-contain"
           />
@@ -216,7 +216,7 @@ export default function SignUpStep1() {
                     onClick={() => setStep(2)}
                     className="font-medium rounded-xl bg-theme text-white w-full py-3"
                   >
-                    Signup
+                    Next
                   </button>
                 </div>
               </div>
@@ -274,7 +274,7 @@ export default function SignUpStep1() {
                     onClick={() => setStep(3)}
                     className="font-medium rounded-xl bg-theme text-white w-full py-3"
                   >
-                    Signup
+                    Next
                   </button>
                 </div>
               </div>
@@ -339,7 +339,7 @@ export default function SignUpStep1() {
                     type="submit"
                     className="font-medium rounded-xl bg-theme text-white w-full py-3"
                   >
-                    Signup
+                    Submit
                   </button>
                 </div>
               </div>

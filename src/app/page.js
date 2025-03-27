@@ -46,7 +46,7 @@ export default function Home() {
       <div className="w-full ">
         <div className="h-[550px] sm:h-[768px] 2xl:h-[950px] bg-theme bg-gradient-to-b from-themeDark to-[#5C4F4A] pt-[220px] sm:pt-[310px] relative">
           <h4 className="text-center bg-gradient-to-r from-[#F8E4BE] to-[#F9C06A38] w-max bg-clip-text text-transparent text-3xl sm:text-5xl lg:text-7xl 2xl:text-[120px] font-robotoSerif font-bold mx-auto lg:leading-[85px] 2xl:leading-[125px]">
-            The Future of Coffee <br /> for Business
+            The Future Of Coffee <br /> For Business
           </h4>
 
           <p
@@ -80,10 +80,13 @@ export default function Home() {
           </div>
           <div className="relative z-20">
             <h4 className="text-xl sm:text-4xl lg:text-6xl  2xl:text-7xl text-white text-center font-robotoSerif font-bold mx-auto xl:leading-[70px] 2xl:leading-[85px]">
-              Providing Services to <br /> Millions of People Worldwide
+              Providing Services To <br /> Millions Of People Worldwide
             </h4>
-            <div className="flex justify-center mt-10 sm:mt-24">
-              <img src="/images/Container.png" />
+            <div className="flex justify-center mt-10  sm:mt-24 md:w-[80%] mx-auto">
+              <img
+                src="/images/Container.png"
+                alt="Providing Services to Millions of People Worldwide"
+              />
             </div>
           </div>
         </div>
@@ -96,7 +99,7 @@ export default function Home() {
 
         <div className="w-full bg-themeLight py-10 sm:pt-10 sm:pb-14 max-lg:px-5">
           <h4 className="text-xl sm:text-4xl lg:text-6xl  2xl:text-7xl text-white text-center font-robotoSerif font-bold mx-auto">
-            Our Mission and Promise to You
+            Our Mission And Promise To You
           </h4>
 
           <p className="font-robotoSerif sm:text-xl font-semibold text-white text-center py-6 sm:py-10">

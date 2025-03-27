@@ -11,9 +11,9 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
   const router = useRouter();
   const [counter, setCounter] = useState(null);
   const [drawerScroll, setDrawerScroll] = useState(0);
-  if (typeof window !== 'undefined') {
-  var cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-  var activeResData = JSON.parse(localStorage.getItem("activeResData"));
+  if (typeof window !== "undefined") {
+    var cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    var activeResData = JSON.parse(localStorage.getItem("activeResData"));
   }
   const handleCounterClick = (index) => {
     setCounter(index);
@@ -37,18 +37,12 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
   }, []);
 
   return (
-    <Drawer.Root size="md" open={open} onOpenChange={(e) => setOpen(e.open)}>
-      {/* <Drawer.Trigger asChild>
-        <button
-          style={{
-            padding: "8px 16px",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-          }}
-        >
-          Open Drawer
-        </button>
-      </Drawer.Trigger> */}
+    <Drawer.Root
+      placement={window.innerWidth > 640 ? "end" : "bottom"}
+      size="md"
+      open={open}
+      onOpenChange={(e) => setOpen(e.open)}
+    >
       <Portal>
         <Drawer.Backdrop />
         <Drawer.Positioner>
@@ -124,7 +118,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                             <h3 className="capitalize font-semibold text-base">
                               {cartI?.name}
                             </h3>
-                            <div className="capitalize text-sm font-light text-goldenLight">
+                            <div className="capitalize text-sm font-light text-white">
                               <ul>
                                 {cartI?.addOnsCat &&
                                 cartI?.addOnsCat?.length > 0

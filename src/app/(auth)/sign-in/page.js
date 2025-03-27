@@ -52,7 +52,7 @@ export default function SignIn() {
         <div className=" flex flex-col justify-center">
           <div className="h-4/5 w-full flex items-center justify-center">
             <img
-              src="/images/logo.png"
+              src="/images/logocoffee.png"
               alt="logo"
               className="object-contain w-full h-36"
             />

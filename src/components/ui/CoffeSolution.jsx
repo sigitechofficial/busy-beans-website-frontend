@@ -4,7 +4,7 @@ const CoffeSolution = () => {
   return (
     <div className="w-full bg-themeLight pb-10 sm:pb-20">
       <h4 className="text-2xl sm:text-4xl lg:text-6xl  2xl:text-7xl text-white text-center font-robotoSerif font-bold mx-auto leading-[80px] sm:leading-[125px] sm:mb-12">
-        Coffee Solution for
+        Coffee Solution For
       </h4>
 
       <div className="w-full grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 sm:[&>div]:h-[295px] [&>div>img]:w-full [&>div>img]:h-full [&>div>img]:object-cover">

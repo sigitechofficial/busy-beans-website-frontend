@@ -34,7 +34,7 @@ const Footer = () => {
         </div>
 
         <div className="md:justify-self-end text-xs sm:text-base">
-          <p>FOLLOW US ON MEDIA</p>
+          <p>Follow Us On Media</p>
           <div>
             <div className="flex [&>div]:cursor-pointer [&>div]:flex [&>div]:justify-center [&>div]:items-center gap-2 [&>div]:rounded-md [&>div]:bg-gradient-to-b [&>div]:from-themeLight [&>div]:to-theme [&>div]:p-1 [&>div]:size-10 [&>div]:my-2 sm:[&>div]:my-7">
               <div
@@ -71,9 +71,9 @@ const Footer = () => {
             </div>
           </div>
           <p className="font-light underline underline-offset-4">
-            JOIN OUR TEAM
+            Join Our Team
           </p>
-          <p className="font-light underline underline-offset-4 mt-2">BLOG</p>
+          <p className="font-light underline underline-offset-4 mt-2">Blog</p>
         </div>
       </div>
       <p className="font-extralight sm:font-normal text-xs md:text-xl text-center text-white mt-8 sm:mt-16 md:mt-28 pb-5 sm:pb-10 font-robotoSerif">

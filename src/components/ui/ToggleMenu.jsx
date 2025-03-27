@@ -49,7 +49,7 @@ const ToggleMenu = ({ show, toggleMenu }) => {
             </li>
             <li
               onClick={() => {
-                router.push("/financing");
+                router.push("/Financing");
                 toggleMenu();
               }}
             >
