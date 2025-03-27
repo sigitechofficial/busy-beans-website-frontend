@@ -177,21 +177,19 @@ const page = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (typeof window !== "undefined") {
-  //     const activeRes = JSON.parse(localStorage.getItem("activeResData")) || [];
-  //     const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-  //     const paymentMethod =
-  //       JSON.parse(localStorage.getItem("paymentMethod")) || {};
+  useEffect(() => {
+    const activeRes = JSON.parse(localStorage.getItem("activeResData")) || [];
+    const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    const paymentMethod =
+      JSON.parse(localStorage.getItem("paymentMethod")) || {};
 
-  //     setActiveResData(activeRes);
-  //     setExistingCartItems(cartItems);
-  //     setSelectedPayment({
-  //       name: paymentMethod?.name || "",
-  //       type: paymentMethod?.type || "",
-  //     });
-  //   }
-  // }, [existingCartItems]);
+    setActiveResData(activeRes);
+    setExistingCartItems(cartItems);
+    setSelectedPayment({
+      name: paymentMethod?.name || "",
+      type: paymentMethod?.type || "",
+    });
+  }, []);
 
   return (
     <>
@@ -1023,7 +1021,7 @@ const page = () => {
                     Order Frequency
                   </h3>
                 </div>
-                <div className="flex gap-x-2 [&>button]:rounded-lg [&>button]:px-4 [&>button]:py-2 [&>button]:bg-themeLight">
+                <div className="flex gap-x-2 [&>button]:text-xs sm:[&>button]:text-base [&>button]:rounded-lg [&>button]:px-1 sm:[&>button]:px-4 [&>button]:py-2 [&>button]:bg-themeLight">
                   <button className="text-white">Just once</button>
                   <button className="text-white">Weekly</button>
                   <button className="text-white">Every two weeks</button>

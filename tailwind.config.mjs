@@ -19,6 +19,8 @@ export default {
       },
       backgroundImage: {
         texture: "url('/images/texture.webp')",
+        product: "url('/images/bgproduct.png')",
+        productDetail: "url('/images/prod-detail.png')",
         homeGradient:
           "linear-gradient(90deg, rgb(114, 84, 63) 0%, rgb(243, 215, 198) 75.52%)",
       },
@@ -71,8 +73,8 @@ export default {
         quantityBtn: "#F8E4BECC",
         cardBorderColor: "#FFF3DDCC",
         checkoutGrayBorder: "#e4e4e5",
-        goldenLight:"#F8E4BE",
-        goldenDark:"#F9C06A38"
+        goldenLight: "#F8E4BE",
+        goldenDark: "#F9C06A38",
       },
       boxShadow: {
         textShadow:
@@ -82,7 +84,8 @@ export default {
         buttonShadow: "0px 1px 2px 0px #1018280D",
         customYellow: "0 0px 6px rgba(248, 228, 190, 0.5)",
         checkoutBoxShadow:
-        "0px 8px 28px 0px #0000001f, 0px 2px 6px 0px #0000001f, 0px 0px 1px 0px #0000001f",
+          "0px 8px 28px 0px #0000001f, 0px 2px 6px 0px #0000001f, 0px 0px 1px 0px #0000001f",
+        smButtonShadow: " 0px 4px 12px 0px #0000001f ",
       },
     },
   },

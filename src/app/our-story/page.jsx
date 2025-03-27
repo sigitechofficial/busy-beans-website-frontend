@@ -44,7 +44,11 @@ export default function story() {
             Our Story
           </h2>
 
-          <div className="h-[300px] sm:h-[500px] md:h-[600px] 2xl:h-[900px] bg-[url(/images/ourstory.png)] bg-cover bg-center bg-no-repeat"></div>
+          <div
+            role="image"
+            aria-label="Busy Bean Our Story"
+            className="h-[300px] sm:h-[400px] md:h-[500px] 2xl:h-[800px] bg-[url(/images/ourstory.png)] bg-cover bg-center bg-no-repeat"
+          ></div>
         </div>
         {/* ==meet out team== */}
 
@@ -53,7 +57,7 @@ export default function story() {
             Meet Our Team
           </h4>
 
-          <div className="text-white grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-10 md:gap-y-4 justify-items-between items-center w-[90%] xl:w-[60%] mx-auto pt-10 md:pt-20">
+          <div className="text-white grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-10 md:gap-y-4 justify-items-between items-center w-[90%] xl:w-[60%] mx-auto pt-10 lg:pt-20">
             <div className="text-center">
               <img className="mx-auto" src="/images/image 31.png" alt="" />
               <h3 className="text-sm sm:text-xl font-semibold text-white text-center mt-3 font-playfairDisplay">
