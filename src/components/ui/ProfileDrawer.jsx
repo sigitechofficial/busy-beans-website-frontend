@@ -193,23 +193,16 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                           Icon={LiaUserFriendsSolid}
                           text={"Invite Friends"}
                         />
-                        <DrawerItem Icon={IoCardOutline} text={"Stamp Card"} />
                         <DrawerItem
                           Icon={MdOutlineSupportAgent}
                           text={"Support"}
                         />
-                        <DrawerItem
-                          Icon={FaBicycle}
-                          text={"Become a courier"}
-                        />
+
                         <DrawerItem
                           Icon={RxCounterClockwiseClock}
                           text={"Order history"}
                         />
-                        <DrawerItem
-                          Icon={MdOutlineTableRestaurant}
-                          text={"Table Bookings"}
-                        />
+
                         <DrawerItem Icon={TbUserCircle} text={"Account"} />
                         <DrawerItem Icon={MdPayment} text={"Payment methods"} />
                         <DrawerItem
@@ -230,6 +223,29 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                             <DrawerItem Icon={FiLogOut} text="Sign up" />
                           </>
                         )}
+                      </div>
+
+                      <div>
+                        <div className="text-theme-black-2 font-omnes text-2xl font-semibold mb-3">
+                          {"Quick links"}
+                        </div>
+
+                        <DrawerItem
+                          Icon={LiaUserFriendsSolid}
+                          text={"Our Story"}
+                        />
+                        <DrawerItem
+                          Icon={LiaUserFriendsSolid}
+                          text={"Financing"}
+                        />
+                        <DrawerItem
+                          Icon={LiaUserFriendsSolid}
+                          text={"Resources"}
+                        />
+                        <DrawerItem
+                          Icon={LiaUserFriendsSolid}
+                          text={"Products"}
+                        />
                       </div>
                     </div>
                   </section>

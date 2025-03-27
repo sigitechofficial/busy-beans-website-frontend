@@ -60,7 +60,7 @@ const page = () => {
                 },
               }}
               modules={[Navigation]}
-              className=""
+              className="category"
             >
               <div className="flex items-center justify-center">
                 {(
@@ -123,7 +123,7 @@ const page = () => {
             </div>
           </div>
 
-          <div className="relative">
+          <div className="relative overflow-hidden">
             <div className="relative z-10 px-0 sm:px-5 w-[95%] md:w-[90%] 2xl:w-[75%] mx-auto pt-10 sm:pt-14 pb-10 sm:pb-28 justify-items-center grid grid-cols-2 xl:grid-cols-3 gap-x-2 sm:gap-x-5 gap-y-2 sm:gap-y-10 md:gap-y-16 text-white">
               <ProductCard
                 onClick={() => setProductModal(true)}

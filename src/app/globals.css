@@ -77,3 +77,18 @@
     right: 0px;
   }
 }
+
+
+.category .swiper-slide {
+  width: auto !important;
+  white-space: auto;
+  border: 1px solid white;
+  text-align: center;
+  border-radius: 20px;
+}
+.category  .swiper-wrapper{
+  display: flex !important;
+  margin: auto !important;
+  justify-content: center !important;
+  column-gap: 10px !important;
+}
