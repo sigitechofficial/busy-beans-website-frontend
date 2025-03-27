@@ -39,7 +39,7 @@
 /* swiper navigation buttons css here  */
 .swiper-button-prev,
 .swiper-button-next {
-  color: #F8E4BE !important;
+  color: #f8e4be !important;
   position: relative;
   display: flex;
   justify-content: center;
@@ -50,7 +50,7 @@
 .swiper-button-prev::after {
   content: "";
   position: absolute;
-  background-color: #86644C;
+  background-color: #86644c;
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -68,7 +68,22 @@
   right: 20px;
 }
 
-@media screen and (max-width:640px) {
+.catgeory-swipper .swiper-slide {
+  width: auto !important;
+  white-space: auto;
+  border: 1px solid white;
+  text-align: center;
+  border-radius: 20px;
+}
+
+.catgeory-swipper .swiper-wrapper {
+  display: flex !important;
+  margin: auto !important;
+  justify-content: center !important;
+  column-gap: 10px !important;
+}
+
+@media screen and (max-width: 640px) {
   .swiper-button-prev::after {
     left: 0px;
   }

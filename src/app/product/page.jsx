@@ -2,6 +2,7 @@
 import CoffeSolution from "@/components/ui/CoffeSolution";
 import ProductCard from "@/components/ui/ProductCard";
 import SwiperSider from "@/components/ui/SwiperSlider";
+import GetAPI from "@/utilities/GetAPI";
 import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -13,9 +14,14 @@ import ProdBanner from "@/components/ui/ProdBanner";
 import ProdModal from "@/components/ui/ProdModal";
 import { useState } from "react";
 
-const page = () => {
+export default function Product() {
   const router = useRouter();
   const [productModal, setProductModal] = useState(false);
+  const { data } = GetAPI("api/v1/admin/product");
+  const { data: categoryData } = GetAPI("api/v1/admin/category");
+  console.log("🚀 ~ Product ~ categoryData:", categoryData?.data?.data);
+  console.log("🚀 ~ Product ~ data:", data?.data);
+
   return (
     <>
       <div className="w-full ">
@@ -60,46 +66,13 @@ const page = () => {
                 },
               }}
               modules={[Navigation]}
-              className="category"
+              className="catgeory-swipper"
             >
               <div className="flex items-center justify-center">
-                {(
-                  "Restaurants" === "Restaurants" && [
-                    1,
-                    2,
-                    3,
-                    4,
-                    5,
-                    5,
-                    6,
-                    7,
-                    8,
-                    9,
-                    9,
-                    7,
-                    5,
-                    5,
-                    3,
-                    3,
-                    3,
-                    4,
-                    5,
-                    6,
-                    ,
-                    6,
-                    7,
-                    8,
-                    9,
-                    9,
-                    7,
-                    5,
-                    5,
-                    3,
-                  ]
-                )?.map((cat, index) => (
+                {categoryData?.data?.data?.map((cat, index) => (
                   <SwiperSlide key={index}>
-                    <button className="text-xs sm:text-base text-white border border-[#FFF3DDCC] rounded-full px-2 sm:px-4 py-1.5">
-                      Coffee Bean
+                    <button className="text-xs sm:text-base text-white px-2 sm:px-4 py-1.5">
+                      {cat?.name}
                     </button>
                   </SwiperSlide>
                 ))}
@@ -125,45 +98,22 @@ const page = () => {
 
           <div className="relative overflow-hidden">
             <div className="relative z-10 px-0 sm:px-5 w-[95%] md:w-[90%] 2xl:w-[75%] mx-auto pt-10 sm:pt-14 pb-10 sm:pb-28 justify-items-center grid grid-cols-2 xl:grid-cols-3 gap-x-2 sm:gap-x-5 gap-y-2 sm:gap-y-10 md:gap-y-16 text-white">
-              <ProductCard
-                onClick={() => setProductModal(true)}
-                img={"/images/prodImages/prod-italian-espresso.avif"}
-                title="Whole Bean"
-                desc="Straight from the hills of northern Italy. Our Italian Espresso makes the perfect specialty coffee every time."
-              />
-              <ProductCard
-                onClick={() => setProductModal(true)}
-                img={"/images/prodImages/prod-colombian.avif"}
-                title="Whole Bean"
-                desc="
-A blend of beans from high in the mountains of Colombia. Makes a well balanced yet very flavorful cup of coffee."
-              />
-              <ProductCard
-                onClick={() => setProductModal(true)}
-                img={"/images/prodImages/prod-french-roast.avif"}
-                title="Whole Bean"
-                desc="
-For those who like a darker roast, this bean will not disappoint. Flavor forward and good until the last drop."
-              />
-              <ProductCard
-                onClick={() => setProductModal(true)}
-                img={"/images/prodImages/ultra-capp-creamer.avif"}
-                title="Soluble"
-                desc="Our creamer offers just the right amount of foam to make the best latte or cappuccino. "
-              />
-              <ProductCard
-                onClick={() => setProductModal(true)}
-                img={"/images/prodImages/prod-hot-chocolate.avif"}
-                title="Soluble"
-                desc="
-Crafted from the finest Dutch chocolate. Our chocolate is rich and creamy."
-              />
-              <ProductCard
-                onClick={() => setProductModal(true)}
-                img={"/images/prodImages/prod-french-vanilla.avif"}
-                title="Soluble"
-                desc="Our most popular flavored cappuccino. Delicious to the last drop."
-              />
+              {data?.data?.data?.map((item, i) => (
+                <ProductCard
+                  // onClick={() => router.push("/product/detail/1")}
+                  onClick={() => setProductModal(true)}
+                  name={item?.name}
+                  imageURL={item?.image}
+                  quantity={item?.quantity}
+                  unit={item?.unit}
+                  price={item?.price}
+                  desc={item?.desc}
+                />
+              ))}
+              <ProductCard onClick={() => setProductModal(true)} />
+              <ProductCard onClick={() => setProductModal(true)} />
+              <ProductCard onClick={() => setProductModal(true)} />
+              <ProductCard onClick={() => setProductModal(true)} />
             </div>
             <div className="absolute bottom-0 left-0 w-[100vw] h-[300px] bg-gradient-to-t from-[#000000ab]"></div>
           </div>
@@ -188,6 +138,4 @@ Crafted from the finest Dutch chocolate. Our chocolate is rich and creamy."
       />
     </>
   );
-};
-
-export default page;
+}
