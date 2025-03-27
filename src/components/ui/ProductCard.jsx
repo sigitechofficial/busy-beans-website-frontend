@@ -1,20 +1,25 @@
+import { BASE_URL } from "@/utilities/URL";
 import React from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
 
 const ProductCard = (props) => {
+  const { name, unit, quantity, imageURL, price, desc } = props;
   return (
-    <div onClick={props.onClick} className="w-full max-w-[448px] rounded-md border border-quantityBtn overflow-hidden cursor-pointer">
+    <div
+      onClick={props.onClick}
+      className="w-full max-w-[448px] rounded-md border border-quantityBtn overflow-hidden cursor-pointer"
+    >
       <div className="w-full h-auto [&>img]:w-full [&>img]:h-[130px] sm:[&>img]:h-auto [&>img]:object-cover">
-        <img src="/images/prod.png" alt="" />
+        <img src={BASE_URL + imageURL} alt="product image" />
       </div>
 
       <div className="pb-2 pt-1 sm:pt-2 sm:pb-4 px-2 sm:px-4">
-        <h3 className="text-sm sm:text-2xl font-switzer font-bold sm:pt-2">Whole Bean</h3>
-        <p className="text-sm py-[1px] sm:py-2">$220.00</p>
+        <h3 className="text-sm sm:text-2xl font-switzer font-bold sm:pt-2">
+          {name}
+        </h3>
+        <p className="text-sm py-[1px] sm:py-2">${price}</p>
         <p className="text-xs sm:text-sm pb-3 font-light overflow-hidden max-sm:line-clamp-2 h-[35px] sm:h-auto">
-          Straight from the hills of northern Italy. Our Italian Espresso makes
-          the perfect specialty coffee every time.
-      
+          {desc ?? "descriotion"}
         </p>
 
         <div className="flex justify-between items-center">

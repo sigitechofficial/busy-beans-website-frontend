@@ -113,7 +113,11 @@ const playfairDisplay = Playfair_Display({
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
-  const isAuth = pathname.startsWith("/sign");
+  const isAuth =
+    pathname.startsWith("/sign") ||
+    pathname.startsWith("/forgot-password") ||
+    pathname.startsWith("/verify-email") ||
+    pathname.startsWith("/reset");
 
   return (
     <html lang="en">

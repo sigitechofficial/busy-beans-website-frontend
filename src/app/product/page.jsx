@@ -2,10 +2,13 @@
 import CoffeSolution from "@/components/ui/CoffeSolution";
 import ProductCard from "@/components/ui/ProductCard";
 import SwiperSider from "@/components/ui/SwiperSlider";
+import GetAPI from "@/utilities/GetAPI";
 import { useRouter } from "next/navigation";
 
 const page = () => {
   const router = useRouter();
+  const { data } = GetAPI("api/v1/admin/product");
+
   return (
     <div className="w-full ">
       <div className=" bg-themeLight pt-[140px] relative">
@@ -24,12 +27,18 @@ const page = () => {
 
         <div className="relative">
           <div className="relative z-10 px-0 sm:px-5 w-[95%] md:w-[90%] 2xl:w-[75%] mx-auto pt-10 sm:pt-14 pb-10 sm:pb-28 justify-items-center grid grid-cols-2 xl:grid-cols-3 gap-x-2 sm:gap-x-5 gap-y-2 sm:gap-y-10 md:gap-y-16 text-white">
-            <ProductCard onClick={() => router.push("/product/detail/1")} />
-            <ProductCard onClick={() => router.push("/product/detail/2")} />
-            <ProductCard onClick={() => router.push("/product/detail/3")} />
-            <ProductCard onClick={() => router.push("/product/detail/4")} />
-            <ProductCard onClick={() => router.push("/product/detail/5")} />
-            <ProductCard onClick={() => router.push("/product/detail/6")} />
+            {data?.data?.data?.map((item, i) => (
+              <ProductCard
+                // onClick={() => router.push("/product/detail/1")}
+                name={item?.name}
+                imageURL={item?.image}
+                quantity={item?.quantity}
+                unit={item?.unit}
+                price={item?.price}
+                desc={item?.desc}
+              />
+            ))}
+            {/* <ProductCard onClick={() => router.push("/product/detail/1")} /> */}
           </div>
           <div className="absolute bottom-0 left-0 w-[100vw] h-[300px] bg-gradient-to-t from-[#000000ab]"></div>
         </div>

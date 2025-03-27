@@ -113,7 +113,7 @@ export default function SignIn() {
                     )}
                   </div>
                   <p className="text-white text-sm text-end font-normal">
-                    Forgot Password?
+                    <Link  href={"/forgot-password"}>Forgot Password?</Link>
                   </p>
                 </div>
               </div>
