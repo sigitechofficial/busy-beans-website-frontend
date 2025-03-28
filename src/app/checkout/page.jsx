@@ -37,12 +37,35 @@ import { useRouter } from "next/navigation";
 
 const page = () => {
   const router = useRouter();
+  const [order, setOrder] = useState({
+    totalBill: "",
+    subTotal: "",
+    discountPrice: 0,
+    discountPercentage: 0,
+    itemsPrice: "",
+    vat: "",
+    totalWeight: "",
+    note: "",
+    paymentMethod: "",
+    poNumber: "PO12345678",
+    orderFrequency: "just-onces", //  'just-onces','weekly','every-two-weeks','every-four-weeks',
+    addressId: "",
+    userId: "",
+  });
   const [activeResData, setActiveResData] = useState([]);
   const [existingCartItems, setExistingCartItems] = useState([]);
   const [selectedPayment, setSelectedPayment] = useState({
     name: "",
     type: "",
   });
+
+  const totalPrice = existingCartItems?.reduce((a, b) => {
+    return a + b?.price * b?.qty;
+  }, 0);
+
+  const totalWeight = existingCartItems?.reduce((a, b) => {
+    return a + b?.weight;
+  }, 0);
 
   let getProfile = [];
   const [coupon, setCoupon] = useState("");
@@ -181,6 +204,7 @@ const page = () => {
   const paymentMethods = [
     ...(PayM.data?.data?.simplifiedPaymentMethods || []),
     { name: "COD", type: "cod" }, // New COD payment method
+    { name: "Cheque", type: "cheque" }, // New Cheque payment method
   ];
 
   useEffect(() => {
@@ -196,6 +220,27 @@ const page = () => {
       type: paymentMethod?.type || "",
     });
   }, []);
+
+  const createOrder = () => {
+    const temp = {
+      order: {
+        totalBill: totalPrice,
+        subTotal: totalPrice,
+        discountPrice: 0,
+        discountPercentage: 0,
+        itemsPrice: totalPrice,
+        vat: 0,
+        totalWeight: totalWeight,
+        note: order?.note,
+        paymentMethod: order.paymentMethod,
+        poNumber: order?.poNumber,
+        orderFrequency: order?.orderFrequency, //  'just-onces','weekly','every-two-weeks','every-four-weeks',
+        addressId: 1,
+        userId: 1,
+      },
+    };
+    console.log("🚀 ~ createOrder ~ temp:", temp);
+  };
 
   return (
     <>
@@ -279,7 +324,7 @@ const page = () => {
         <section className="max-w-[1200px] px-4 sm:px-[30px] xl:pr-11 grid grid-cols-1 lg:grid-cols-5 lg:gap-x-[10%] gap-y-5  mx-auto mt-10 pb-10 font-sf">
           <div className="lg:max-w-[570px] lg:col-span-3">
             <div className="space-y-3">
-              <div className="h-12 p-1 rounded-[6.25rem] bg-themeLight grid grid-cols-2 mb-6">
+              {/* <div className="h-12 p-1 rounded-[6.25rem] bg-themeLight grid grid-cols-2 mb-6">
                 <button
                   onClick={() => {
                     setDeliveryData({ ...deliveryData, how: 1 });
@@ -326,9 +371,9 @@ const page = () => {
                     Pickup
                   </span>
                 </button>
-              </div>
+              </div> */}
 
-              {deliveryData.how === 1 && (
+              {/* {deliveryData.how === 1 && (
                 <>
                   <div className="w-full flex justify-between items-center p-4 cursor-pointer !my-4 !mb-12 rounded-lg bg-themeLight">
                     <div className="flex items-center gap-x-4 p-2">
@@ -361,9 +406,9 @@ const page = () => {
                     </h1>
                   </div>
                 </>
-              )}
+              )} */}
 
-              {deliveryData.how === 2 && (
+              {/* {deliveryData.how === 2 && (
                 <>
                   <div className="w-full flex justify-between items-center p-4 cursor-pointer !my-4  !mb-12 rounded-lg bg-themeLight">
                     <div className="flex items-center gap-x-4 p-2">
@@ -386,10 +431,10 @@ const page = () => {
                     </h1>
                   </div>
                 </>
-              )}
+              )} */}
             </div>
             <div className="text-white rounded-lg bg-themeLight  my-4 mb-12">
-              <div className="flex items-center justify-between gap-x-2 px-5 py-5">
+              {/* <div className="flex items-center justify-between gap-x-2 px-5 py-5">
                 <div className="flex items-center gap-x-3">
                   <span>
                     <IoMdHome size={24} />
@@ -429,11 +474,11 @@ const page = () => {
                     </button>
                   </div>
                 )}
-              </div>
+              </div> */}
 
               {deliveryData.how === 1 && (
                 <>
-                  <hr className="mx-5 " />
+                  {/* <hr className="mx-5 " />
                   <div className="flex items-center justify-between gap-x-2 px-5 py-5">
                     <div className="flex items-center gap-x-3">
                       <span>
@@ -445,7 +490,7 @@ const page = () => {
                         </div>
                       </div>
                     </div>
-                    {/* <Switch
+                    <Switch
                       onChange={handleLeaveAtDoor}
                       checked={leaveAtDoor}
                       onColor="#379465"
@@ -455,8 +500,8 @@ const page = () => {
                       height={29}
                       width={52}
                       handleDiameter={23}
-                    /> */}
-                  </div>
+                    />
+                  </div> */}
 
                   <div>
                     <div className="relative w-full group">
@@ -471,12 +516,9 @@ const page = () => {
                                 ? "placeholder-transparent"
                                 : ""
                             }`}
-                            value={deliveryAddress?.instructions}
+                            value={order?.note}
                             onChange={(e) =>
-                              setDeliveryAddress({
-                                ...deliveryAddress,
-                                instructions: e.target.value,
-                              })
+                              setOrder({ ...order, note: e.target.value })
                             }
                           />
                           <label
@@ -497,7 +539,7 @@ const page = () => {
               )}
             </div>
 
-            {deliveryData.how === 1 && (
+            {/* {deliveryData.how === 1 && (
               <>
                 <div className="space-y-6">
                   <h1 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
@@ -515,8 +557,8 @@ const page = () => {
                   </h1>
                 </div>
               </>
-            )}
-            <div
+            )} */}
+            {/* <div
               className={`flex items-center space-x-4 px-4 py-3 mt-4 bg-themeLight text-white rounded-lg ${
                 deliveryData.when === 1 && "border-theme-green-2"
               }`}
@@ -556,9 +598,9 @@ const page = () => {
                   </p>
                 </div>
               </label>
-            </div>
+            </div> */}
 
-            <div
+            {/* <div
               className={`flex items-center space-x-4 px-4 py-3 mt-2 bg-themeLight text-white rounded-lg ${
                 deliveryData.when === 2 && "border-theme-green-2"
               }`}
@@ -590,7 +632,7 @@ const page = () => {
                   </p>
                 </div>
               </label>
-            </div>
+            </div> */}
 
             {deliveryData.when === 2 && (
               <div className="flex  justify-between space-x-7 my-3">
@@ -692,13 +734,14 @@ const page = () => {
                           <div className="flex items-center gap-x-3 my-1">
                             <h5>
                               <span className="text-theme-green-2">
-                                {cart?.quantity}x
+                                {cart?.qty}x
                               </span>{" "}
                               <b className="font-medium">{cart?.name}</b>
                             </h5>
                           </div>
                           <div className="capitalize text-sm font-normal text-white text-opacity-60">
-                            <ul>
+                            {cart?.qty * cart?.price} {cart?.unit}
+                            {/* <ul>
                               {cart?.addOnsCat && cart?.addOnsCat?.length > 0
                                 ? cart?.addOnsCat
                                     ?.filter(
@@ -722,7 +765,7 @@ const page = () => {
                                               key={addKey}
                                               className="ml-2 mt-1"
                                             >
-                                              {`${add?.quantity}x ${
+                                              {`${add?.qty}x ${
                                                 add?.name
                                               } ${
                                                 add?.total > 0
@@ -736,7 +779,7 @@ const page = () => {
                                 : cart?.addOns?.map((add, addKey) => (
                                     <li key={addKey}>
                                       <div className="ml-2 mt-1">
-                                        {`${add?.quantity}x ${add?.name} ${
+                                        {`${add?.qty}x ${add?.name} ${
                                           add?.total > 0
                                             ? `(${add?.total}.00)`
                                             : ""
@@ -744,7 +787,7 @@ const page = () => {
                                       </div>
                                     </li>
                                   ))}
-                            </ul>
+                            </ul> */}
                           </div>
                         </div>
                       </div>
@@ -773,7 +816,7 @@ const page = () => {
               </h3>
             </div>
             <div className="bg-themeLight text-white rounded-lg p-5 my-4 cursor-pointer duration-200 hover:shadow-discoveryCardShadow">
-              {selectedPayment?.name ? (
+              {order?.paymentMethod ? (
                 <div
                   className="flex items-center gap-3 justify-between"
                   onClick={() => {
@@ -791,13 +834,13 @@ const page = () => {
                     >
                       <img
                         src={`${
-                          selectedPayment?.name.includes("Cards")
+                          order?.paymentMethod?.includes("Cards")
                             ? "/images/credit-card.webp"
-                            : selectedPayment?.name.includes("Apple")
+                            : order?.paymentMethod?.includes("Apple")
                             ? "/images/epay.webp"
-                            : selectedPayment?.name.includes("Google")
+                            : order?.paymentMethod?.includes("Google")
                             ? "/images/gpay.webp"
-                            : selectedPayment?.name.includes("COD")
+                            : order?.paymentMethod?.includes("cod")
                             ? "/images/cashPay.png"
                             : ""
                         }`}
@@ -807,7 +850,8 @@ const page = () => {
 
                       <div>
                         <p className="text-theme-green-2 text-base">
-                          {selectedPayment?.name}
+                          {/* {selectedPayment?.name} */}
+                          {order?.paymentMethod}
                         </p>
                         <p className="text-sm text-checkoutTextColor/65">
                           The choosen payment method will be charged
@@ -888,7 +932,7 @@ const page = () => {
 
             {deliveryData.how === 1 && (
               <>
-                <div className="flex items-center gap-x-2 mt-10 mb-8">
+                {/* <div className="flex items-center gap-x-2 mt-10 mb-8">
                   <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
                     Tip the courier
                   </h3>
@@ -992,11 +1036,11 @@ const page = () => {
                       </div>
                     )}
                   </div>
-                </div>
+                </div> */}
 
                 {/* =====Redeem code======= */}
 
-                <div className="flex items-center gap-x-2 mt-10 pb-5">
+                {/* <div className="flex items-center gap-x-2 mt-10 pb-5">
                   <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
                     Redeem code
                   </h3>
@@ -1020,7 +1064,7 @@ const page = () => {
                       Submit
                     </button>
                   </div>
-                </div>
+                </div> */}
                 {/* order frequency */}
                 <div className="flex items-center gap-x-2 mt-10 pb-5">
                   <h3 className="font-semibold text-xl sm:text-[1.75rem] ">
@@ -1028,10 +1072,54 @@ const page = () => {
                   </h3>
                 </div>
                 <div className="flex gap-x-2 [&>button]:text-xs sm:[&>button]:text-base [&>button]:rounded-lg [&>button]:px-1 sm:[&>button]:px-4 [&>button]:py-2 [&>button]:bg-themeLight">
-                  <button className="text-white">Just once</button>
-                  <button className="text-white">Weekly</button>
-                  <button className="text-white">Every two weeks</button>
-                  <button className="text-white">Every four weeks</button>
+                  <button
+                    className={`${
+                      order?.orderFrequency === "just-onces"
+                        ? "text-white"
+                        : "text-black"
+                    }`}
+                    onClick={() =>
+                      setOrder({ ...order, orderFrequency: "just-onces" })
+                    }
+                  >
+                    Just once
+                  </button>
+                  <button
+                    className={`${
+                      order?.orderFrequency === "weekly"
+                        ? "text-white"
+                        : "text-black"
+                    }`}
+                    onClick={() =>
+                      setOrder({ ...order, orderFrequency: "weekly" })
+                    }
+                  >
+                    Weekly
+                  </button>
+                  <button
+                    className={`${
+                      order?.orderFrequency === "every-two-weeks"
+                        ? "text-white"
+                        : "text-black"
+                    }`}
+                    onClick={() =>
+                      setOrder({ ...order, orderFrequency: "every-two-weeks" })
+                    }
+                  >
+                    Every two weeks
+                  </button>
+                  <button
+                    className={`${
+                      order?.orderFrequency === "every-four-weeks"
+                        ? "text-white"
+                        : "text-black"
+                    }`}
+                    onClick={() =>
+                      setOrder({ ...order, orderFrequency: "every-four-weeks" })
+                    }
+                  >
+                    Every four weeks
+                  </button>
                 </div>
               </>
             )}
@@ -1040,7 +1128,7 @@ const page = () => {
             className={`lg:bg-themeLight rounded-2xl text-white  relative xl:min-w-[399px] w-full lg:shadow-checkoutBoxShadow lg:p-6 lg:col-span-2 h-max space-y-6 lg:sticky lg:top-40 lg:right-7 lg:-mt-32`}
           >
             <div className="flex flex-col text-xl md:text-2xl text-white ">
-              <h3 className="font-semibold">Prices in CHF</h3>
+              <h3 className="font-semibold">Prices in $</h3>
               <p className="text-sm font-light text-checkoutTextColor/65 pb-6">
                 incl. taxes (if applicable)
               </p>
@@ -1057,22 +1145,22 @@ const page = () => {
             <div className="space-y-2.5 my-4">
               <div className="flex items-center justify-between gap-x-2">
                 <h5 className="text-base text-checkoutTextColor">Subtotal</h5>
-                <h6>7.00 CHF</h6>
+                <h6>{totalPrice} $</h6>
               </div>
               {deliveryData.how === 1 && (
                 <>
                   <div className="flex items-center justify-between gap-x-2">
                     <h5 className="text-base md:text-md text-checkoutTextColor">
-                      Service Fee
+                      VAT
                     </h5>
-                    <h6>8.00 CHF</h6>
+                    <h6>5.00</h6>
                   </div>
                   <div className="flex items-center justify-between gap-x-2">
                     <h5 className="text-base md:text-md text-checkoutTextColor">
-                      Delivery Fee ({deliveryCharges?.distance} km)
+                      Total Weight
                     </h5>
 
-                    <h6 className="flex gap-x-2">9.00 CHF</h6>
+                    <h6 className="flex gap-x-2">{totalWeight} kg</h6>
                   </div>
 
                   {tip?.tip >= 1 && (
@@ -1081,7 +1169,7 @@ const page = () => {
                         Tip the courier
                       </h5>
                       <h6>
-                        {tip?.tip ? parseFloat(tip?.tip).toFixed(2) : 0} CHF
+                        {tip?.tip ? parseFloat(tip?.tip).toFixed(2) : 0} $
                       </h6>
                     </div>
                   )}
@@ -1093,7 +1181,7 @@ const page = () => {
                   Total
                 </h5>
                 <h6 className="font-semibold text-checkoutTextColor text-base">
-                  5.00 CHF
+                  {totalPrice} $
                 </h6>
               </div>
               <div className="border-dashed border" />
@@ -1101,11 +1189,12 @@ const page = () => {
 
             <div>
               <button
-                disabled={true ? true : false}
-                // onClick={createOrder}
+                disabled={false ? true : false}
+                onClick={createOrder}
                 className="bg-themeLight lg:bg-theme w-full text-base font-bold text-white rounded-md h-[54px] flex justify-center items-center gap-x-2"
               >
-                {deliveryData?.how === 1 && !deliveryAddress?.lat
+                Place Order
+                {/* {deliveryData?.how === 1 && !deliveryAddress?.lat
                   ? "Add Delivery Address"
                   : !deliveryData?.when
                   ? "Add Delivery Type"
@@ -1113,7 +1202,7 @@ const page = () => {
                   ? "Add Schedule Time"
                   : selectedPayment?.name == ""
                   ? "Select Payment Method"
-                  : "Place Order"}
+                  : "Place Order"} */}
                 {/* {disabled && <RotatingLoader w="30" h="30" />} */}
               </button>
             </div>
@@ -1143,7 +1232,7 @@ const page = () => {
                       <div
                         className={`py-2 cursor-pointer h-[76px] border-b flex items-center w-full`}
                         onClick={() => {
-                          handleSelect(itm?.name, itm.type);
+                          // handleSelect(itm?.name, itm.type);
                           setPaymentModal(false);
                         }}
                       >
@@ -1172,9 +1261,13 @@ const page = () => {
                           {selectedPayment.name !== itm?.name && (
                             <button
                               onClick={() => {
-                                setSelectedPayment({
-                                  name: itm?.name,
-                                  type: itm?.type,
+                                // setSelectedPayment({
+                                //   name: itm?.name,
+                                //   type: itm?.type,
+                                // });
+                                setOrder({
+                                  ...order,
+                                  paymentMethod: itm?.type,
                                 });
                               }}
                               className="bg-themeLight text-white bg-opacity-20 flex justify-center items-center text-end rounded-md py-2 px-4 font-semibold"

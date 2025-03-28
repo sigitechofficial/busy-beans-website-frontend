@@ -230,7 +230,7 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                         <div className="text-theme-black-2 font-omnes text-2xl font-semibold mb-3">
                           {"Quick links"}
                         </div>
-                        <div className="sm:hidden">
+                        <div className="md:hidden">
                           <DrawerItem
                             Icon={LiaUserFriendsSolid}
                             text={"Our Story"}
