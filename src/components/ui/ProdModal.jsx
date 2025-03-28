@@ -73,6 +73,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
         ])
       );
     }
+    setProductModal(false)
   };
 
   return (

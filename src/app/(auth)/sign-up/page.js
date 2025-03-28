@@ -55,39 +55,38 @@ export default function SignUpStep1() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // const res = await SignupAPI("api/v1/users/signup", {
-    //   info: {
-    //     name: userData?.info?.name,
-    //     email: userData?.info?.email,
-    //     password: userData?.info?.password,
-    //     status: true,
-    //     phoneNumber: userData?.info?.phoneNumber,
-    //     saleTaxNumber: userData?.info?.saleTaxNumber,
-    //     emailToSendInvoices: userData?.info?.emailToSendInvoices,
-    //   },
-    //   address: {
-    //     companyaddress: userData?.address?.companyaddress,
-    //     addressLineOne: userData?.address?.addressLineOne,
-    //     addressLineTwo: userData?.address?.addressLineTwo,
-    //     town: userData?.address?.town,
-    //     zipCode: userData?.address?.zipCode,
-    //     country: userData?.address?.country,
-    //     state: userData?.address?.state,
-    //     status: true,
-    //   },
-    // });
-    // if (res?.data?.status === "success") {
-    //   success_toaster("Signup successfully");
+    const res = await SignupAPI("api/v1/users/signup", {
+      info: {
+        name: userData?.info?.name,
+        email: userData?.info?.email,
+        password: userData?.info?.password,
+        status: true,
+        phoneNumber: userData?.info?.phoneNumber,
+        saleTaxNumber: userData?.info?.saleTaxNumber,
+        emailToSendInvoices: userData?.info?.emailToSendInvoices,
+      },
+      address: {
+        companyaddress: userData?.address?.companyaddress,
+        addressLineOne: userData?.address?.addressLineOne,
+        addressLineTwo: userData?.address?.addressLineTwo,
+        town: userData?.address?.town,
+        zipCode: userData?.address?.zipCode,
+        country: userData?.address?.country,
+        state: userData?.address?.state,
+        status: true,
+      },
+    });
+    console.log("🚀 ~ handleSubmit ~ res:", res?.data?.data?.data)
+    if (res?.data?.status === "success") {
       router.push("/verify-email");
-    //   localStorage.setItem("accessToken", res?.data?.data?.token);
-    //   localStorage.setItem("loginStatus", true);
-    //   localStorage.setItem("userName", res?.data?.data?.user?.name);
-    //   localStorage.setItem("userID", res?.data?.data?.user?.id);
-    //   localStorage.setItem("userEmail", res?.data?.data?.user?.email);
+      success_toaster(res?.data?.data?.message);
+      localStorage.setItem("userName", res?.data?.data?.data?.name);
+      localStorage.setItem("userID", res?.data?.data?.data?.id);
+      localStorage.setItem("userEmail", res?.data?.data?.data?.email);
       localStorage.setItem("otpStatus", "signUp");
-    // } else if (res?.data?.status === "error") {
-    //   error_toaster(res?.data?.message);
-    // }
+    } else if (res?.data?.status === "error") {
+      error_toaster(res?.data?.message);
+    }
   };
 
   return (

@@ -34,8 +34,12 @@ import {
   success_toaster,
 } from "@/utilities/Toaster";
 import { useRouter } from "next/navigation";
+import { PostAPI } from "@/utilities/PostAPI";
 
 const page = () => {
+  const addressId = localStorage.getItem("addressId");
+  const userId = localStorage.getItem("userId");
+  const cartItems = JSON.parse(localStorage.getItem("cartItems"));
   const router = useRouter();
   const [order, setOrder] = useState({
     totalBill: "",
@@ -221,8 +225,8 @@ const page = () => {
     });
   }, []);
 
-  const createOrder = () => {
-    const temp = {
+  const createOrder = async () => {
+    const res = await PostAPI("api/v1/users/book-order", {
       order: {
         totalBill: totalPrice,
         subTotal: totalPrice,
@@ -235,11 +239,19 @@ const page = () => {
         paymentMethod: order.paymentMethod,
         poNumber: order?.poNumber,
         orderFrequency: order?.orderFrequency, //  'just-onces','weekly','every-two-weeks','every-four-weeks',
-        addressId: 1,
-        userId: 1,
+        addressId: addressId,
+        userId: userId,
       },
-    };
-    console.log("🚀 ~ createOrder ~ temp:", temp);
+      items: cartItems,
+    });
+    if (res?.data?.status === "success") {
+      router.push("/product");
+      localStorage.removeItem("cartItems");
+      
+      success_toaster("Order Created Successfully");
+    } else if (res?.data?.status === "error") {
+      error_toaster(res?.data?.message);
+    }
   };
 
   return (
