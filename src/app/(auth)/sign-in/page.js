@@ -34,7 +34,11 @@ export default function SignIn() {
           localStorage.setItem("loginStatus", true);
           localStorage.setItem("userName", res?.data?.data?.user?.name);
           localStorage.setItem("userEmail", res?.data?.data?.user?.email);
-          localStorage.setItem("userID", res?.data?.data?.user?.id);
+          localStorage.setItem("phoneNumber", res?.data?.data?.user?.phoneNumber);
+          localStorage.setItem("saleTaxNumber", res?.data?.data?.user?.saleTaxNumber);
+          localStorage.setItem("registerBy", res?.data?.data?.user?.registerBy);
+          localStorage.setItem("userId", res?.data?.data?.user?.id);
+          localStorage.setItem("addressId", res?.data?.data?.user?.address?.id);
           // setLoginStatus(true);
           success_toaster("Login Successfully");
         } else if (res?.data?.status === "error") {
@@ -113,7 +117,7 @@ export default function SignIn() {
                     )}
                   </div>
                   <p className="text-white text-sm text-end font-normal">
-                    <Link  href={"/forgot-password"}>Forgot Password?</Link>
+                    <Link href={"/forgot-password"}>Forgot Password?</Link>
                   </p>
                 </div>
               </div>

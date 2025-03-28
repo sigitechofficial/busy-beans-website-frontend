@@ -17,10 +17,20 @@ import { useState } from "react";
 export default function Product() {
   const router = useRouter();
   const [productModal, setProductModal] = useState(false);
+  const [productModalData, setProductModalData] = useState({
+    productId:"",
+    image: "",
+    name: "",
+    description: "",
+    discount: "",
+    qty: "",
+    price: "",
+    unit: "",
+  });
+
   const { data } = GetAPI("api/v1/admin/product");
+  console.log("🚀 ~ Product ~ data:", data);
   const { data: categoryData } = GetAPI("api/v1/admin/category");
-  console.log("🚀 ~ Product ~ categoryData:", categoryData?.data?.data);
-  console.log("🚀 ~ Product ~ data:", data?.data);
 
   return (
     <>
@@ -101,19 +111,30 @@ export default function Product() {
               {data?.data?.data?.map((item, i) => (
                 <ProductCard
                   // onClick={() => router.push("/product/detail/1")}
-                  onClick={() => setProductModal(true)}
                   name={item?.name}
                   imageURL={item?.image}
-                  quantity={item?.quantity}
                   unit={item?.unit}
                   price={item?.price}
                   desc={item?.desc}
+                  onClick={() => {
+                    setProductModalData({
+                      productId: item?.id,
+                      image: item?.image,
+                      name: item?.name,
+                      description: item?.desc,
+                      discount: 0,
+                      qty: 1,
+                      price: item?.price,
+                      unit: item?.unit,
+                    });
+                    setProductModal(true);
+                  }}
                 />
               ))}
+              {/* <ProductCard onClick={() => setProductModal(true)} />
               <ProductCard onClick={() => setProductModal(true)} />
               <ProductCard onClick={() => setProductModal(true)} />
-              <ProductCard onClick={() => setProductModal(true)} />
-              <ProductCard onClick={() => setProductModal(true)} />
+              <ProductCard onClick={() => setProductModal(true)} /> */}
             </div>
             <div className="absolute bottom-0 left-0 w-[100vw] h-[300px] bg-gradient-to-t from-[#000000ab]"></div>
           </div>
@@ -133,6 +154,7 @@ export default function Product() {
       </div>
 
       <ProdModal
+        productModalData={productModalData}
         productModal={productModal}
         setProductModal={setProductModal}
       />

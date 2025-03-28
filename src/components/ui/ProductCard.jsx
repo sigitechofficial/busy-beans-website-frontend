@@ -3,14 +3,18 @@ import React from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
 
 const ProductCard = (props) => {
-  const { name, unit, quantity, imageURL, price, desc } = props;
+  const { name, unit, imageURL, price, desc } = props;
   return (
     <div
       onClick={props.onClick}
       className="w-full max-w-[448px] rounded-md border border-quantityBtn overflow-hidden cursor-pointer"
     >
       <div className="w-full h-auto [&>img]:w-full [&>img]:h-[130px] sm:[&>img]:h-auto [&>img]:object-cover">
-        <img src={imageURL ? BASE_URL + imageURL:"/images/prodImages/prod-italian-espresso.avif"} alt="product image" />
+        {/* <img src={BASE_URL + imageURL} alt="product image" /> */}
+        <img
+          src={"/images/prodImages/prod-italian-espresso.avif"}
+          alt="product image"
+        />
       </div>
 
       <div className="pb-2 pt-1 sm:pt-2 sm:pb-4 px-2 sm:px-4">
@@ -22,8 +26,8 @@ const ProductCard = (props) => {
           {desc ?? "descriotion"}
         </p>
 
-        <div className="flex justify-between items-center">
-          <div className="w-max sm:w-32 md:w-36 lg:w-40 h-7 sm:h-14 px-[2px] sm:px-1 flex justify-between items-center gap-x-1  bg-quantityBtn py-2 rounded-full text-center text-xl sm:text-[28px] font-switzer">
+        <div className="flex justify-end items-center">
+          {/* <div className="w-max sm:w-32 md:w-36 lg:w-40 h-7 sm:h-14 px-[2px] sm:px-1 flex justify-between items-center gap-x-1  bg-quantityBtn py-2 rounded-full text-center text-xl sm:text-[28px] font-switzer">
             <div className="bg-themeLight rounded-full size-6 sm:size-12 flex justify-center items-center">
               <FaMinus className="text-[10px] sm:text-lg" />
             </div>
@@ -31,9 +35,12 @@ const ProductCard = (props) => {
             <div className="bg-themeLight rounded-full size-6 sm:size-12 flex justify-center items-center">
               <FaPlus className="text-[10px] sm:text-lg" />
             </div>
-          </div>
-          <p className="w-max px-1 whitespace-nowrap sm:w-32 h-7 sm:h-14 flex justify-center items-center font-medium bg-white text-black text-[10px] sm:text-sm rounded-full text-center cursor-pointer max-sm:leading-3">
-            Order Now
+          </div> */}
+          <p className="w-max px-1 whitespace-nowrap sm:w-32 h-7 sm:h-14 flex justify-center items-center gap-x-2 font-medium bg-white text-black text-[10px] sm:text-sm rounded-full text-center cursor-pointer max-sm:leading-3">
+            Order Now{" "}
+            <span className="bg-black size-8 rounded-full flex items-center justify-center">
+              <FaPlus color="#ffffff" size={20} />
+            </span>
           </p>
         </div>
       </div>

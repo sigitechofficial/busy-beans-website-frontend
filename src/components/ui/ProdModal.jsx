@@ -3,15 +3,10 @@ import { Button, CloseButton, Dialog, Portal } from "@chakra-ui/react";
 import { RiSubtractFill } from "react-icons/ri";
 import { BiPlus } from "react-icons/bi";
 
-const ProdModal = ({ productModal, setProductModal }) => {
-  const [modalData, setModalData] = useState({
-    image:
-      "https://static.vecteezy.com/system/resources/thumbnails/037/236/579/small/ai-generated-beautuful-fast-food-background-with-copy-space-free-photo.jpg",
-    name: "Product Name",
-    description: "This is the description of the product.",
-    discountPrice: "99.99",
-    price: "99.00",
-  });
+const ProdModal = ({ productModalData, productModal, setProductModal }) => {
+  const { productId, image, name, description, qty, discount, price, unit } =
+    productModalData;
+
   const [modalScroll, setModalScroll] = useState(0);
   const [headerShadow, setHeaderShadow] = useState(false);
 
@@ -19,6 +14,65 @@ const ProdModal = ({ productModal, setProductModal }) => {
     const scrollTop = event.target.scrollTop;
     setModalScroll(scrollTop);
     setHeaderShadow(scrollTop > 100);
+  };
+
+  const existingCartItems = localStorage.getItem("cartItems")
+    ? JSON.parse(localStorage.getItem("cartItems"))
+    : [];
+  const [orderStatus, setOrderStatus] = useState({
+    image: image,
+    name: name,
+    description: description,
+    qty: 1,
+    discount: discount,
+    price: price,
+    unit: unit,
+  });
+
+  const handleCart = () => {
+    if (existingCartItems) {
+      const checkItemIndex = existingCartItems.findIndex(
+        (item) => item?.productId === productId
+      );
+
+      if (checkItemIndex !== -1) {
+        const updatedItem = {
+          ...existingCartItems[checkItemIndex],
+          qty: orderStatus?.qty,
+          weight: orderStatus?.qty * existingCartItems[checkItemIndex]?.price,
+        };
+        existingCartItems[checkItemIndex] = updatedItem;
+        localStorage.setItem("cartItems", JSON.stringify(existingCartItems));
+      } else {
+        existingCartItems.push({
+          productId: productId,
+          name: name,
+          description: description,
+          qty: orderStatus?.qty,
+          discount: discount,
+          price: price,
+          weight: price * orderStatus?.qty,
+          unit: unit,
+        });
+        localStorage.setItem("cartItems", JSON.stringify(existingCartItems));
+      }
+    } else {
+      localStorage.setItem(
+        "cartItems",
+        JSON.stringify([
+          {
+            productId: productId,
+            name: name,
+            description: description,
+            qty: orderStatus?.qty,
+            discount: discount,
+            price: price,
+            weight: price * orderStatus?.qty,
+            unit: unit,
+          },
+        ])
+      );
+    }
   };
 
   return (
@@ -62,7 +116,7 @@ const ProdModal = ({ productModal, setProductModal }) => {
                         modalScroll > 192 ? "block" : "hidden"
                       } text-base text-center capitalize my-5 font-sf font-medium text-theme-black-2`}
                     >
-                      {modalData?.name}
+                      {name}
                     </h3>
                   )}
                 </Dialog.Title>
@@ -75,21 +129,20 @@ const ProdModal = ({ productModal, setProductModal }) => {
                   <div className="w-full h-[292px] mb-3">
                     <img
                       className="w-full h-full object-cover"
-                      src={modalData.image}
+                      src={image}
                       alt=""
                     />
                   </div>
                   <div className=" px-4">
                     <h4 className="!text-[32px] max-w-[400px]  text-theme-black-2 font-omnes font-bold capitalize  leading-10">
-                      {modalData?.name}
+                      {name}
                     </h4>
                     <p className="font-sf text-lg my-5 text-red-600">
-                      {modalData?.price} CHF
+                      {price} {unit}
                     </p>
                     <p className="capitalize text-sm font-sf text-theme-black-2  font-normal mt-3">
-                      {modalData?.description}
+                      {description}
                     </p>
-                    {console.log(modalData)}
                   </div>
                 </div>
               </Dialog.Body>
@@ -98,35 +151,49 @@ const ProdModal = ({ productModal, setProductModal }) => {
                   <div className="px-5 py-5 flex justify-center items-center  gap-3 w-full">
                     <div className="shadow-smButtonShadow  w-40 h-14 rounded-full flex items-center justify-around text-[#707175] bg-white">
                       <button
+                        disabled={orderStatus?.qty === 1}
+                        onClick={() =>
+                          setOrderStatus({
+                            ...orderStatus,
+                            qty: orderStatus?.qty - 1,
+                          })
+                        }
                         className={`${
-                          (modalData.quantity === 0 &&
+                          (orderStatus?.qty === 0 &&
                             existingCartItems?.find(
-                              (ele) => ele?.RPLinkId === modalData.r_pId
+                              (ele) => ele?.productId === productId
                             )) ||
-                          (modalData.quantity === 1 &&
+                          (orderStatus?.qty === 1 &&
                             !existingCartItems?.find(
-                              (ele) => ele?.RPLinkId === modalData.r_pId
+                              (ele) => ele?.productId === productId
                             ))
-                            ? "cursor-not-allowed text-black text-opacity-20"
-                            : "hover:bg-black hover:text-white duration-300"
-                        } w-10 h-10 flex justify-center items-center rounded-full`}
+                            ? "cursor-not-allowed bg-theme text-white text-opacity-20 border border-theme"
+                            : "hover:bg-white hover:text-theme border border-theme bg-theme text-white duration-300"
+                        } w-10 h-10 flex justify-center items-center rounded-full outline-none`}
                       >
                         <RiSubtractFill />
                       </button>
                       <span className="text-lg font-sf">
-                        {modalData.quantity || 1}
+                        {orderStatus?.qty}
                       </span>
-                      <button className="w-10 h-10 flex justify-center items-center rounded-full hover:bg-black hover:text-white duration-300">
+                      <button
+                        onClick={() =>
+                          setOrderStatus({
+                            ...orderStatus,
+                            qty: orderStatus?.qty + 1,
+                          })
+                        }
+                        className="w-10 h-10 flex justify-center items-center rounded-full bg-theme text-white hover:bg-white hover:text-theme border border-theme duration-300"
+                      >
                         <BiPlus />
                       </button>
                     </div>
                     <Button
-                      bgColor="black"
+                      onClick={handleCart}
+                      bgColor="#86644c"
                       display="flex"
                       color="white"
-                      justifyContent={
-                        modalData.quantity > 0 ? "space-between" : "center"
-                      }
+                      justifyContent={qty > 0 ? "space-center" : "center"}
                       borderRadius="full"
                       width="300px"
                       height="56px"
@@ -135,33 +202,33 @@ const ProdModal = ({ productModal, setProductModal }) => {
                       }}
                       className="shadow-lgButtonShadow"
                     >
-                      <div className="text-md font-sf font-bold">
-                        {modalData.quantity > 0
+                      <div className="text-md text-center font-sf font-bold">
+                        {qty > 0
                           ? existingCartItems?.find(
-                              (ele) => ele?.RPLinkId === modalData.r_pId
+                              (ele) => ele?.productId === productId
                             )
                             ? "Update Cart"
                             : "Add to Cart"
                           : "Remove from cart"}
                       </div>
-                      {modalData.quantity > 0 ? (
+                      {/* {qty > 0 ? (
                         <div className="text-md font-sf font-semibold">
                           {(
-                            modalData.quantity *
-                            (parseFloat(modalData.discountPrice) +
+                            qty *
+                            (parseFloat(discount) +
                               addOnsData.reduce((accumulator, ele) => {
                                 return (
                                   accumulator +
                                   (parseFloat(ele?.total) || 0) *
-                                    (ele?.quantity || 1)
+                                    (ele?.qty || 1)
                                 );
                               }, 0))
                           ).toFixed(2)}{" "}
-                          CHF
+                          {unit}
                         </div>
                       ) : (
                         <></>
-                      )}
+                      )} */}
                     </Button>
                   </div>
                 </div>

@@ -15,6 +15,10 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
     var cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
     var activeResData = JSON.parse(localStorage.getItem("activeResData"));
   }
+  const totalPrice = cartItems?.reduce((a, b) => {
+    return Number(a) + Number(b?.price) * Number(b?.qty);
+  }, 0);
+
   const handleCounterClick = (index) => {
     setCounter(index);
   };
@@ -145,9 +149,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                                                 key={addKey}
                                                 className="ml-2 mt-1"
                                               >
-                                                {`${add?.quantity}x ${
-                                                  add?.name
-                                                } ${
+                                                {`${add?.qty}x ${add?.name} ${
                                                   add?.total > 0
                                                     ? `(${add?.total}.00)`
                                                     : ""
@@ -159,7 +161,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                                   : cartI?.addOns?.map((add, addKey) => (
                                       <li key={addKey}>
                                         <div className="ml-2 mt-1">
-                                          {`${add?.quantity}x ${add?.name} ${
+                                          {`${add?.qty}x ${add?.name} ${
                                             add?.total > 0
                                               ? `(${add?.total}.00)`
                                               : ""
@@ -173,17 +175,9 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                               <div className="flex items-center gap-x-3">
                                 <span className="font-semibold text-sm text-white mt-1">
                                   {parseFloat(
-                                    (cartI?.unitPrice +
-                                      cartI?.addOns?.reduce(
-                                        (accumulator, ele) =>
-                                          accumulator +
-                                          (ele?.total || 0) *
-                                            (ele?.quantity || 1),
-                                        0
-                                      )) *
-                                      cartI?.quantity
-                                  )}
-                                  {activeResData?.currencyUnit || "CHF"}
+                                    Number(cartI?.price) * cartI?.qty
+                                  )}{" "}
+                                  {activeResData?.currencyUnit || "$"}
                                 </span>
                               </div>
                             </div>
@@ -196,7 +190,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                                 </button>
 
                                 <span className="text-lg font-sf w-7 text-center">
-                                  {cartI?.quantity}
+                                  {cartI?.qty}
                                 </span>
 
                                 <button className="w-8 h-8 flex justify-center items-center rounded-full hover:bg-white hover:text-black duration-300">
@@ -212,7 +206,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                                 onClick={() => handleCounterClick(index)}
                                 className="text-lg font-sf w-7 text-center"
                               >
-                                {cartI?.quantity}
+                                {cartI?.qty}
                               </span>
                             )}
                           </div>
@@ -243,7 +237,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                         </div>
                         <p> Go to checkout </p>
                       </div>
-                      {200.0} {activeResData?.currencyUnit}
+                      ${totalPrice} {activeResData?.currencyUnit}
                     </button>
                   </div>
                 ) : (
