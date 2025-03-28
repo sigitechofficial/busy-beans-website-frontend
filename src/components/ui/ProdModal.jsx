@@ -16,7 +16,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
     setHeaderShadow(scrollTop > 100);
   };
 
-  if (typeof window != undefined) {
+  if (typeof window !== "undefined")  {
   var existingCartItems = localStorage.getItem("cartItems")
     ? JSON.parse(localStorage.getItem("cartItems"))
     : [];
