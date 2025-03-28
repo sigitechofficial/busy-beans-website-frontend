@@ -20,7 +20,7 @@ export default function Header() {
   };
 
   if (typeof window !== "undefined") {
-    var accessToken = JSON.parse(localStorage.getItem("accessToken"));
+    var accessToken = localStorage.getItem("accessToken");
   }
 
   return (
