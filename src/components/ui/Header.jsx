@@ -11,13 +11,13 @@ import ProfileDrawer from "./ProfileDrawer";
 
 export default function Header() {
   const router = useRouter();
-  const [show, setShow] = useState(false);
+  // const [show, setShow] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [profileDrawer, setProfileDrawer] = useState(false);
 
-  const toggleMenu = () => {
-    setShow(!show);
-  };
+  // const toggleMenu = () => {
+  //   setShow(!show);
+  // };
 
   if (typeof window !== "undefined") {
     var accessToken = localStorage.getItem("accessToken");
@@ -78,13 +78,13 @@ export default function Header() {
             <IoCart size={18} onClick={() => setDrawerOpen(true)} />
           </div>
 
-          <div className="text-white bg-themeLight rounded-full p-1.5 size-8 flex justify-center items-center">
+          {/* <div className="text-white bg-themeLight rounded-full p-1.5 size-8 flex justify-center items-center">
             <FaBars size={18} onClick={toggleMenu} />
-          </div>
+          </div> */}
         </div>
       </div>
 
-      <ToggleMenu show={show} toggleMenu={toggleMenu} />
+      {/* <ToggleMenu show={show} toggleMenu={toggleMenu} /> */}
       <DrawerBeans drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
       <ProfileDrawer
         profileDrawer={profileDrawer}

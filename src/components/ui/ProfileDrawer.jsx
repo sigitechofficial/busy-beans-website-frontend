@@ -22,10 +22,11 @@ import { FiLogOut } from "react-icons/fi";
 import { info_toaster } from "@/utilities/Toaster";
 import Link from "next/link";
 import { LiaUserFriendsSolid } from "react-icons/lia";
+import { useRouter } from "next/navigation";
 
 const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
+  const router = useRouter();
   const getProfile = [];
-  // const [profileDrawer, setProfileDrawer] = useState(false);
   const [drawerScroll, setDrawerScroll] = useState(0);
   const [inviteFriend, setInviteFriend] = useState(0);
   const drawerBodyRef = useRef(null);
@@ -75,7 +76,7 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                 top={drawerScroll > 100 ? "0" : "-60px"}
                 left="0"
                 right="0"
-                backgroundColor="#3e342c"
+                backgroundColor="#86644c"
                 zIndex={10}
                 opacity={drawerScroll > 100 ? 1 : 0}
                 visibility={drawerScroll > 100 ? "visible" : "hidden"}
@@ -193,23 +194,16 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                           Icon={LiaUserFriendsSolid}
                           text={"Invite Friends"}
                         />
-                        <DrawerItem Icon={IoCardOutline} text={"Stamp Card"} />
                         <DrawerItem
                           Icon={MdOutlineSupportAgent}
                           text={"Support"}
                         />
-                        <DrawerItem
-                          Icon={FaBicycle}
-                          text={"Become a courier"}
-                        />
+
                         <DrawerItem
                           Icon={RxCounterClockwiseClock}
                           text={"Order history"}
                         />
-                        <DrawerItem
-                          Icon={MdOutlineTableRestaurant}
-                          text={"Table Bookings"}
-                        />
+
                         <DrawerItem Icon={TbUserCircle} text={"Account"} />
                         <DrawerItem Icon={MdPayment} text={"Payment methods"} />
                         <DrawerItem
@@ -230,6 +224,81 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                             <DrawerItem Icon={FiLogOut} text="Sign up" />
                           </>
                         )}
+                      </div>
+
+                      <div>
+                        <div className="text-theme-black-2 font-omnes text-2xl font-semibold mb-3">
+                          {"Quick links"}
+                        </div>
+                        <div className="sm:hidden">
+                          <DrawerItem
+                            Icon={LiaUserFriendsSolid}
+                            text={"Our Story"}
+                            onClick={() => {
+                              router.push("/our-story");
+                              setProfileDrawer(false);
+                            }}
+                          />
+                          <DrawerItem
+                            Icon={LiaUserFriendsSolid}
+                            text={"Financing"}
+                            onClick={() => {
+                              router.push("/Financing");
+                              setProfileDrawer(false);
+                            }}
+                          />
+                          <DrawerItem
+                            Icon={LiaUserFriendsSolid}
+                            text={"Resources"}
+                            onClick={() => {
+                              router.push("/recepies");
+                              setProfileDrawer(false);
+                            }}
+                          />
+                          <DrawerItem
+                            Icon={LiaUserFriendsSolid}
+                            text={"Products"}
+                            onClick={() => {
+                              router.push("/product");
+                              setProfileDrawer(false);
+                            }}
+                          />
+                        </div>
+
+                        <div className="">
+                          <DrawerItem
+                            Icon={LiaUserFriendsSolid}
+                            text={"Payment details"}
+                            onClick={() => {
+                              router.push("/profile/payment-details");
+                              setProfileDrawer(false);
+                            }}
+                          />
+                          <DrawerItem
+                            Icon={LiaUserFriendsSolid}
+                            text={"Personal details"}
+                            onClick={() => {
+                              router.push("/profile/personal-details");
+                              setProfileDrawer(false);
+                            }}
+                          />
+                          <DrawerItem
+                            Icon={LiaUserFriendsSolid}
+                            text={"Preferences"}
+                            onClick={() => {
+                              router.push("/profile/preferences");
+                              setProfileDrawer(false);
+                            }}
+                          />
+                          <DrawerItem
+                            Icon={LiaUserFriendsSolid}
+                            text={"Security"}
+                            onClick={() => {
+                              router.push("/profile/security");
+                              setProfileDrawer(false);
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
                   </section>

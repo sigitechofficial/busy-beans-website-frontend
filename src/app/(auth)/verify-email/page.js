@@ -1,9 +1,12 @@
 "use client";
+import { PostAPI } from "@/utilities/PostAPI";
+import { error_toaster, success_toaster } from "@/utilities/Toaster";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function VerifyEmail() {
+  const userID = localStorage.getItem("userID");
   const router = useRouter();
   const email = localStorage.getItem("userEmail") ?? "";
   const otpStatus = localStorage.getItem("otpStatus") ?? "";
@@ -23,11 +26,31 @@ export default function VerifyEmail() {
     }
   };
 
-  const handleVerifyOTP = () => {
+  const handleVerifyOTP = async () => {
     if (otpStatus === "forgotPassword") {
       router.push("/reset-password");
     } else if (otpStatus === "signUp") {
-      router.push("/sign-in");
+      const res = await PostAPI("api/v1/users/otp/verfication", {
+        id: userID,
+        otp: `${inputRefs.current[0].value}${inputRefs.current[1].value}${inputRefs.current[2].value}${inputRefs.current[3].value}`,
+      });
+      if (res?.data?.status === "success") {
+        router.push("/");
+        success_toaster("Login Successfully");
+        localStorage.setItem("accessToken", res?.data?.data?.token);
+        localStorage.setItem("loginStatus", true);
+        localStorage.setItem("userName", res?.data?.data?.user?.name);
+        localStorage.setItem("userID", res?.data?.data?.user?.id);
+        localStorage.setItem("userEmail", res?.data?.data?.user?.email);
+        localStorage.setItem("phoneNumber", res?.data?.data?.user?.phoneNumber);
+        localStorage.setItem(
+          "saleTaxNumber",
+          res?.data?.data?.user?.saleTaxNumber
+        );
+        localStorage.setItem("registerBy", res?.data?.data?.user?.registerBy);
+      } else if (res?.data?.status === "error") {
+        error_toaster(res?.data?.message);
+      }
     }
   };
 
