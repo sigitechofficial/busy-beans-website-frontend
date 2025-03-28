@@ -42,7 +42,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
 
   return (
     <Drawer.Root
-      placement={window.innerWidth > 640 ? "end" : "bottom"}
+      placement={"end"}
       size="md"
       open={open}
       onOpenChange={(e) => setOpen(e.open)}

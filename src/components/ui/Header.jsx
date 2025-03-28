@@ -33,7 +33,7 @@ export default function Header() {
         <div className="hidden md:flex gap-x-6">
           <ul className="flex gap-x-2 xl:gap-x-5 text-base [&>li]:flex [&>li]:cursor-pointer [&>li]:items-center text-white">
             <li onClick={() => router.push("/our-story")}>Our Story</li>
-            <li onClick={() => router.push("/Financing")}>Financing</li>
+            <li onClick={() => router.push("/financing")}>Financing</li>
             <li onClick={() => router.push("/recepies")}>Resources</li>
             <li onClick={() => router.push("/product")}>Products</li>
           </ul>

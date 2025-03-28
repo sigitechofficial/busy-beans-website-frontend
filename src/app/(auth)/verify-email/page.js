@@ -6,10 +6,14 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function VerifyEmail() {
-  const userID = localStorage.getItem("userID");
-  const router = useRouter();
-  const email = localStorage.getItem("userEmail") ?? "";
-  const otpStatus = localStorage.getItem("otpStatus") ?? "";
+if(typeof window != undefined){
+  var userID = localStorage.getItem("userID");
+  var email = localStorage.getItem("userEmail") ?? "";
+  var otpStatus = localStorage.getItem("otpStatus") ?? "";
+}
+
+const router = useRouter();
+
   const [timer, setTimer] = useState(60);
   const inputRefs = useRef([]);
 

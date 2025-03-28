@@ -50,12 +50,13 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
     setProfileDrawer(false);
     info_toaster("Successfully Logged Out!");
   };
+  
 
   return (
     <>
       <Drawer.Root
         size="md"
-        placement={window.innerWidth > 640 ? "end" : "bottom"}
+        placement={"end"}
         open={profileDrawer}
         onOpenChange={(e) => setProfileDrawer(e.open)}
       >
