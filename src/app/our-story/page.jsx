@@ -47,7 +47,7 @@ export default function story() {
           <div
             role="image"
             aria-label="Busy Bean Our Story"
-            className="h-[300px] sm:h-[400px] md:h-[500px] 2xl:h-[800px] bg-[url(/images/ourstory.png)] bg-cover bg-center bg-no-repeat"
+            className="h-[250px] sm:h-[400px] md:h-[500px] 2xl:h-[800px] bg-[url(/images/ourstory.png)] bg-cover bg-center bg-no-repeat"
           ></div>
         </div>
         {/* ==meet out team== */}

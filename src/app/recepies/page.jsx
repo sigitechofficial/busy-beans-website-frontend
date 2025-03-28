@@ -60,7 +60,7 @@ export default function page() {
           <div
             role="image"
             aria-label="Busy Bean Coffee Executive Chef Leslie"
-            className="h-[300px] sm:h-[400px] md:h-[500px] 2xl:h-[800px] bg-[url(/images/recepies.png)] bg-cover bg-center bg-no-repeat"
+            className="h-[250px] sm:h-[400px] md:h-[500px] 2xl:h-[800px] bg-[url(/images/recepies.png)] bg-cover bg-center bg-no-repeat"
           ></div>
         </div>
         {/* ==Carousel== */}
