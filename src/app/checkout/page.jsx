@@ -2,6 +2,7 @@
 import CustomDeliveryIcon from "@/components/ui/CustomDeliveryIcon";
 import CustomRadioBtn from "@/components/ui/CustomRadioBtn";
 // import { Switch } from "@chakra-ui/react";
+import { Dialog, Portal } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import {
   FaAngleRight,
@@ -176,6 +177,11 @@ const page = () => {
       }
     }
   };
+  const PayM = [];
+  const paymentMethods = [
+    ...(PayM.data?.data?.simplifiedPaymentMethods || []),
+    { name: "COD", type: "cod" }, // New COD payment method
+  ];
 
   useEffect(() => {
     const activeRes = JSON.parse(localStorage.getItem("activeResData")) || [];
@@ -1114,6 +1120,79 @@ const page = () => {
           </div>
         </section>
       </div>
+
+      <Dialog.Root
+        placement="center"
+        size="md"
+        open={paymentModal}
+        onOpenChange={(e) => setPaymentModal(e.open)}
+      >
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content className="rounded-tl-xl rounded-bl-xl bg-theme text-white">
+              {/* <Dialog.Header></Dialog.Header> */}
+              <Dialog.Body>
+                <>
+                  <h4 className="text-3xl text-theme-black-2 font-omnes font-bold mt-16 mb-6">
+                    Payment methods
+                  </h4>
+
+                  <div className="">
+                    {paymentMethods?.map((itm) => (
+                      <div
+                        className={`py-2 cursor-pointer h-[76px] border-b flex items-center w-full`}
+                        onClick={() => {
+                          handleSelect(itm?.name, itm.type);
+                          setPaymentModal(false);
+                        }}
+                      >
+                        <div className="flex items-center gap-3 justify-between w-full">
+                          <div className="flex items-center gap-x-4">
+                            <img
+                              src={`${
+                                itm?.name.includes("Cards")
+                                  ? "/images/credit-card.webp"
+                                  : itm?.name.includes("Apple")
+                                  ? "/images/epay.webp"
+                                  : itm?.name.includes("Google")
+                                  ? "/images/gpay.webp"
+                                  : itm?.name.includes("COD")
+                                  ? "/images/cashPay.png"
+                                  : ""
+                              }`}
+                              alt="payment-card"
+                              className="w-9 h-9 object-contain"
+                            />
+                            <span className="text-base font-sf font-medium text-theme-black-2">
+                              {itm?.name}
+                            </span>
+                          </div>
+
+                          {selectedPayment.name !== itm?.name && (
+                            <button
+                              onClick={() => {
+                                setSelectedPayment({
+                                  name: itm?.name,
+                                  type: itm?.type,
+                                });
+                              }}
+                              className="bg-themeLight text-white bg-opacity-20 flex justify-center items-center text-end rounded-md py-2 px-4 font-semibold"
+                            >
+                              Choose
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              </Dialog.Body>
+              {/* <Dialog.Footer></Dialog.Footer> */}
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
     </>
   );
 };
