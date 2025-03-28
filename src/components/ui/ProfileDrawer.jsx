@@ -51,11 +51,13 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
     info_toaster("Successfully Logged Out!");
   };
 
+
+
   return (
     <>
       <Drawer.Root
         size="md"
-        placement={window.innerWidth > 640 ? "end" : "bottom"}
+        placement={"end"}
         open={profileDrawer}
         onOpenChange={(e) => setProfileDrawer(e.open)}
       >
@@ -117,12 +119,12 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                       <div className="flex  items-start justify-start gap-7">
                         <div
                           className={` h-[120px] uppercase font-bold text-3xl  rounded-full w-[120px] md:h-[120px] flex justify-center items-center ${
-                            localStorage.getItem("loginStatus")
+                            false
                               ? "bg-theme-red bg-opacity-20 text-theme-red"
                               : "bg-theme-gray-6 bg-opacity-60 text-white"
                           }`}
                         >
-                          {localStorage.getItem("userName")?.length > 0 ? (
+                          {false ? (
                             false ? (
                               <img
                                 src={``}
@@ -210,7 +212,7 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                           Icon={FaRegAddressBook}
                           text={"My addresses"}
                         />
-                        {localStorage.getItem("loginStatus") === "true" ? (
+                        {true ? (
                           <>
                             <DrawerItem
                               onClick={logoutFunc}

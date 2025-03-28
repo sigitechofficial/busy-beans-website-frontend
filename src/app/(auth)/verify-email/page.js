@@ -6,10 +6,15 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function VerifyEmail() {
-  const userID = localStorage.getItem("userID");
+
+  if (typeof window !== "undefined") {
+    var userID = localStorage.getItem("userID") ?? "";
+    var email = localStorage.getItem("userEmail") ?? "";
+    var otpStatus = localStorage.getItem("otpStatus") ?? "";
+  }
+
   const router = useRouter();
-  const email = localStorage.getItem("userEmail") ?? "";
-  const otpStatus = localStorage.getItem("otpStatus") ?? "";
+
   const [timer, setTimer] = useState(60);
   const inputRefs = useRef([]);
 
@@ -113,7 +118,8 @@ export default function VerifyEmail() {
             Verify Your email
           </p>
           <p className="font-normal text-center text-white/60 font-satoshi">
-            Please enter the 4 digit code sent to {email}{" "}
+            Please enter the 4 digit code sent to{" "}
+            {email}{" "}
             <button className="text-white underline" onClick={handleEdit}>
               Edit
             </button>

@@ -1,9 +1,12 @@
-import { CirclesWithBar } from "react-loader-spinner";
+// import { CirclesWithBar } from "react-loader-spinner";
+
+import Spinner from "./Spinner";
 
 export default function MiniLoader() {
   return (
     <div className="bg-transparent w-full py-5 flex items-center justify-center">
-      <CirclesWithBar
+      <Spinner/>
+      {/* <CirclesWithBar
         height="120"
         width="120"
         color="#86644C"
@@ -14,7 +17,7 @@ export default function MiniLoader() {
         wrapperStyle={{}}
         wrapperClass=""
         visible={true}
-      />
+      /> */}
     </div> 
   );
 }
