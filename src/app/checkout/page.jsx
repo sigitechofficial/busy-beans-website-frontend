@@ -37,8 +37,7 @@ import { useRouter } from "next/navigation";
 import { PostAPI } from "@/utilities/PostAPI";
 
 const page = () => {
-
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     var addressId = localStorage.getItem("addressId") || "";
     var userId = localStorage.getItem("userId") || "";
     var cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
@@ -61,10 +60,6 @@ const page = () => {
   });
   const [activeResData, setActiveResData] = useState([]);
   const [existingCartItems, setExistingCartItems] = useState([]);
-  const [selectedPayment, setSelectedPayment] = useState({
-    name: "",
-    type: "",
-  });
 
   const totalPrice = existingCartItems?.reduce((a, b) => {
     return a + b?.price * b?.qty;
@@ -222,10 +217,6 @@ const page = () => {
 
     setActiveResData(activeRes);
     setExistingCartItems(cartItems);
-    setSelectedPayment({
-      name: paymentMethod?.name || "",
-      type: paymentMethod?.type || "",
-    });
   }, []);
 
   const createOrder = async () => {
@@ -250,7 +241,7 @@ const page = () => {
     if (res?.data?.status === "success") {
       router.push("/product");
       localStorage.removeItem("cartItems");
-      
+
       success_toaster("Order Created Successfully");
     } else if (res?.data?.status === "error") {
       error_toaster(res?.data?.message);
@@ -865,7 +856,6 @@ const page = () => {
 
                       <div>
                         <p className="text-theme-green-2 text-base">
-                          {/* {selectedPayment?.name} */}
                           {order?.paymentMethod}
                         </p>
                         <p className="text-sm text-checkoutTextColor/65">
@@ -1082,7 +1072,7 @@ const page = () => {
                 </div> */}
                 {/* order frequency */}
                 <div className="flex items-center gap-x-2 mt-10 pb-5">
-                  <h3 className="font-semibold text-xl sm:text-[1.75rem] ">
+                  <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white">
                     Order Frequency
                   </h3>
                 </div>
@@ -1091,7 +1081,7 @@ const page = () => {
                     className={`${
                       order?.orderFrequency === "just-onces"
                         ? "text-white"
-                        : "text-black"
+                        : "text-theme"
                     }`}
                     onClick={() =>
                       setOrder({ ...order, orderFrequency: "just-onces" })
@@ -1103,7 +1093,7 @@ const page = () => {
                     className={`${
                       order?.orderFrequency === "weekly"
                         ? "text-white"
-                        : "text-black"
+                        : "text-theme"
                     }`}
                     onClick={() =>
                       setOrder({ ...order, orderFrequency: "weekly" })
@@ -1115,7 +1105,7 @@ const page = () => {
                     className={`${
                       order?.orderFrequency === "every-two-weeks"
                         ? "text-white"
-                        : "text-black"
+                        : "text-theme"
                     }`}
                     onClick={() =>
                       setOrder({ ...order, orderFrequency: "every-two-weeks" })
@@ -1127,7 +1117,7 @@ const page = () => {
                     className={`${
                       order?.orderFrequency === "every-four-weeks"
                         ? "text-white"
-                        : "text-black"
+                        : "text-theme"
                     }`}
                     onClick={() =>
                       setOrder({ ...order, orderFrequency: "every-four-weeks" })
@@ -1208,16 +1198,9 @@ const page = () => {
                 onClick={createOrder}
                 className="bg-themeLight lg:bg-theme w-full text-base font-bold text-white rounded-md h-[54px] flex justify-center items-center gap-x-2"
               >
-                Place Order
-                {/* {deliveryData?.how === 1 && !deliveryAddress?.lat
-                  ? "Add Delivery Address"
-                  : !deliveryData?.when
-                  ? "Add Delivery Type"
-                  : deliveryData.when === 2 && schedule.time === ""
-                  ? "Add Schedule Time"
-                  : selectedPayment?.name == ""
+                {order?.paymentMethod == ""
                   ? "Select Payment Method"
-                  : "Place Order"} */}
+                  : "Place Order"}
                 {/* {disabled && <RotatingLoader w="30" h="30" />} */}
               </button>
             </div>
@@ -1273,13 +1256,9 @@ const page = () => {
                             </span>
                           </div>
 
-                          {selectedPayment.name !== itm?.name && (
+                          {order?.paymentMethod !== itm?.type && (
                             <button
                               onClick={() => {
-                                // setSelectedPayment({
-                                //   name: itm?.name,
-                                //   type: itm?.type,
-                                // });
                                 setOrder({
                                   ...order,
                                   paymentMethod: itm?.type,

@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
   const router = useRouter();
   const [counter, setCounter] = useState(null);
+  const [render, setRender] = useState(false);
   const [drawerScroll, setDrawerScroll] = useState(0);
   if (typeof window !== "undefined") {
     var cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
@@ -27,6 +28,35 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
   const handleDrawerScroll = (event) => {
     const scrollTop = event.target.scrollTop;
     setDrawerScroll(scrollTop);
+  };
+
+  const handleItemClick = (type, id) => {
+    let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    if (type === "plus") {
+      let updatedCart = cartItems.map((item) => {
+        if (Number(item.productId) === id) {
+          return { ...item, qty: item.qty + 1 };
+        }
+        return item;
+      });
+      localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+      setRender(!render);
+    } else if (type === "minus") {
+      let updatedCart = cartItems.map((item) => {
+        if (Number(item.productId) === id && item.qty > 1) {
+          return { ...item, qty: item.qty - 1 };
+        }
+        return item;
+      });
+      localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+      setRender(!render);
+    } else if (type === "delete") {
+      let updatedCart = cartItems.filter(
+        (item) => Number(item.productId) !== id
+      );
+      localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+       setRender(!render);
+    }
   };
 
   useEffect(() => {
@@ -185,7 +215,12 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                           <div className="cursor-pointer mt-2 mr-1 rounded-full flex items-center justify-around text-white p-1 absolute bg-black right-0">
                             {counter === index ? (
                               <>
-                                <button className="w-8 h-8 flex justify-center items-center rounded-full hover:bg-white hover:text-black duration-300">
+                                <button
+                                  onClick={() => {
+                                    handleItemClick("minus", cartI?.productId);
+                                  }}
+                                  className="w-8 h-8 flex justify-center items-center rounded-full hover:bg-white hover:text-black duration-300"
+                                >
                                   <RiSubtractFill />
                                 </button>
 
@@ -193,11 +228,21 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                                   {cartI?.qty}
                                 </span>
 
-                                <button className="w-8 h-8 flex justify-center items-center rounded-full hover:bg-white hover:text-black duration-300">
+                                <button
+                                  onClick={() => {
+                                    handleItemClick("plus", cartI?.productId);
+                                  }}
+                                  className="w-8 h-8 flex justify-center items-center rounded-full hover:bg-white hover:text-black duration-300"
+                                >
                                   <BiPlus />
                                 </button>
 
-                                <button className="w-8 h-8 flex justify-center items-center rounded-full hover:bg-red-600 hover:text-white duration-300">
+                                <button
+                                  onClick={() => {
+                                    handleItemClick("delete", cartI?.productId);
+                                  }}
+                                  className="w-8 h-8 flex justify-center items-center rounded-full hover:bg-red-600 hover:text-white duration-300"
+                                >
                                   <BiTrash />
                                 </button>
                               </>

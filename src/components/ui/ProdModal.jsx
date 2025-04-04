@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, CloseButton, Dialog, Portal } from "@chakra-ui/react";
+import { Dialog, Portal } from "@chakra-ui/react";
 import { RiSubtractFill } from "react-icons/ri";
 import { BiPlus } from "react-icons/bi";
 
@@ -16,10 +16,10 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
     setHeaderShadow(scrollTop > 100);
   };
 
-  if (typeof window !== "undefined")  {
-  var existingCartItems = localStorage.getItem("cartItems")
-    ? JSON.parse(localStorage.getItem("cartItems"))
-    : [];
+  if (typeof window !== "undefined") {
+    var existingCartItems = localStorage.getItem("cartItems")
+      ? JSON.parse(localStorage.getItem("cartItems"))
+      : [];
   }
 
   const [orderStatus, setOrderStatus] = useState({
@@ -76,21 +76,38 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
         ])
       );
     }
-    setProductModal(false)
+    setProductModal(false);
   };
 
   return (
     <>
       <Dialog.Root
-        size="md"
-        placement="center"
+        size={{
+          base: "fullscreen",
+          sm: "md",
+        }}
+        placement={{ sm: "center" }}
         open={productModal}
         onOpenChange={(e) => setProductModal(e.open)}
+         motionPreset="slide-in-bottom"
       >
         <Portal>
           <Dialog.Backdrop />
           <Dialog.Positioner>
-            <Dialog.Content borderRadius="20px" overflow={"hidden"}>
+            <Dialog.Content
+              borderRadius="20px"
+              borderBottomRadius={{
+                base: "0px",
+                sm: "20px",
+              }}
+              overflow={"hidden"}
+              height="max"
+              position={{ base: "absolute", sm: "fixed" }}
+              bottom={{ base: "0", sm: "auto" }}
+              left={{ base: "0", sm: "50%" }}
+              transform={{ sm: "translateX(-50%)" }}
+              
+            >
               <Dialog.Header
                 p={0}
                 boxShadow={
@@ -192,21 +209,13 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
                         <BiPlus />
                       </button>
                     </div>
-                    <Button
+                    <button
                       onClick={handleCart}
-                      bgColor="#86644c"
-                      display="flex"
-                      color="white"
-                      justifyContent={qty > 0 ? "space-center" : "center"}
-                      borderRadius="full"
-                      width="300px"
-                      height="56px"
-                      _hover={{
-                        opacity: ".8",
-                      }}
-                      className="shadow-lgButtonShadow"
+                      className={`shadow-lgButtonShadow bg-[#86644c] w-full flex items-center text-white rounded-full h-14 hover:opacity-80 ${
+                        qty > 0 ? "justify-between" : "center"
+                      }`}
                     >
-                      <div className="text-md text-center font-sf font-bold">
+                      <div className="text-md text-center font-sf font-bold w-full">
                         {qty > 0
                           ? existingCartItems?.find(
                               (ele) => ele?.productId === productId
@@ -233,7 +242,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
                       ) : (
                         <></>
                       )} */}
-                    </Button>
+                    </button>
                   </div>
                 </div>
               </Dialog.Footer>
