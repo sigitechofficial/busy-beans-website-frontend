@@ -24,16 +24,16 @@ export default function ResetPassword() {
   return (
     <div className="min-h-screen bg-themeLight py-5 flex items-center justify-center">
       {/* main section start */}
-      <div className="border border-theme rounded-xl bg-themeDark w-2/4 py-6 flex flex-col items-center gap-y-4">
-        <div className="w-80">
+      <div className="border border-theme rounded-xl bg-themeDark w-11/12 sm:w-4/6 md:w-[70%] lg:w-3/5 xl:w-2/4 py-6 flex flex-col items-center gap-y-4">
+        <div className="w-60 md:w-72 lg:w-80">
           <img
-            src="/images/logo.png"
+            src="/images/logocoffee.png"
             alt="logo"
             className="h-full w-full object-contain"
           />
         </div>
-        <div className="space-y-6 w-3/5">
-          <p className="font-satoshi text-white font-black text-3xl text-center">
+        <div className="space-y-6 w-11/12 md:w-[70%] lg:w-3/5">
+          <p className="font-satoshi text-white font-black text-2xl lg:text-3xl text-center">
             Reset Password
           </p>
           <div className="font-satoshi space-y-4">
@@ -90,8 +90,8 @@ export default function ResetPassword() {
 
       <Dialog
         visible={modal}
-        style={{ width: "30vw" }}
-        // breakpoints={{ "1496px": "40vw", "1024px": "70vw", "641px": "80vw" }}
+        // style={{ width: "70vw" }}
+        breakpoints={{ "1496px": "35vw", "1024px": "40vw", "768px": "80vw", "200px":"40vw" }}
         // onHide={() => setModal(false)}
         closeIcon
         header={
@@ -102,7 +102,7 @@ export default function ResetPassword() {
       >
         <div className="space-y-4 p-5 flex flex-col items-center">
           {/* header */}
-          <p className="font-inter font-bold text-xl">
+          <p className="font-inter font-bold text-xl text-center">
             Password Reset Successfully!
           </p>
 
