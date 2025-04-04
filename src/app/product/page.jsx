@@ -25,7 +25,7 @@ export default function Product() {
     discount: "",
     qty: "",
     price: "",
-    unit: "",
+    unit: "", 
   });
 
   const { data } = GetAPI("api/v1/admin/product");

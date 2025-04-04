@@ -26,16 +26,21 @@ export default function SignIn() {
           email: values.email,
           password: values.password,
         });
-        console.log("🚀 ~ onSubmit: ~ res:", res?.data);
         if (res?.data?.status === "success") {
-          setLoader(false);
           router.push("/");
+          setLoader(false);
           localStorage.setItem("accessToken", res?.data?.data?.token);
           localStorage.setItem("loginStatus", true);
           localStorage.setItem("userName", res?.data?.data?.user?.name);
           localStorage.setItem("userEmail", res?.data?.data?.user?.email);
-          localStorage.setItem("phoneNumber", res?.data?.data?.user?.phoneNumber);
-          localStorage.setItem("saleTaxNumber", res?.data?.data?.user?.saleTaxNumber);
+          localStorage.setItem(
+            "phoneNumber",
+            res?.data?.data?.user?.phoneNumber
+          );
+          localStorage.setItem(
+            "saleTaxNumber",
+            res?.data?.data?.user?.saleTaxNumber
+          );
           localStorage.setItem("registerBy", res?.data?.data?.user?.registerBy);
           localStorage.setItem("userId", res?.data?.data?.user?.id);
           localStorage.setItem("addressId", res?.data?.data?.user?.address?.id);
@@ -51,9 +56,9 @@ export default function SignIn() {
 
   return (
     <div className="bg-themeLight min-h-screen flex items-center justify-center">
-      <div className="grid lg:grid-cols-2 lg:w-3/5 bg-themeDark rounded-lg border border-theme [&>div]:px-14">
+      <div className="md:grid md:grid-cols-2 w-11/12 sm:w-4/6 md:w-4/5 xl:w-3/5 bg-themeDark rounded-lg border border-theme [&>div]:px-4 md:[&>div]:px-6 xl:[&>div]:px-14">
         {/* left side */}
-        <div className="hidden lg:flex flex-col justify-center">
+        <div className="hidden md:flex flex-col justify-center">
           <div className="h-4/5 w-full flex items-center justify-center">
             <img
               src="/images/logocoffee.png"
@@ -64,16 +69,23 @@ export default function SignIn() {
         </div>
 
         {/* Right side */}
-        <div className="flex flex-col py-16 border-l-2 border-theme gap-y-10">
-          <h1 className="font-satoshi font-black text-white text-3xl">
+        <div className="flex flex-col py-14 lg:py-16 md:border-l-2 border-theme gap-y-8 lg:gap-y-10">
+          <h1 className="hidden md:block font-satoshi font-black text-white text-2xl lg:text-3xl">
             Sign In to Busy Bean
           </h1>
+          <div className="md:hidden">
+            <img
+              src="/images/logocoffee.png"
+              alt="logo"
+              className="h-full object-contain w-80  mx-auto"
+            />
+          </div>
 
           {loader ? (
             <MiniLoader />
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="flex flex-col gap-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+              <div className="flex flex-col gap-y-2 sm:gap-y-4">
                 <div className="flex flex-col gap-y-2">
                   <label className="text-white font-medium font-satoshi">
                     Email
