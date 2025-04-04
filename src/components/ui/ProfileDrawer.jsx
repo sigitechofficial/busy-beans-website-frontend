@@ -51,7 +51,11 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
     info_toaster("Successfully Logged Out!");
   };
 
-
+  if (typeof window !== "undefined") {
+    var userName = localStorage.getItem("userName");
+    var phoneNumber = localStorage.getItem("phoneNumber");
+    var userEmail = localStorage.getItem("userEmail");
+  }
 
   return (
     <>
@@ -114,7 +118,7 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
 
                       <h1 className="font-omnes font-bold text-[32px] capitalize text-theme-black-2 ">
                         <span className="me-2">Howdy</span>
-                        User
+                        {userName ? userName : "User"}
                       </h1>
                       <div className="flex  items-start justify-start gap-7">
                         <div
@@ -150,20 +154,14 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                         </div>
                         <div className="flex flex-col gap-2 text-theme-black-2">
                           <h2 className="text-2xl font-semibold font-omnes mt-3 capitalize">
-                            Hi,User
+                            Hi,
+                            {userName ? userName?.split(" ")[0] : "User"}
                           </h2>
                           <p className="font-sf  text-sm font-normal text-theme-black-2 text-opacity-60">
-                            {true ? (
-                              <>
-                                {"+92"}
-                                {"876786843"}
-                              </>
-                            ) : (
-                              <></>
-                            )}
+                            {userName ? <>{phoneNumber ?? ""}</> : <></>}
                           </p>
                           <p className="font-sf  text-sm font-normal text-theme-black-2 text-opacity-60">
-                            user@gmail.com
+                            {userEmail ?? "user@gmail.com"}
                           </p>
                           <div className="flex gap-10">
                             <div>

@@ -11,16 +11,14 @@ import ProfileDrawer from "./ProfileDrawer";
 
 export default function Header() {
   const router = useRouter();
-  // const [show, setShow] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [profileDrawer, setProfileDrawer] = useState(false);
-
-  // const toggleMenu = () => {
-  //   setShow(!show);
-  // };
+  const [render, setRender] = useState(false);
 
   if (typeof window !== "undefined") {
     var accessToken = localStorage.getItem("accessToken");
+    var userName = localStorage.getItem("userName");
+    var cartItems = JSON.parse(localStorage.getItem("cartItems"));
   }
 
   return (
@@ -44,7 +42,15 @@ export default function Header() {
             className="rounded-xl flex items-center gap-x-2 text-themeLight bg-white px-2 lg:px-4 py-2 text-lg cursor-pointer"
             onClick={() => setDrawerOpen(true)}
           >
-            <IoCart className="text-white bg-themeLight rounded-full p-1 text-3xl" />
+            <div className="text-white bg-themeLight rounded-full p-1.5 size-8 flex justify-center items-center relative">
+              <IoCart size={18} onClick={() => setDrawerOpen(true)} />
+
+              {cartItems?.length > 0 && (
+                <p className="absolute -top-1 -right-1 bg-black text-xs font-semibold rounded-full size-4 flex justify-center items-center">
+                  {cartItems ? cartItems?.length : ""}
+                </p>
+              )}
+            </div>
             <p>Cart</p>
           </div>
           {accessToken ? (
@@ -53,7 +59,7 @@ export default function Header() {
               className="bg-white text-white rounded-full flex justify-center items-center p-1 gap-x-5 cursor-pointer"
             >
               <div className=" bg-themeLight rounded-full shrink-0 size-10 text-xs flex justify-center items-center">
-                AM
+                {userName && userName[0] + userName?.split(" ")?.pop()[0]}
               </div>
               <FaChevronDown className="text-themeLight text-xl pr-1" />
             </div>
@@ -72,10 +78,14 @@ export default function Header() {
             onClick={() => setProfileDrawer(!profileDrawer)}
             className=" bg-themeLight text-white rounded-full shrink-0 size-8 text-xs flex justify-center items-center"
           >
-            AM
+            {userName && userName[0] + userName?.split(" ")?.pop()[0]}
           </div>
-          <div className="text-white bg-themeLight rounded-full p-1.5 size-8 flex justify-center items-center">
+          <div className="text-white bg-themeLight rounded-full p-1.5 size-8 flex justify-center items-center relative">
             <IoCart size={18} onClick={() => setDrawerOpen(true)} />
+
+            <p className="absolute -top-1 -right-2 bg-white text-black text-xs font-semibold rounded-full size-4 flex justify-center items-center">
+              {cartItems?.length > 0 ? cartItems?.length : ""}
+            </p>
           </div>
 
           {/* <div className="text-white bg-themeLight rounded-full p-1.5 size-8 flex justify-center items-center">

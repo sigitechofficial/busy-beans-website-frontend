@@ -32,6 +32,7 @@ export default function SignIn() {
           localStorage.setItem("accessToken", res?.data?.data?.token);
           localStorage.setItem("loginStatus", true);
           localStorage.setItem("userName", res?.data?.data?.user?.name);
+          localStorage.setItem("phoneNumber", res?.data?.data?.user?.phoneNumber);
           localStorage.setItem("userEmail", res?.data?.data?.user?.email);
           localStorage.setItem(
             "phoneNumber",
