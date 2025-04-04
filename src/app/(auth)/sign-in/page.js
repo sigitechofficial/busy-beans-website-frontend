@@ -51,9 +51,9 @@ export default function SignIn() {
 
   return (
     <div className="bg-themeLight min-h-screen flex items-center justify-center">
-      <div className="grid grid-cols-2 w-3/5 bg-themeDark rounded-lg border border-theme [&>div]:px-14">
+      <div className="grid lg:grid-cols-2 lg:w-3/5 bg-themeDark rounded-lg border border-theme [&>div]:px-14">
         {/* left side */}
-        <div className=" flex flex-col justify-center">
+        <div className="hidden lg:flex flex-col justify-center">
           <div className="h-4/5 w-full flex items-center justify-center">
             <img
               src="/images/logocoffee.png"
