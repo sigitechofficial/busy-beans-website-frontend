@@ -37,9 +37,12 @@ import { useRouter } from "next/navigation";
 import { PostAPI } from "@/utilities/PostAPI";
 
 const page = () => {
-  const addressId = localStorage.getItem("addressId");
-  const userId = localStorage.getItem("userId");
-  const cartItems = JSON.parse(localStorage.getItem("cartItems"));
+
+  if (typeof window !== 'undefined') {
+    var addressId = localStorage.getItem("addressId") || "";
+    var userId = localStorage.getItem("userId") || "";
+    var cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+  }
   const router = useRouter();
   const [order, setOrder] = useState({
     totalBill: "",

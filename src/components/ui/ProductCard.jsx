@@ -38,8 +38,8 @@ const ProductCard = (props) => {
           </div> */}
           <p className="w-max px-1 whitespace-nowrap sm:w-32 h-7 sm:h-14 flex justify-center items-center gap-x-2 font-medium bg-white text-black text-[10px] sm:text-sm rounded-full text-center cursor-pointer max-sm:leading-3">
             Order Now{" "}
-            <span className="bg-black size-8 rounded-full flex items-center justify-center">
-              <FaPlus color="#ffffff" size={20} />
+            <span className="bg-black size-6 sm:size-8 rounded-full flex items-center justify-center">
+              <FaPlus color="#ffffff" className="text-sm sm:text-xl" />
             </span>
           </p>
         </div>
