@@ -13,26 +13,29 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import ProdBanner from "@/components/ui/ProdBanner";
 import ProdModal from "@/components/ui/ProdModal";
 import { useState } from "react";
+import Loader from "@/components/ui/Loader";
 
 export default function Product() {
   const router = useRouter();
   const [productModal, setProductModal] = useState(false);
   const [productModalData, setProductModalData] = useState({
-    productId:"",
+    productId: "",
     image: "",
     name: "",
     description: "",
     discount: "",
     qty: "",
     price: "",
-    unit: "", 
+    unit: "",
   });
 
   const { data } = GetAPI("api/v1/admin/product");
   console.log("🚀 ~ Product ~ data:", data);
   const { data: categoryData } = GetAPI("api/v1/admin/category");
 
-  return (
+  return data.length === 0 ? (
+    <Loader />
+  ) : (
     <>
       <div className="w-full ">
         <div className=" bg-themeLight pt-[140px] relative">
@@ -110,27 +113,27 @@ export default function Product() {
             <div className="relative z-10 px-0 sm:px-5 w-[95%] md:w-[90%] 2xl:w-[75%] mx-auto pt-10 sm:pt-14 pb-10 sm:pb-28 justify-items-center grid grid-cols-2 xl:grid-cols-3 gap-x-2 sm:gap-x-5 gap-y-2 sm:gap-y-10 md:gap-y-16 text-white">
               {data?.data?.data?.map((item, i) => (
                 <div div key={i}>
-                <ProductCard
-                  // onClick={() => router.push("/product/detail/1")}
-                  name={item?.name}
-                  imageURL={item?.image}
-                  unit={item?.unit}
-                  price={item?.price}
-                  desc={item?.desc}
-                  onClick={() => {
-                    setProductModalData({
-                      productId: item?.id,
-                      image: item?.image,
-                      name: item?.name,
-                      description: item?.desc,
-                      discount: 0,
-                      qty: 1,
-                      price: item?.price,
-                      unit: item?.unit,
-                    });
-                    setProductModal(true);
-                  }}
-                />
+                  <ProductCard
+                    // onClick={() => router.push("/product/detail/1")}
+                    name={item?.name}
+                    imageURL={item?.image}
+                    unit={item?.unit}
+                    price={item?.price}
+                    desc={item?.desc}
+                    onClick={() => {
+                      setProductModalData({
+                        productId: item?.id,
+                        image: item?.image,
+                        name: item?.name,
+                        description: item?.desc,
+                        discount: 0,
+                        qty: 1,
+                        price: item?.price,
+                        unit: item?.unit,
+                      });
+                      setProductModal(true);
+                    }}
+                  />
                 </div>
               ))}
               {/* <ProductCard onClick={() => setProductModal(true)} />

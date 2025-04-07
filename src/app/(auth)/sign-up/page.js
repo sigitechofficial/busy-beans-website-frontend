@@ -25,6 +25,8 @@ export default function SignUpStep1() {
       phoneNumber: "",
       saleTaxNumber: "",
       emailToSendInvoices: "",
+      companyName: "",
+      companyInfo: "",
     },
     address: {
       companyaddress: "",
@@ -81,7 +83,11 @@ export default function SignUpStep1() {
   };
 
   const handleStep2 = () => {
-    if (userData?.info?.phoneNumber.trim() === "") {
+    if (userData?.info?.companyName.trim() === "") {
+      info_toaster("Company Name cannot be empty");
+    } else if (userData?.info?.companyInfo.trim() === "") {
+      info_toaster("Company Info cannot be empty");
+    } else if (userData?.info?.phoneNumber.trim() === "") {
       info_toaster("Phone number cannot be empty");
     } else if (userData?.info?.emailToSendInvoices.trim() === "") {
       info_toaster("Invoice email cannot be empty");
@@ -116,6 +122,8 @@ export default function SignUpStep1() {
           phoneNumber: userData?.info?.phoneNumber,
           saleTaxNumber: userData?.info?.saleTaxNumber,
           emailToSendInvoices: userData?.info?.emailToSendInvoices,
+          companyName: userData?.info?.companyName,
+          companyInfo: userData?.info?.companyInfo,
         },
         address: {
           companyaddress: userData?.address?.companyaddress,
@@ -128,7 +136,7 @@ export default function SignUpStep1() {
           status: true,
         },
       });
-      console.log("🚀 ~ handleSubmit ~ res:", res?.data?.data?.data);
+      console.log("🚀 ~ handleSubmit ~ res:", res?.data?.data?.data?.address?.id);
       if (res?.data?.status === "success") {
         router.push("/verify-email");
         setLoader(false);
@@ -136,6 +144,7 @@ export default function SignUpStep1() {
         localStorage.setItem("userName", res?.data?.data?.data?.name);
         localStorage.setItem("userID", res?.data?.data?.data?.id);
         localStorage.setItem("userEmail", res?.data?.data?.data?.email);
+        localStorage.setItem("addressId", res?.data?.data?.data?.address?.id);
         localStorage.setItem("otpStatus", "signUp");
       } else if (res?.data?.status === "error") {
         setLoader(false);
@@ -291,6 +300,32 @@ export default function SignUpStep1() {
                 </p>
                 <div className="space-y-6">
                   <div className="space-y-4">
+                    <div className="flex flex-col gap-y-2">
+                      <label className="text-white font-medium">
+                        Company Name
+                      </label>
+                      <input
+                        type="text"
+                        name="companyName"
+                        onChange={handleInfo}
+                        value={userData?.info?.companyName}
+                        placeholder="Enter Company Name"
+                        className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-y-2">
+                      <label className="text-white font-medium">
+                        Company Info
+                      </label>
+                      <input
+                        type="text"
+                        name="companyInfo"
+                        onChange={handleInfo}
+                        value={userData?.info?.companyInfo}
+                        placeholder="Enter Company Info"
+                        className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                      />
+                    </div>
                     <div className="flex flex-col gap-y-2">
                       <label className="text-white font-medium">
                         Phone Number

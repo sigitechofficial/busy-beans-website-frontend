@@ -41,6 +41,7 @@ export default function VerifyEmail() {
         id: userID,
         otp: `${inputRefs.current[0].value}${inputRefs.current[1].value}${inputRefs.current[2].value}${inputRefs.current[3].value}`,
       });
+      // console.log("🚀 ~ handleVerifyOTP ~ res:", res?.data?.data)
       if (res?.data?.status === "success") {
         router.push("/");
         setLoader(false);
@@ -50,6 +51,7 @@ export default function VerifyEmail() {
         localStorage.setItem("userName", res?.data?.data?.user?.name);
         localStorage.setItem("userID", res?.data?.data?.user?.id);
         localStorage.setItem("userEmail", res?.data?.data?.user?.email);
+        localStorage.setItem("addressId", res?.data?.data?.user?.address?.id);
         localStorage.setItem("phoneNumber", res?.data?.data?.user?.phoneNumber);
         localStorage.setItem(
           "saleTaxNumber",

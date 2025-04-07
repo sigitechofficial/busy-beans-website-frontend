@@ -35,14 +35,16 @@ import {
 } from "@/utilities/Toaster";
 import { useRouter } from "next/navigation";
 import { PostAPI } from "@/utilities/PostAPI";
+import Loader from "@/components/ui/Loader";
 
 const page = () => {
   if (typeof window !== "undefined") {
     var addressId = localStorage.getItem("addressId") || "";
-    var userId = localStorage.getItem("userId") || "";
+    var userId = localStorage.getItem("userID") || "";
     var cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
   }
   const router = useRouter();
+  const [loader, setLoader] = useState(false);
   const [order, setOrder] = useState({
     totalBill: "",
     subTotal: "",
@@ -220,31 +222,44 @@ const page = () => {
   }, []);
 
   const createOrder = async () => {
-    const res = await PostAPI("api/v1/users/book-order", {
-      order: {
-        totalBill: totalPrice,
-        subTotal: totalPrice,
-        discountPrice: 0,
-        discountPercentage: 0,
-        itemsPrice: totalPrice,
-        vat: 0,
-        totalWeight: totalWeight,
-        note: order?.note,
-        paymentMethod: order.paymentMethod,
-        poNumber: order?.poNumber,
-        orderFrequency: order?.orderFrequency, //  'just-onces','weekly','every-two-weeks','every-four-weeks',
-        addressId: addressId,
-        userId: userId,
-      },
-      items: cartItems,
-    });
-    if (res?.data?.status === "success") {
-      router.push("/product");
-      localStorage.removeItem("cartItems");
+    if (totalPrice === "") {
+      info_toaster("Total Price cannot be empty");
+    } else if (totalWeight === "") {
+      info_toaster("Total Weight cannot be empty");
+    } else if (order?.note.trim() === "") {
+      info_toaster("Note cannot be empty");
+    } else if (order.paymentMethod.trim() === "") {
+      info_toaster("Select payment Method");
+    } else {
+      setLoader(true);
+      const res = await PostAPI("api/v1/users/book-order", {
+        order: {
+          totalBill: totalPrice,
+          subTotal: totalPrice,
+          discountPrice: 0,
+          discountPercentage: 0,
+          itemsPrice: totalPrice,
+          vat: 0,
+          totalWeight: totalWeight,
+          note: order?.note,
+          paymentMethod: order.paymentMethod,
+          poNumber: order?.poNumber,
+          orderFrequency: order?.orderFrequency, //  'just-onces','weekly','every-two-weeks','every-four-weeks',
+          addressId: addressId,
+          userId: userId,
+        },
+        items: cartItems,
+      });
+      if (res?.data?.status === "success") {
+        router.push("/product");
+        setLoader(false);
+        localStorage.removeItem("cartItems");
 
-      success_toaster("Order Created Successfully");
-    } else if (res?.data?.status === "error") {
-      error_toaster(res?.data?.message);
+        success_toaster("Order Created Successfully");
+      } else if (res?.data?.status === "error") {
+        setLoader(false);
+        error_toaster(res?.data?.message);
+      }
     }
   };
 
@@ -327,10 +342,13 @@ const page = () => {
           </div>
         </section>
 
-        <section className="max-w-[1200px] px-4 sm:px-[30px] xl:pr-11 grid grid-cols-1 lg:grid-cols-5 lg:gap-x-[10%] gap-y-5  mx-auto mt-10 pb-10 font-sf">
-          <div className="lg:max-w-[570px] lg:col-span-3">
-            <div className="space-y-3">
-              {/* <div className="h-12 p-1 rounded-[6.25rem] bg-themeLight grid grid-cols-2 mb-6">
+        {loader ? (
+          <Loader />
+        ) : (
+          <section className="max-w-[1200px] px-4 sm:px-[30px] xl:pr-11 grid grid-cols-1 lg:grid-cols-5 lg:gap-x-[10%] gap-y-5  mx-auto mt-10 pb-10 font-sf">
+            <div className="lg:max-w-[570px] lg:col-span-3">
+              <div className="space-y-3">
+                {/* <div className="h-12 p-1 rounded-[6.25rem] bg-themeLight grid grid-cols-2 mb-6">
                 <button
                   onClick={() => {
                     setDeliveryData({ ...deliveryData, how: 1 });
@@ -379,7 +397,7 @@ const page = () => {
                 </button>
               </div> */}
 
-              {/* {deliveryData.how === 1 && (
+                {/* {deliveryData.how === 1 && (
                 <>
                   <div className="w-full flex justify-between items-center p-4 cursor-pointer !my-4 !mb-12 rounded-lg bg-themeLight">
                     <div className="flex items-center gap-x-4 p-2">
@@ -414,7 +432,7 @@ const page = () => {
                 </>
               )} */}
 
-              {/* {deliveryData.how === 2 && (
+                {/* {deliveryData.how === 2 && (
                 <>
                   <div className="w-full flex justify-between items-center p-4 cursor-pointer !my-4  !mb-12 rounded-lg bg-themeLight">
                     <div className="flex items-center gap-x-4 p-2">
@@ -438,9 +456,9 @@ const page = () => {
                   </div>
                 </>
               )} */}
-            </div>
-            <div className="text-white rounded-lg bg-themeLight  my-4 mb-12">
-              {/* <div className="flex items-center justify-between gap-x-2 px-5 py-5">
+              </div>
+              <div className="text-white rounded-lg bg-themeLight  my-4 mb-12">
+                {/* <div className="flex items-center justify-between gap-x-2 px-5 py-5">
                 <div className="flex items-center gap-x-3">
                   <span>
                     <IoMdHome size={24} />
@@ -482,9 +500,9 @@ const page = () => {
                 )}
               </div> */}
 
-              {deliveryData.how === 1 && (
-                <>
-                  {/* <hr className="mx-5 " />
+                {deliveryData.how === 1 && (
+                  <>
+                    {/* <hr className="mx-5 " />
                   <div className="flex items-center justify-between gap-x-2 px-5 py-5">
                     <div className="flex items-center gap-x-3">
                       <span>
@@ -509,43 +527,43 @@ const page = () => {
                     />
                   </div> */}
 
-                  <div>
-                    <div className="relative w-full group">
-                      <div className="font-sf font-normal text-base text-theme-black-2 flex items-center gap-3 px-5 py-[5px] duration-300 border-2 border-white hover:border-goldenLight focus-within:border-goldenLight rounded-lg">
-                        <MdInsertComment size={24} />
-                        <div className="relative w-full">
-                          <input
-                            type="text"
-                            id="courier-note"
-                            className={`w-full h-full py-5 pt-7 pb-2 focus:outline-none bg-transparent peer ${
-                              deliveryAddress?.instructions
-                                ? "placeholder-transparent"
-                                : ""
-                            }`}
-                            value={order?.note}
-                            onChange={(e) =>
-                              setOrder({ ...order, note: e.target.value })
-                            }
-                          />
-                          <label
-                            htmlFor="courier-note"
-                            className={`absolute left-0 top-4 text-gray-400 transition-all ${
-                              deliveryAddress?.instructions
-                                ? "top-[5px] text-[13px] peer-focus:text-goldenLight"
-                                : "peer-placeholder-shown:top-5 peer-placeholder-shown:text-goldenLight peer-focus:top-[7px] peer-focus:text-[13px] peer-focus:text-goldenLight"
-                            }`}
-                          >
-                            Add note for the courier
-                          </label>
+                    <div>
+                      <div className="relative w-full group">
+                        <div className="font-sf font-normal text-base text-theme-black-2 flex items-center gap-3 px-5 py-[5px] duration-300 border-2 border-white hover:border-goldenLight focus-within:border-goldenLight rounded-lg">
+                          <MdInsertComment size={24} />
+                          <div className="relative w-full">
+                            <input
+                              type="text"
+                              id="courier-note"
+                              className={`w-full h-full py-5 pt-7 pb-2 focus:outline-none bg-transparent peer ${
+                                deliveryAddress?.instructions
+                                  ? "placeholder-transparent"
+                                  : ""
+                              }`}
+                              value={order?.note}
+                              onChange={(e) =>
+                                setOrder({ ...order, note: e.target.value })
+                              }
+                            />
+                            <label
+                              htmlFor="courier-note"
+                              className={`absolute left-0 top-4 text-gray-400 transition-all ${
+                                deliveryAddress?.instructions
+                                  ? "top-[5px] text-[13px] peer-focus:text-goldenLight"
+                                  : "peer-placeholder-shown:top-5 peer-placeholder-shown:text-goldenLight peer-focus:top-[7px] peer-focus:text-[13px] peer-focus:text-goldenLight"
+                              }`}
+                            >
+                              Add note for the courier
+                            </label>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </>
-              )}
-            </div>
+                  </>
+                )}
+              </div>
 
-            {/* {deliveryData.how === 1 && (
+              {/* {deliveryData.how === 1 && (
               <>
                 <div className="space-y-6">
                   <h1 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
@@ -564,7 +582,7 @@ const page = () => {
                 </div>
               </>
             )} */}
-            {/* <div
+              {/* <div
               className={`flex items-center space-x-4 px-4 py-3 mt-4 bg-themeLight text-white rounded-lg ${
                 deliveryData.when === 1 && "border-theme-green-2"
               }`}
@@ -606,7 +624,7 @@ const page = () => {
               </label>
             </div> */}
 
-            {/* <div
+              {/* <div
               className={`flex items-center space-x-4 px-4 py-3 mt-2 bg-themeLight text-white rounded-lg ${
                 deliveryData.when === 2 && "border-theme-green-2"
               }`}
@@ -640,114 +658,114 @@ const page = () => {
               </label>
             </div> */}
 
-            {deliveryData.when === 2 && (
-              <div className="flex  justify-between space-x-7 my-3">
-                <Select
-                  value={schedule.day}
-                  onChange={(e) => {
-                    const day = JSON.parse(
-                      localStorage.getItem("activeResData")
-                    ).times.find((ele) => ele.name === e.value.toLowerCase());
-                    generateTimeChunks(day.startAt, day.endAt, day.date);
-                    setSchedule({
-                      ...schedule,
-                      day: e,
-                      date: day.date,
-                    });
-                  }}
-                  isClearable={true}
-                  isDisabled={deliveryData.when === 1 ? true : false}
-                  options={days}
-                  placeholder="Select day"
-                  className="rounded-xl font-sf w-full"
-                  styles={{
-                    control: (base, state) => ({
-                      ...base,
-                      borderRadius: "8px",
+              {deliveryData.when === 2 && (
+                <div className="flex  justify-between space-x-7 my-3">
+                  <Select
+                    value={schedule.day}
+                    onChange={(e) => {
+                      const day = JSON.parse(
+                        localStorage.getItem("activeResData")
+                      ).times.find((ele) => ele.name === e.value.toLowerCase());
+                      generateTimeChunks(day.startAt, day.endAt, day.date);
+                      setSchedule({
+                        ...schedule,
+                        day: e,
+                        date: day.date,
+                      });
+                    }}
+                    isClearable={true}
+                    isDisabled={deliveryData.when === 1 ? true : false}
+                    options={days}
+                    placeholder="Select day"
+                    className="rounded-xl font-sf w-full"
+                    styles={{
+                      control: (base, state) => ({
+                        ...base,
+                        borderRadius: "8px",
 
-                      border: state.isFocused
-                        ? "2px solid green-700"
-                        : "2px solid #E4E4E5",
-                      borderColor: state.isFocused ? "green-700" : "#E4E4E5",
-                      boxShadow: state.isFocused ? "0 0 0 1px green" : "none",
-                      padding: "6px 6px",
-                      "&:hover": {
-                        borderColor: "green",
+                        border: state.isFocused
+                          ? "2px solid green-700"
+                          : "2px solid #E4E4E5",
+                        borderColor: state.isFocused ? "green-700" : "#E4E4E5",
+                        boxShadow: state.isFocused ? "0 0 0 1px green" : "none",
+                        padding: "6px 6px",
+                        "&:hover": {
+                          borderColor: "green",
 
-                        cursor: "pointer",
-                      },
-                    }),
-                  }}
-                />
-                <Select
-                  value={schedule.time}
-                  onChange={(e) =>
-                    setSchedule({
-                      ...schedule,
-                      time: e,
-                    })
-                  }
-                  isClearable={true}
-                  isDisabled={deliveryData.when === 1 ? true : false}
-                  options={timeChunks}
-                  placeholder="Select time"
-                  styles={{
-                    control: (base, state) => ({
-                      ...base,
-                      borderRadius: "8px",
-                      border: state.isFocused
-                        ? "2px solid green-700"
-                        : "2px solid #E4E4E5",
-                      borderColor: state.isFocused ? "green-700" : "#E4E4E5",
-                      boxShadow: state.isFocused ? "0 0 0 1px green" : "none",
-                      padding: "6px 6px",
-                      "&:hover": {
-                        borderColor: "green",
+                          cursor: "pointer",
+                        },
+                      }),
+                    }}
+                  />
+                  <Select
+                    value={schedule.time}
+                    onChange={(e) =>
+                      setSchedule({
+                        ...schedule,
+                        time: e,
+                      })
+                    }
+                    isClearable={true}
+                    isDisabled={deliveryData.when === 1 ? true : false}
+                    options={timeChunks}
+                    placeholder="Select time"
+                    styles={{
+                      control: (base, state) => ({
+                        ...base,
+                        borderRadius: "8px",
+                        border: state.isFocused
+                          ? "2px solid green-700"
+                          : "2px solid #E4E4E5",
+                        borderColor: state.isFocused ? "green-700" : "#E4E4E5",
+                        boxShadow: state.isFocused ? "0 0 0 1px green" : "none",
+                        padding: "6px 6px",
+                        "&:hover": {
+                          borderColor: "green",
 
-                        cursor: "pointer",
-                      },
-                    }),
-                  }}
-                  className="rounded-xl font-sf w-full"
-                />
-              </div>
-            )}
-
-            <div className="flex items-center font-semibold text-xl md:text-2xl gap-x-2 mt-12 mb-8">
-              {true && (
-                <>
-                  {/* <FaDoorOpen /> */}
-                  <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
-                    Selected items
-                  </h3>
-                </>
+                          cursor: "pointer",
+                        },
+                      }),
+                    }}
+                    className="rounded-xl font-sf w-full"
+                  />
+                </div>
               )}
-            </div>
-            {true && (
-              <div className="bg-theme text-white rounded-lg my-4 space-y-3">
-                {existingCartItems?.map((cart, index) => {
-                  return (
-                    <div key={index} className="flex justify-between gap-x-2">
-                      <div className="flex gap-x-5">
-                        <div className="border-2  border-gray-100 rounded-xl sm:w-28 sm:h-20 w-6 h-6 ">
-                          <img
-                            className="w-full h-full object-cover rounded-md"
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2975y5Wi7suYu48FfPSEZSmjfRBvPjmsH4g&s"
-                            alt={cart?.name}
-                          />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-x-3 my-1">
-                            <h5>
-                              <span className="text-theme-green-2">
-                                {cart?.qty}x
-                              </span>{" "}
-                              <b className="font-medium">{cart?.name}</b>
-                            </h5>
+
+              <div className="flex items-center font-semibold text-xl md:text-2xl gap-x-2 mt-12 mb-8">
+                {true && (
+                  <>
+                    {/* <FaDoorOpen /> */}
+                    <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
+                      Selected items
+                    </h3>
+                  </>
+                )}
+              </div>
+              {true && (
+                <div className="bg-theme text-white rounded-lg my-4 space-y-3">
+                  {existingCartItems?.map((cart, index) => {
+                    return (
+                      <div key={index} className="flex justify-between gap-x-2">
+                        <div className="flex gap-x-5">
+                          <div className="border-2  border-gray-100 rounded-xl sm:w-28 sm:h-20 w-6 h-6 ">
+                            <img
+                              className="w-full h-full object-cover rounded-md"
+                              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2975y5Wi7suYu48FfPSEZSmjfRBvPjmsH4g&s"
+                              alt={cart?.name}
+                            />
                           </div>
-                          <div className="capitalize text-sm font-normal text-white text-opacity-60">
-                            {cart?.qty * cart?.price} {cart?.unit}
-                            {/* <ul>
+                          <div>
+                            <div className="flex items-center gap-x-3 my-1">
+                              <h5>
+                                <span className="text-theme-green-2">
+                                  {cart?.qty}x
+                                </span>{" "}
+                                <b className="font-medium">{cart?.name}</b>
+                              </h5>
+                            </div>
+                            <div className="capitalize text-sm font-normal text-white text-opacity-60">
+                              {cart?.qty * cart?.price} {cart?.unit}
+                              {/* <ul>
                               {cart?.addOnsCat && cart?.addOnsCat?.length > 0
                                 ? cart?.addOnsCat
                                     ?.filter(
@@ -794,133 +812,136 @@ const page = () => {
                                     </li>
                                   ))}
                             </ul> */}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
+              )}
+
+              <div
+                className="flex items-center gap-x-2 mt-10 mb-16 cursor-pointer"
+                onClick={navigateTo}
+              >
+                <AiOutlinePlus size={18} color="white" />
+                <span className="text-sm font-medium text-white font-satoshi">
+                  Add more items
+                </span>
               </div>
-            )}
 
-            <div
-              className="flex items-center gap-x-2 mt-10 mb-16 cursor-pointer"
-              onClick={navigateTo}
-            >
-              <AiOutlinePlus size={18} color="white" />
-              <span className="text-sm font-medium text-white font-satoshi">
-                Add more items
-              </span>
-            </div>
+              {/* ============Payment Method start============= */}
 
-            {/* ============Payment Method start============= */}
+              <div className="flex items-center gap-x-2 mt-10 mb-8">
+                {/* <MdOutlinePayment size={24} className="text-2xl" /> */}
+                <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
+                  Payment Method
+                </h3>
+              </div>
+              <div className="bg-themeLight text-white rounded-lg p-5 my-4 cursor-pointer duration-200 hover:shadow-discoveryCardShadow">
+                {order?.paymentMethod ? (
+                  <div
+                    className="flex items-center gap-3 justify-between"
+                    onClick={() => {
+                      setPaymentModal(true);
+                      setFeeWorks(false);
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="flex items-center justify-between gap-x-4 w-full text-lg cursor-pointer"
+                        onClick={() => {
+                          setPaymentModal(true);
+                          setFeeWorks(false);
+                        }}
+                      >
+                        <img
+                          src={`${
+                            order?.paymentMethod?.includes("Cards")
+                              ? "/images/credit-card.webp"
+                              : order?.paymentMethod?.includes("Apple")
+                              ? "/images/epay.webp"
+                              : order?.paymentMethod?.includes("Google")
+                              ? "/images/gpay.webp"
+                              : order?.paymentMethod?.includes("cod")
+                              ? "/images/cashPay.png"
+                              : ""
+                          }`}
+                          alt="payment-card"
+                          className="w-9 h-9 object-contain"
+                        />
 
-            <div className="flex items-center gap-x-2 mt-10 mb-8">
-              {/* <MdOutlinePayment size={24} className="text-2xl" /> */}
-              <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
-                Payment Method
-              </h3>
-            </div>
-            <div className="bg-themeLight text-white rounded-lg p-5 my-4 cursor-pointer duration-200 hover:shadow-discoveryCardShadow">
-              {order?.paymentMethod ? (
-                <div
-                  className="flex items-center gap-3 justify-between"
-                  onClick={() => {
-                    setPaymentModal(true);
-                    setFeeWorks(false);
-                  }}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="flex items-center justify-between gap-x-4 w-full text-lg cursor-pointer"
-                      onClick={() => {
-                        setPaymentModal(true);
-                        setFeeWorks(false);
-                      }}
-                    >
-                      <img
-                        src={`${
-                          order?.paymentMethod?.includes("Cards")
-                            ? "/images/credit-card.webp"
-                            : order?.paymentMethod?.includes("Apple")
-                            ? "/images/epay.webp"
-                            : order?.paymentMethod?.includes("Google")
-                            ? "/images/gpay.webp"
-                            : order?.paymentMethod?.includes("cod")
-                            ? "/images/cashPay.png"
-                            : ""
-                        }`}
-                        alt="payment-card"
-                        className="w-9 h-9 object-contain"
-                      />
+                        <div>
+                          <p className="text-theme-green-2 text-base">
+                            {order?.paymentMethod}
+                          </p>
+                          <p className="text-sm text-checkoutTextColor/65">
+                            The choosen payment method will be charged
+                          </p>
+                        </div>
+                      </div>
+                    </div>
 
-                      <div>
+                    <div className="text-theme-black-2 text-xl">
+                      <button>
+                        <FaAngleRight color="white" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    className="flex items-center justify-between w-full text-lg cursor-pointer"
+                    onClick={() => {
+                      setFeeWorks(false);
+                      setPaymentModal(true);
+                    }}
+                  >
+                    <div className="flex items-center gap-x-4">
+                      <IoCard size={24} />
+
+                      <div className="space-y-[0.9px]">
                         <p className="text-theme-green-2 text-base">
-                          {order?.paymentMethod}
+                          Choose a payment method
                         </p>
                         <p className="text-sm text-checkoutTextColor/65">
-                          The choosen payment method will be charged
+                          Please add a payment method to continue with your
+                          order
                         </p>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="text-theme-black-2 text-xl">
-                    <button>
-                      <FaAngleRight color="white" />
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div
-                  className="flex items-center justify-between w-full text-lg cursor-pointer"
-                  onClick={() => {
-                    setFeeWorks(false);
-                    setPaymentModal(true);
-                  }}
-                >
-                  <div className="flex items-center gap-x-4">
-                    <IoCard size={24} />
-
-                    <div className="space-y-[0.9px]">
-                      <p className="text-theme-green-2 text-base">
-                        Choose a payment method
-                      </p>
-                      <p className="text-sm text-checkoutTextColor/65">
-                        Please add a payment method to continue with your order
-                      </p>
+                    <div className="text-theme-black-2 text-xl">
+                      <button>
+                        <FaAngleRight color="white" />
+                      </button>
                     </div>
                   </div>
-                  <div className="text-theme-black-2 text-xl">
-                    <button>
-                      <FaAngleRight color="white" />
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
 
-            {/* =====Fomino points======= */}
+              {/* =====Fomino points======= */}
 
-            {getProfile?.data?.data?.creditPoints > 0 && (
-              <div className=" pb-5">
-                <div className="flex justify-between items-center border rounded-md px-4 py-3 cursor-pointer mt-5 hover:shadow-discoveryCardShadow">
-                  <div className="flex items-center gap-x-2">
-                    <img
-                      className="w-8"
-                      src="/images/restaurants/fominopoints.png"
-                      alt=""
-                    />
-                    <div className="">
-                      <p className="text-lg font-medium">Use Fomino credits</p>
-                      <p className="text-sm text-gray-500">
-                        {getProfile?.data?.data?.creditPoints +
-                          " " +
-                          activeResData?.currencyUnit}
-                      </p>
-                    </div>
-                  </div>{" "}
-                  {/* <Switch
+              {getProfile?.data?.data?.creditPoints > 0 && (
+                <div className=" pb-5">
+                  <div className="flex justify-between items-center border rounded-md px-4 py-3 cursor-pointer mt-5 hover:shadow-discoveryCardShadow">
+                    <div className="flex items-center gap-x-2">
+                      <img
+                        className="w-8"
+                        src="/images/restaurants/fominopoints.png"
+                        alt=""
+                      />
+                      <div className="">
+                        <p className="text-lg font-medium">
+                          Use Fomino credits
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {getProfile?.data?.data?.creditPoints +
+                            " " +
+                            activeResData?.currencyUnit}
+                        </p>
+                      </div>
+                    </div>{" "}
+                    {/* <Switch
                     onChange={handleFominoCredits}
                     checked={fominoCredits}
                     onColor="#379465"
@@ -931,13 +952,13 @@ const page = () => {
                     width={52}
                     handleDiameter={23}
                   /> */}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {deliveryData.how === 1 && (
-              <>
-                {/* <div className="flex items-center gap-x-2 mt-10 mb-8">
+              {deliveryData.how === 1 && (
+                <>
+                  {/* <div className="flex items-center gap-x-2 mt-10 mb-8">
                   <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
                     Tip the courier
                   </h3>
@@ -1043,9 +1064,9 @@ const page = () => {
                   </div>
                 </div> */}
 
-                {/* =====Redeem code======= */}
+                  {/* =====Redeem code======= */}
 
-                {/* <div className="flex items-center gap-x-2 mt-10 pb-5">
+                  {/* <div className="flex items-center gap-x-2 mt-10 pb-5">
                   <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
                     Redeem code
                   </h3>
@@ -1070,142 +1091,149 @@ const page = () => {
                     </button>
                   </div>
                 </div> */}
-                {/* order frequency */}
-                <div className="flex items-center gap-x-2 mt-10 pb-5">
-                  <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white">
-                    Order Frequency
-                  </h3>
-                </div>
-                <div className="flex gap-x-2 [&>button]:text-xs sm:[&>button]:text-base [&>button]:rounded-lg [&>button]:px-1 sm:[&>button]:px-4 [&>button]:py-2 [&>button]:bg-themeLight">
-                  <button
-                    className={`${
-                      order?.orderFrequency === "just-onces"
-                        ? "text-white"
-                        : "text-theme"
-                    }`}
-                    onClick={() =>
-                      setOrder({ ...order, orderFrequency: "just-onces" })
-                    }
-                  >
-                    Just once
-                  </button>
-                  <button
-                    className={`${
-                      order?.orderFrequency === "weekly"
-                        ? "text-white"
-                        : "text-theme"
-                    }`}
-                    onClick={() =>
-                      setOrder({ ...order, orderFrequency: "weekly" })
-                    }
-                  >
-                    Weekly
-                  </button>
-                  <button
-                    className={`${
-                      order?.orderFrequency === "every-two-weeks"
-                        ? "text-white"
-                        : "text-theme"
-                    }`}
-                    onClick={() =>
-                      setOrder({ ...order, orderFrequency: "every-two-weeks" })
-                    }
-                  >
-                    Every two weeks
-                  </button>
-                  <button
-                    className={`${
-                      order?.orderFrequency === "every-four-weeks"
-                        ? "text-white"
-                        : "text-theme"
-                    }`}
-                    onClick={() =>
-                      setOrder({ ...order, orderFrequency: "every-four-weeks" })
-                    }
-                  >
-                    Every four weeks
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-          <div
-            className={`lg:bg-themeLight rounded-2xl text-white  relative xl:min-w-[399px] w-full lg:shadow-checkoutBoxShadow lg:p-6 lg:col-span-2 h-max space-y-6 lg:sticky lg:top-40 lg:right-7 lg:-mt-32`}
-          >
-            <div className="flex flex-col text-xl md:text-2xl text-white ">
-              <h3 className="font-semibold">Prices in $</h3>
-              <p className="text-sm font-light text-checkoutTextColor/65 pb-6">
-                incl. taxes (if applicable)
-              </p>
-              <p
-                onClick={() => {
-                  setFeeWorks(true);
-                  setPaymentModal(true);
-                }}
-                className="text-base font-normal text-theme-red-2 cursor-pointer"
-              >
-                How fees work
-              </p>
-            </div>
-            <div className="space-y-2.5 my-4">
-              <div className="flex items-center justify-between gap-x-2">
-                <h5 className="text-base text-checkoutTextColor">Subtotal</h5>
-                <h6>{totalPrice} $</h6>
-              </div>
-              {deliveryData.how === 1 && (
-                <>
-                  <div className="flex items-center justify-between gap-x-2">
-                    <h5 className="text-base md:text-md text-checkoutTextColor">
-                      VAT
-                    </h5>
-                    <h6>5.00</h6>
+                  {/* order frequency */}
+                  <div className="flex items-center gap-x-2 mt-10 pb-5">
+                    <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white">
+                      Order Frequency
+                    </h3>
                   </div>
-                  <div className="flex items-center justify-between gap-x-2">
-                    <h5 className="text-base md:text-md text-checkoutTextColor">
-                      Total Weight
-                    </h5>
-
-                    <h6 className="flex gap-x-2">{totalWeight} kg</h6>
+                  <div className="flex gap-x-2 [&>button]:text-xs sm:[&>button]:text-base [&>button]:rounded-lg [&>button]:px-1 sm:[&>button]:px-4 [&>button]:py-2 [&>button]:bg-themeLight">
+                    <button
+                      className={`${
+                        order?.orderFrequency === "just-onces"
+                          ? "text-white"
+                          : "text-theme"
+                      }`}
+                      onClick={() =>
+                        setOrder({ ...order, orderFrequency: "just-onces" })
+                      }
+                    >
+                      Just once
+                    </button>
+                    <button
+                      className={`${
+                        order?.orderFrequency === "weekly"
+                          ? "text-white"
+                          : "text-theme"
+                      }`}
+                      onClick={() =>
+                        setOrder({ ...order, orderFrequency: "weekly" })
+                      }
+                    >
+                      Weekly
+                    </button>
+                    <button
+                      className={`${
+                        order?.orderFrequency === "every-two-weeks"
+                          ? "text-white"
+                          : "text-theme"
+                      }`}
+                      onClick={() =>
+                        setOrder({
+                          ...order,
+                          orderFrequency: "every-two-weeks",
+                        })
+                      }
+                    >
+                      Every two weeks
+                    </button>
+                    <button
+                      className={`${
+                        order?.orderFrequency === "every-four-weeks"
+                          ? "text-white"
+                          : "text-theme"
+                      }`}
+                      onClick={() =>
+                        setOrder({
+                          ...order,
+                          orderFrequency: "every-four-weeks",
+                        })
+                      }
+                    >
+                      Every four weeks
+                    </button>
                   </div>
-
-                  {tip?.tip >= 1 && (
-                    <div className="flex items-center justify-between gap-x-2">
-                      <h5 className="text-base md:text-md text-checkoutTextColor">
-                        Tip the courier
-                      </h5>
-                      <h6>
-                        {tip?.tip ? parseFloat(tip?.tip).toFixed(2) : 0} $
-                      </h6>
-                    </div>
-                  )}
                 </>
               )}
-
-              <div className="flex items-center justify-between gap-x-2 pb-4">
-                <h5 className="font-semibold text-checkoutTextColor text-base">
-                  Total
-                </h5>
-                <h6 className="font-semibold text-checkoutTextColor text-base">
-                  {totalPrice} $
-                </h6>
+            </div>
+            <div
+              className={`lg:bg-themeLight rounded-2xl text-white  relative xl:min-w-[399px] w-full lg:shadow-checkoutBoxShadow lg:p-6 lg:col-span-2 h-max space-y-6 lg:sticky lg:top-40 lg:right-7 lg:-mt-32`}
+            >
+              <div className="flex flex-col text-xl md:text-2xl text-white ">
+                <h3 className="font-semibold">Prices in $</h3>
+                <p className="text-sm font-light text-checkoutTextColor/65 pb-6">
+                  incl. taxes (if applicable)
+                </p>
+                <p
+                  onClick={() => {
+                    setFeeWorks(true);
+                    setPaymentModal(true);
+                  }}
+                  className="text-base font-normal text-theme-red-2 cursor-pointer"
+                >
+                  How fees work
+                </p>
               </div>
-              <div className="border-dashed border" />
-            </div>
+              <div className="space-y-2.5 my-4">
+                <div className="flex items-center justify-between gap-x-2">
+                  <h5 className="text-base text-checkoutTextColor">Subtotal</h5>
+                  <h6>{totalPrice} $</h6>
+                </div>
+                {deliveryData.how === 1 && (
+                  <>
+                    <div className="flex items-center justify-between gap-x-2">
+                      <h5 className="text-base md:text-md text-checkoutTextColor">
+                        VAT
+                      </h5>
+                      <h6>5.00</h6>
+                    </div>
+                    <div className="flex items-center justify-between gap-x-2">
+                      <h5 className="text-base md:text-md text-checkoutTextColor">
+                        Total Weight
+                      </h5>
 
-            <div>
-              <button
-                disabled={false ? true : false}
-                onClick={createOrder}
-                className="bg-themeLight lg:bg-theme w-full text-base font-bold text-white rounded-md h-[54px] flex justify-center items-center gap-x-2"
-              >
-                {order?.paymentMethod == ""
-                  ? "Select Payment Method"
-                  : "Place Order"}
-                {/* {disabled && <RotatingLoader w="30" h="30" />} */}
-              </button>
+                      <h6 className="flex gap-x-2">{totalWeight} kg</h6>
+                    </div>
+
+                    {tip?.tip >= 1 && (
+                      <div className="flex items-center justify-between gap-x-2">
+                        <h5 className="text-base md:text-md text-checkoutTextColor">
+                          Tip the courier
+                        </h5>
+                        <h6>
+                          {tip?.tip ? parseFloat(tip?.tip).toFixed(2) : 0} $
+                        </h6>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                <div className="flex items-center justify-between gap-x-2 pb-4">
+                  <h5 className="font-semibold text-checkoutTextColor text-base">
+                    Total
+                  </h5>
+                  <h6 className="font-semibold text-checkoutTextColor text-base">
+                    {totalPrice} $
+                  </h6>
+                </div>
+                <div className="border-dashed border" />
+              </div>
+
+              <div>
+                <button
+                  disabled={false ? true : false}
+                  onClick={createOrder}
+                  className="bg-themeLight lg:bg-theme w-full text-base font-bold text-white rounded-md h-[54px] flex justify-center items-center gap-x-2"
+                >
+                  {order?.paymentMethod == ""
+                    ? "Select Payment Method"
+                    : "Place Order"}
+                  {/* {disabled && <RotatingLoader w="30" h="30" />} */}
+                </button>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
       </div>
 
       <Dialog.Root

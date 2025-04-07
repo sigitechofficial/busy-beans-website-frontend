@@ -1,4 +1,4 @@
-import { CirclesWithBar } from "react-loader-spinner";
+// import { CirclesWithBar } from "react-loader-spinner";
 import Spinner from "./Spinner";
 
 export default function Loader() {

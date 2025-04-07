@@ -26,6 +26,7 @@ export default function SignIn() {
           email: values.email,
           password: values.password,
         });
+        console.log("🚀 ~ onSubmit: ~ res:", res)
         if (res?.data?.status === "success") {
           router.push("/");
           setLoader(false);
