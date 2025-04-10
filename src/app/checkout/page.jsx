@@ -36,6 +36,7 @@ import {
 import { useRouter } from "next/navigation";
 import { PostAPI } from "@/utilities/PostAPI";
 import Loader from "@/components/ui/Loader";
+import ErrorHandler from "@/utilities/ErrorHandler";
 
 const page = () => {
   if (typeof window !== "undefined") {
@@ -232,33 +233,38 @@ const page = () => {
       info_toaster("Select payment Method");
     } else {
       setLoader(true);
-      const res = await PostAPI("api/v1/users/book-order", {
-        order: {
-          totalBill: totalPrice,
-          subTotal: totalPrice,
-          discountPrice: 0,
-          discountPercentage: 0,
-          itemsPrice: totalPrice,
-          vat: 0,
-          totalWeight: totalWeight,
-          note: order?.note,
-          paymentMethod: order.paymentMethod,
-          poNumber: order?.poNumber,
-          orderFrequency: order?.orderFrequency, //  'just-onces','weekly','every-two-weeks','every-four-weeks',
-          addressId: addressId,
-          userId: userId,
-        },
-        items: cartItems,
-      });
-      if (res?.data?.status === "success") {
-        router.push("/product");
+      try {
+        const res = await PostAPI("api/v1/users/book-order", {
+          order: {
+            totalBill: totalPrice,
+            subTotal: totalPrice,
+            discountPrice: 0,
+            discountPercentage: 0,
+            itemsPrice: totalPrice,
+            vat: 0,
+            totalWeight: totalWeight,
+            note: order?.note,
+            paymentMethod: order.paymentMethod,
+            poNumber: order?.poNumber,
+            orderFrequency: order?.orderFrequency, // 'just-onces', 'weekly', 'every-two-weeks', 'every-four-weeks'
+            addressId: addressId,
+            userId: userId, 
+          },
+          items: cartItems,
+        });
+        if (res?.data?.status === "success") {
+          router.push("/product");
+          setLoader(false); 
+          localStorage.removeItem("cartItems"); 
+          success_toaster("Order Created Successfully"); 
+        } else {
+          throw new Error(
+            res?.data?.message || "An unexpected error occurred."
+          );
+        }
+      } catch (error) {
+        ErrorHandler(error)
         setLoader(false);
-        localStorage.removeItem("cartItems");
-
-        success_toaster("Order Created Successfully");
-      } else if (res?.data?.status === "error") {
-        setLoader(false);
-        error_toaster(res?.data?.message);
       }
     }
   };

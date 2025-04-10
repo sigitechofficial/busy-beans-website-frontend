@@ -4,21 +4,74 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { IoCheckmark } from "react-icons/io5";
+import { info_toaster, success_toaster } from "@/utilities/Toaster";
+import { PostAPI } from "@/utilities/PostAPI";
+import ErrorHandler from "@/utilities/ErrorHandler";
+import MiniLoader from "@/components/ui/MiniLoader";
 
 export default function ResetPassword() {
+  if (typeof window !== "undefined") {
+    var userID = localStorage.getItem("userID") ?? "";
+  }
   const router = useRouter();
   const [passwords, setPasswords] = useState({
     newPassword: "",
     confirmPassword: "",
   });
   const [modal, setModal] = useState(false);
+  const [loader, setLoader] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setModal(true);
-    //   router.push("/sign-in");
-    //   localStorage.setItem("userEmail", email);
-    //   localStorage.setItem("otpStatus", "forgotPassword");
+    if (passwords?.newPassword.trim() === "") {
+      info_toaster("Enter new password");
+    } else if (passwords?.confirmPassword.trim() === "") {
+      info_toaster("Confirm new password");
+    } else if (
+      passwords?.newPassword.trim() !== passwords?.confirmPassword.trim()
+    ) {
+      info_toaster("Password and Confirm password not matched");
+    } else {
+      setLoader(true);
+      try {
+        const res = await PostAPI("api/v1/users/reset-password", {
+          userId: userID,
+          password: passwords?.newPassword,
+        });
+        if (res?.data?.status === "success") {
+          setModal(true);
+          setLoader(false);
+          localStorage.setItem("accessToken", res?.data?.data?.token);
+          localStorage.setItem("loginStatus", true);
+          localStorage.setItem("userName", res?.data?.data?.user?.name);
+          localStorage.setItem(
+            "phoneNumber",
+            res?.data?.data?.user?.phoneNumber
+          );
+          localStorage.setItem("userEmail", res?.data?.data?.user?.email);
+          localStorage.setItem(
+            "phoneNumber",
+            res?.data?.data?.user?.phoneNumber
+          );
+          localStorage.setItem(
+            "saleTaxNumber",
+            res?.data?.data?.user?.saleTaxNumber
+          );
+          localStorage.setItem("registerBy", res?.data?.data?.user?.registerBy);
+          localStorage.setItem("userId", res?.data?.data?.user?.id);
+          localStorage.setItem("addressId", res?.data?.data?.user?.address?.id);
+          localStorage.removeItem("userID");
+          success_toaster("Login Successfully");
+        } else {
+          throw new Error(
+            res?.data?.message || "An unexpected error occurred."
+          );
+        }
+      } catch (error) {
+        ErrorHandler(error);
+        setLoader(false);
+      }
+    }
   };
 
   return (
@@ -36,62 +89,73 @@ export default function ResetPassword() {
           <p className="font-satoshi text-white font-black text-2xl lg:text-3xl text-center">
             Reset Password
           </p>
-          <div className="font-satoshi space-y-4">
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-6 flex flex-col justify-between"
-            >
-              <div className="space-y-4">
-                <div className="flex flex-col gap-y-2">
-                  <label className="text-white font-medium">New Password</label>
-                  <input
-                    type="password"
-                    name="newPassword"
-                    onChange={(e) =>
-                      setPasswords({
-                        ...passwords,
-                        newPassword: e.target.value,
-                      })
-                    }
-                    placeholder="Enter Password"
-                    className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                  />
+          {loader ? (
+            <MiniLoader />
+          ) : (
+            <div className="font-satoshi space-y-4">
+              <form
+                onSubmit={handleSubmit}
+                className="space-y-6 flex flex-col justify-between"
+              >
+                <div className="space-y-4">
+                  <div className="flex flex-col gap-y-2">
+                    <label className="text-white font-medium">
+                      New Password
+                    </label>
+                    <input
+                      type="password"
+                      name="newPassword"
+                      onChange={(e) =>
+                        setPasswords({
+                          ...passwords,
+                          newPassword: e.target.value,
+                        })
+                      }
+                      placeholder="Enter Password"
+                      className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-y-2">
+                    <label className="text-white font-medium">
+                      Confirm Password
+                    </label>
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      onChange={(e) =>
+                        setPasswords({
+                          ...passwords,
+                          confirmPassword: e.target.value,
+                        })
+                      }
+                      placeholder="Enter Confirm Password"
+                      className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-col gap-y-2">
-                  <label className="text-white font-medium">
-                    Confirm Password
-                  </label>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    onChange={(e) =>
-                      setPasswords({
-                        ...passwords,
-                        confirmPassword: e.target.value,
-                      })
-                    }
-                    placeholder="Enter Confirm Password"
-                    className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                  />
+                <div>
+                  <button
+                    type="submit"
+                    className="font-medium rounded-xl bg-theme text-white w-full py-3"
+                  >
+                    Done
+                  </button>
                 </div>
-              </div>
-              <div>
-                <button
-                  type="submit"
-                  className="font-medium rounded-xl bg-theme text-white w-full py-3"
-                >
-                  Done
-                </button>
-              </div>
-            </form>
-          </div>
+              </form>
+            </div>
+          )}
         </div>
       </div>
 
       <Dialog
         visible={modal}
         // style={{ width: "70vw" }}
-        breakpoints={{ "1496px": "35vw", "1024px": "40vw", "768px": "80vw", "200px":"40vw" }}
+        breakpoints={{
+          "1496px": "35vw",
+          "1024px": "40vw",
+          "768px": "80vw",
+          "200px": "40vw",
+        }}
         // onHide={() => setModal(false)}
         closeIcon
         header={
@@ -108,7 +172,10 @@ export default function ResetPassword() {
 
           {/* body */}
           <button
-            onClick={() => router.push("/sign-in")}
+            onClick={() => {
+              success_toaster("Login Successfully");
+              router.push("/");
+            }}
             className="py-3 max-w-[500px] rounded-lg border border-theme text-white bg-theme font-satoshi w-full"
           >
             Login

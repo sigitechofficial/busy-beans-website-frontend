@@ -1,6 +1,7 @@
 "use client";
 import MiniLoader from "@/components/ui/MiniLoader";
 import { loginSchema } from "@/schema";
+import ErrorHandler from "@/utilities/ErrorHandler";
 import { loginAPI } from "@/utilities/PostAPI";
 import { error_toaster, success_toaster } from "@/utilities/Toaster";
 import { useFormik } from "formik";
@@ -22,35 +23,49 @@ export default function SignIn() {
       validationSchema: loginSchema,
       onSubmit: async (values, action) => {
         setLoader(true);
-        let res = await loginAPI("api/v1/users/login", {
-          email: values.email,
-          password: values.password,
-        });
-        console.log("🚀 ~ onSubmit: ~ res:", res)
-        if (res?.data?.status === "success") {
-          router.push("/");
+        try {
+          let res = await loginAPI("api/v1/users/login", {
+            email: values.email,
+            password: values.password,
+          });
+          if (res?.data?.status === "success") {
+            router.push("/");
+            setLoader(false);
+            localStorage.setItem("accessToken", res?.data?.data?.token);
+            localStorage.setItem("loginStatus", true);
+            localStorage.setItem("userName", res?.data?.data?.user?.name);
+            localStorage.setItem(
+              "phoneNumber",
+              res?.data?.data?.user?.phoneNumber
+            );
+            localStorage.setItem("userEmail", res?.data?.data?.user?.email);
+            localStorage.setItem(
+              "phoneNumber",
+              res?.data?.data?.user?.phoneNumber
+            );
+            localStorage.setItem(
+              "saleTaxNumber",
+              res?.data?.data?.user?.saleTaxNumber
+            );
+            localStorage.setItem(
+              "registerBy",
+              res?.data?.data?.user?.registerBy
+            );
+            localStorage.setItem("userId", res?.data?.data?.user?.id);
+            localStorage.setItem(
+              "addressId",
+              res?.data?.data?.user?.address?.id
+            );
+            // setLoginStatus(true);
+            success_toaster("Login Successfully");
+          } else {
+            throw new Error(
+              res?.data?.message || "An unexpected error occurred."
+            );
+          }
+        } catch (error) {
+          ErrorHandler(error);
           setLoader(false);
-          localStorage.setItem("accessToken", res?.data?.data?.token);
-          localStorage.setItem("loginStatus", true);
-          localStorage.setItem("userName", res?.data?.data?.user?.name);
-          localStorage.setItem("phoneNumber", res?.data?.data?.user?.phoneNumber);
-          localStorage.setItem("userEmail", res?.data?.data?.user?.email);
-          localStorage.setItem(
-            "phoneNumber",
-            res?.data?.data?.user?.phoneNumber
-          );
-          localStorage.setItem(
-            "saleTaxNumber",
-            res?.data?.data?.user?.saleTaxNumber
-          );
-          localStorage.setItem("registerBy", res?.data?.data?.user?.registerBy);
-          localStorage.setItem("userId", res?.data?.data?.user?.id);
-          localStorage.setItem("addressId", res?.data?.data?.user?.address?.id);
-          // setLoginStatus(true);
-          success_toaster("Login Successfully");
-        } else if (res?.data?.status === "error") {
-          setLoader(false);
-          error_toaster(res?.data?.message);
         }
         action.resetForm();
       },

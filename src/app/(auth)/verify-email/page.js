@@ -1,5 +1,6 @@
 "use client";
 import MiniLoader from "@/components/ui/MiniLoader";
+import ErrorHandler from "@/utilities/ErrorHandler";
 import { PostAPI } from "@/utilities/PostAPI";
 import { error_toaster, success_toaster } from "@/utilities/Toaster";
 import Link from "next/link";
@@ -34,32 +35,63 @@ export default function VerifyEmail() {
 
   const handleVerifyOTP = async () => {
     if (otpStatus === "forgotPassword") {
-      router.push("/reset-password");
+      setLoader(true);
+      try {
+        const res = await PostAPI("api/v1/users/otp/verfication", {
+          id: userID,
+          otp: `${inputRefs.current[0].value}${inputRefs.current[1].value}${inputRefs.current[2].value}${inputRefs.current[3].value}`,
+          on: "forgotPassword",
+        });
+        if (res?.data?.status === "success") {
+          router.push("/reset-password");
+          localStorage.setItem("userID", res?.data?.data?.data?.userId);
+          localStorage.removeItem("otpStatus")
+          localStorage.removeItem("userEmail")
+          setLoader(false);
+          success_toaster("OTP verified Successfully");
+        } else {
+          throw new Error(
+            res?.data?.message || "An unexpected error occurred."
+          );
+        }
+      } catch (error) {
+        ErrorHandler(error);
+        setLoader(false);
+      }
     } else if (otpStatus === "signUp") {
       setLoader(true);
-      const res = await PostAPI("api/v1/users/otp/verfication", {
-        id: userID,
-        otp: `${inputRefs.current[0].value}${inputRefs.current[1].value}${inputRefs.current[2].value}${inputRefs.current[3].value}`,
-      });
-      // console.log("🚀 ~ handleVerifyOTP ~ res:", res?.data?.data)
-      if (res?.data?.status === "success") {
-        router.push("/");
-        setLoader(false);
-        success_toaster("Login Successfully");
-        localStorage.setItem("accessToken", res?.data?.data?.token);
-        localStorage.setItem("loginStatus", true);
-        localStorage.setItem("userName", res?.data?.data?.user?.name);
-        localStorage.setItem("userID", res?.data?.data?.user?.id);
-        localStorage.setItem("userEmail", res?.data?.data?.user?.email);
-        localStorage.setItem("addressId", res?.data?.data?.user?.address?.id);
-        localStorage.setItem("phoneNumber", res?.data?.data?.user?.phoneNumber);
-        localStorage.setItem(
-          "saleTaxNumber",
-          res?.data?.data?.user?.saleTaxNumber
-        );
-        localStorage.setItem("registerBy", res?.data?.data?.user?.registerBy);
-      } else if (res?.data?.status === "error") {
-        error_toaster(res?.data?.message);
+      try {
+        const res = await PostAPI("api/v1/users/otp/verfication", {
+          id: userID,
+          otp: `${inputRefs.current[0].value}${inputRefs.current[1].value}${inputRefs.current[2].value}${inputRefs.current[3].value}`,
+          on: "signup",
+        });
+        if (res?.data?.status === "success") {
+          router.push("/");
+          setLoader(false);
+          success_toaster("Login Successfully");
+          localStorage.setItem("accessToken", res?.data?.data?.token);
+          localStorage.setItem("loginStatus", true);
+          localStorage.setItem("userName", res?.data?.data?.user?.name);
+          localStorage.setItem("userID", res?.data?.data?.user?.id);
+          localStorage.setItem("userEmail", res?.data?.data?.user?.email);
+          localStorage.setItem("addressId", res?.data?.data?.user?.address?.id);
+          localStorage.setItem(
+            "phoneNumber",
+            res?.data?.data?.user?.phoneNumber
+          );
+          localStorage.setItem(
+            "saleTaxNumber",
+            res?.data?.data?.user?.saleTaxNumber
+          );
+          localStorage.setItem("registerBy", res?.data?.data?.user?.registerBy);
+        } else {
+          throw new Error(
+            res?.data?.message || "An unexpected error occurred."
+          );
+        }
+      } catch (error) {
+        ErrorHandler(error);
         setLoader(false);
       }
     }

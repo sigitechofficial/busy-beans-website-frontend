@@ -38,25 +38,4 @@ const GetAPI = (url) => {
   return { data, reFetch };
 };
 
-export const GetPackages = (url) => {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(BASE_URL + url, {
-          headers: {
-            accessToken: localStorage.getItem("accessToken"),
-          },
-        });
-        setData(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, [url]);
-  return data;
-};
 export default GetAPI;
