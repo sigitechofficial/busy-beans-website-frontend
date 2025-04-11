@@ -1,4 +1,4 @@
-export const emailValidity = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;\
+export const emailValidity = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export const passwordStrength = {
   weak: /^(?=.*[a-z]).{6,}$/, // Minimum 6 characters with at least one lowercase letter
