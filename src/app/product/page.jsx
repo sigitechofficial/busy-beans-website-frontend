@@ -43,7 +43,7 @@ export default function Product() {
             Products
           </h2>
 
-          <ProdBanner />
+          {/* <ProdBanner /> */}
 
           {/* <div className="flex flex-wrap justify-center px-5 text-xs sm:text-base gap-2 md:gap-4 text-white mt-10 sm:mt-14 [&>button]:border [&>button]:border-[#FFF3DDCC] [&>button]:rounded-full [&>button]:px-2  sm:[&>button]:px-4 [&>button]:py-1 sm:[&>button]:py-1.5">
           <button>Coffee Bean</button>
