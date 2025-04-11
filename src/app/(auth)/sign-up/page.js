@@ -1,5 +1,6 @@
 "use client";
 import MiniLoader from "@/components/ui/MiniLoader";
+import { emailValidity } from "@/utilities/authValidation";
 import { SignupAPI } from "@/utilities/PostAPI";
 import {
   error_toaster,
@@ -83,14 +84,18 @@ export default function SignUpStep1() {
   };
 
   const handleStep2 = () => {
-    if (userData?.info?.companyName.trim() === "") {
+    if (!userData?.info?.companyName.trim()) {
       info_toaster("Company Name cannot be empty");
-    } else if (userData?.info?.companyInfo.trim() === "") {
+    } else if (!userData?.info?.companyInfo.trim()) {
       info_toaster("Company Info cannot be empty");
-    } else if (userData?.info?.phoneNumber.trim() === "") {
+    } else if (!userData?.info?.phoneNumber.trim()) {
       info_toaster("Phone number cannot be empty");
-    } else if (userData?.info?.emailToSendInvoices.trim() === "") {
+    } else if (!userData?.info?.emailToSendInvoices.trim()) {
       info_toaster("Invoice email cannot be empty");
+    } else if (
+      !emailValidity.test(userData?.info?.emailToSendInvoices.trim())
+    ) {
+      info_toaster("Invalid email format");
     } else {
       success_toaster("Step 2 completed successfully");
       setStep(3);
@@ -136,7 +141,6 @@ export default function SignUpStep1() {
           status: true,
         },
       });
-      console.log("🚀 ~ handleSubmit ~ res:", res?.data?.data?.data?.address?.id);
       if (res?.data?.status === "success") {
         router.push("/verify-email");
         setLoader(false);
