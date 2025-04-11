@@ -23,7 +23,7 @@ export default function Header() {
 
   return (
     <>
-      <div className="w-[90%] lg:w-[77%] h-[65px] sm:h-[80px] mx-auto bg-headerColor rounded-2xl my-7 flex justify-between items-center px-[18px] absolute left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
+      <div className="w-[90%] lg:w-[77%] h-[65px] sm:h-[80px] mx-auto bg-headerColor rounded-2xl my-7 flex justify-between items-center px-[18px] fixed left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
         <Link href="/" className="w-24 sm:w-28 lg:w-40 object-contain lg:ml-4">
           <img src="/images/logowhite.png" alt="" />
         </Link>

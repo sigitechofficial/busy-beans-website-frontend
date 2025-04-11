@@ -58,7 +58,7 @@ export default function ResetPassword() {
             res?.data?.data?.user?.saleTaxNumber
           );
           localStorage.setItem("registerBy", res?.data?.data?.user?.registerBy);
-          localStorage.setItem("userId", res?.data?.data?.user?.id);
+          localStorage.setItem("userID", res?.data?.data?.user?.id);
           localStorage.setItem("addressId", res?.data?.data?.user?.address?.id);
           localStorage.removeItem("userID");
           success_toaster("Login Successfully");

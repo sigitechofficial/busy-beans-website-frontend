@@ -9,10 +9,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Checkbox } from "primereact/checkbox";
 import { useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function SignIn() {
   const router = useRouter();
   const [loader, setLoader] = useState(false);
+  const [visible, setVisible] = useState(false);
   const initialValues = {
     email: "",
     password: "",
@@ -51,10 +53,20 @@ export default function SignIn() {
               "registerBy",
               res?.data?.data?.user?.registerBy
             );
-            localStorage.setItem("userId", res?.data?.data?.user?.id);
+            localStorage.setItem("userID", res?.data?.data?.user?.id);
             localStorage.setItem(
               "addressId",
               res?.data?.data?.user?.address?.id
+            );
+            localStorage.setItem(
+              "address",
+              `${res?.data?.data?.user?.address?.companyaddress},
+              ${res?.data?.data?.user?.address?.addressLineOne}, 
+              ${res?.data?.data?.user?.address?.addressLineTwo}, 
+              ${res?.data?.data?.user?.address?.town}, 
+              ${res?.data?.data?.user?.address?.zipCode}, 
+              ${res?.data?.data?.user?.address?.country}, 
+              ${res?.data?.data?.user?.address?.state}`
             );
             // setLoginStatus(true);
             success_toaster("Login Successfully");
@@ -124,18 +136,29 @@ export default function SignIn() {
                     )}
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-2">
+                <div className="flex flex-col gap-y-2 relative">
                   <label className="text-white font-medium font-satoshi">
                     Password
                   </label>
                   <input
-                    type="password"
+                    type={visible ? "text" : "password"}
                     name="password"
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="password"
                     className="border border-inputBorder rounded-lg outline-none px-3 py-2"
                   />
+                  <button
+                    onClick={() => setVisible(!visible)}
+                    type="button"
+                    className="text-labelColor absolute right-4 top-10"
+                  >
+                    {visible ? (
+                      <AiOutlineEye size={24} color="#ffffff" />
+                    ) : (
+                      <AiOutlineEyeInvisible size={24} color="#ffffff" />
+                    )}
+                  </button>
                   <div className={errors.password && touched.password}>
                     {" "}
                     {errors.password && touched.password && (

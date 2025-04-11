@@ -3,6 +3,7 @@ import { Dialog, Portal } from "@chakra-ui/react";
 import { RiSubtractFill } from "react-icons/ri";
 import { BiPlus } from "react-icons/bi";
 import { success_toaster } from "@/utilities/Toaster";
+import { BASE_URL } from "@/utilities/URL";
 
 const ProdModal = ({ productModalData, productModal, setProductModal }) => {
   const { productId, image, name, description, qty, discount, price, unit } =
@@ -57,6 +58,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
           price: price,
           weight: price * orderStatus?.qty,
           unit: unit,
+          image:image
         });
         localStorage.setItem("cartItems", JSON.stringify(existingCartItems));
         success_toaster("Product Added successfully");
@@ -74,6 +76,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
             price: price,
             weight: price * orderStatus?.qty,
             unit: unit,
+            image:image
           },
         ])
       );
@@ -152,7 +155,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
                   <div className="w-full h-[292px] mb-3">
                     <img
                       className="w-full h-full object-cover"
-                      src={image}
+                      src={BASE_URL+ image}
                       alt=""
                     />
                   </div>

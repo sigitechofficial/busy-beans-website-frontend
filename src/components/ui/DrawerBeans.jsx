@@ -282,7 +282,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                         </div>
                         <p> Go to checkout </p>
                       </div>
-                      ${totalPrice} {activeResData?.currencyUnit}
+                      ${totalPrice.toFixed(2)} {activeResData?.currencyUnit}
                     </button>
                   </div>
                 ) : (

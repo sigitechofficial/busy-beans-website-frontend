@@ -27,7 +27,7 @@ import {
   MarkerF,
   LoadScript,
 } from "@react-google-maps/api";
-import { googleApiKey } from "@/utilities/URL";
+import { BASE_URL, googleApiKey } from "@/utilities/URL";
 import {
   error_toaster,
   info_toaster,
@@ -37,10 +37,12 @@ import { useRouter } from "next/navigation";
 import { PostAPI } from "@/utilities/PostAPI";
 import Loader from "@/components/ui/Loader";
 import ErrorHandler from "@/utilities/ErrorHandler";
+import { FaLocationCrosshairs } from "react-icons/fa6";
 
 const page = () => {
   if (typeof window !== "undefined") {
     var addressId = localStorage.getItem("addressId") || "";
+    var address = localStorage.getItem("address") || "";
     var userId = localStorage.getItem("userID") || "";
     var cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
   }
@@ -63,12 +65,15 @@ const page = () => {
   });
   const [activeResData, setActiveResData] = useState([]);
   const [existingCartItems, setExistingCartItems] = useState([]);
+  console.log("🚀 ~ page ~ existingCartItems:", existingCartItems);
 
   const totalPrice = existingCartItems?.reduce((a, b) => {
+    console.log("🚀 ~ totalPrice ~ existingCartItems:", existingCartItems);
     return a + b?.price * b?.qty;
   }, 0);
 
   const totalWeight = existingCartItems?.reduce((a, b) => {
+    console.log("🚀 ~ totalWeight ~ existingCartItems:", existingCartItems);
     return a + b?.weight;
   }, 0);
 
@@ -195,7 +200,7 @@ const page = () => {
     } else {
       let res = await PostAPI("users/applyvoucher", {
         code: coupon,
-        userId: localStorage.getItem("userId"),
+        userId: localStorage.getItem("userID"),
         restaurantId: localStorage.getItem("resId"),
       });
       if (res?.data?.status === "1") {
@@ -248,22 +253,22 @@ const page = () => {
             poNumber: order?.poNumber,
             orderFrequency: order?.orderFrequency, // 'just-onces', 'weekly', 'every-two-weeks', 'every-four-weeks'
             addressId: addressId,
-            userId: userId, 
+            userId: userId,
           },
           items: cartItems,
         });
         if (res?.data?.status === "success") {
           router.push("/product");
-          setLoader(false); 
-          localStorage.removeItem("cartItems"); 
-          success_toaster("Order Created Successfully"); 
+          setLoader(false);
+          localStorage.removeItem("cartItems");
+          success_toaster("Order Created Successfully");
         } else {
           throw new Error(
             res?.data?.message || "An unexpected error occurred."
           );
         }
       } catch (error) {
-        ErrorHandler(error)
+        ErrorHandler(error);
         setLoader(false);
       }
     }
@@ -463,8 +468,12 @@ const page = () => {
                 </>
               )} */}
               </div>
-              <div className="text-white rounded-lg bg-themeLight  my-4 mb-12">
-                {/* <div className="flex items-center justify-between gap-x-2 px-5 py-5">
+              <div className="space-y-8">
+                <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
+                  Delivery Details
+                </h3>
+                <div className="text-white rounded-lg bg-themeLight  my-4 mb-12">
+                  {/* <div className="flex items-center justify-between gap-x-2 px-5 py-5">
                 <div className="flex items-center gap-x-3">
                   <span>
                     <IoMdHome size={24} />
@@ -506,9 +515,9 @@ const page = () => {
                 )}
               </div> */}
 
-                {deliveryData.how === 1 && (
-                  <>
-                    {/* <hr className="mx-5 " />
+                  {deliveryData.how === 1 && (
+                    <>
+                      {/* <hr className="mx-5 " />
                   <div className="flex items-center justify-between gap-x-2 px-5 py-5">
                     <div className="flex items-center gap-x-3">
                       <span>
@@ -532,41 +541,60 @@ const page = () => {
                       handleDiameter={23}
                     />
                   </div> */}
+                      <div>
+                        <div className="relative w-full group">
+                          <div className="font-sf font-normal text-base text-theme-black-2 flex items-center gap-3 px-5 py-[5px] duration-300 border-2 border-white hover:border-goldenLight focus-within:border-goldenLight rounded-t-lg">
+                            <FaLocationCrosshairs size={24} />
+                            <div className="relative w-full">
+                              <input
+                                type="text"
+                                id="courier-note"
+                                disabled
+                                className={`w-full h-full py-5 pt-7 pb-2 focus:outline-none bg-transparent peer placeholder-transparent`}
+                                value={address}
+                              />
+                              <label
+                                htmlFor="courier-note"
+                                className={`absolute left-0 top-[5px] text-[13px] text-goldenLight`}
+                              >
+                                Delivery Address
+                              </label>
+                            </div>
+                          </div>
 
-                    <div>
-                      <div className="relative w-full group">
-                        <div className="font-sf font-normal text-base text-theme-black-2 flex items-center gap-3 px-5 py-[5px] duration-300 border-2 border-white hover:border-goldenLight focus-within:border-goldenLight rounded-lg">
-                          <MdInsertComment size={24} />
-                          <div className="relative w-full">
-                            <input
-                              type="text"
-                              id="courier-note"
-                              className={`w-full h-full py-5 pt-7 pb-2 focus:outline-none bg-transparent peer ${
-                                deliveryAddress?.instructions
-                                  ? "placeholder-transparent"
-                                  : ""
-                              }`}
-                              value={order?.note}
-                              onChange={(e) =>
-                                setOrder({ ...order, note: e.target.value })
-                              }
-                            />
-                            <label
-                              htmlFor="courier-note"
-                              className={`absolute left-0 top-4 text-gray-400 transition-all ${
-                                deliveryAddress?.instructions
-                                  ? "top-[5px] text-[13px] peer-focus:text-goldenLight"
-                                  : "peer-placeholder-shown:top-5 peer-placeholder-shown:text-goldenLight peer-focus:top-[7px] peer-focus:text-[13px] peer-focus:text-goldenLight"
-                              }`}
-                            >
-                              Add note for the courier
-                            </label>
+                          <div className="font-sf font-normal text-base text-theme-black-2 flex items-center gap-3 px-5 py-[5px] duration-300 border-2 border-white hover:border-goldenLight focus-within:border-goldenLight rounded-b-lg">
+                            <MdInsertComment size={24} />
+                            <div className="relative w-full">
+                              <input
+                                type="text"
+                                id="courier-note"
+                                className={`w-full h-full py-5 pt-7 pb-2 focus:outline-none bg-transparent peer ${
+                                  deliveryAddress?.instructions
+                                    ? "placeholder-transparent"
+                                    : ""
+                                }`}
+                                value={order?.note}
+                                onChange={(e) =>
+                                  setOrder({ ...order, note: e.target.value })
+                                }
+                              />
+                              <label
+                                htmlFor="courier-note"
+                                className={`absolute left-0 top-4 text-gray-400 transition-all ${
+                                  deliveryAddress?.instructions
+                                    ? "top-[5px] text-[13px] peer-focus:text-goldenLight"
+                                    : "peer-placeholder-shown:top-5 peer-placeholder-shown:text-goldenLight peer-focus:top-[7px] peer-focus:text-[13px] peer-focus:text-goldenLight"
+                                }`}
+                              >
+                                Add note for the supplier
+                              </label>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </>
-                )}
+                    </>
+                  )}
+                </div>
               </div>
 
               {/* {deliveryData.how === 1 && (
@@ -750,13 +778,17 @@ const page = () => {
               {true && (
                 <div className="bg-theme text-white rounded-lg my-4 space-y-3">
                   {existingCartItems?.map((cart, index) => {
+                    console.log(
+                      "🚀 ~ {existingCartItems?.map ~ existingCartItems:",
+                      existingCartItems
+                    );
                     return (
                       <div key={index} className="flex justify-between gap-x-2">
                         <div className="flex gap-x-5">
-                          <div className="border-2  border-gray-100 rounded-xl sm:w-28 sm:h-20 w-6 h-6 ">
+                          <div className="border-2  border-gray-100 rounded-md sm:w-28 sm:h-20 w-6 h-6 ">
                             <img
-                              className="w-full h-full object-cover rounded-md"
-                              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2975y5Wi7suYu48FfPSEZSmjfRBvPjmsH4g&s"
+                              className="w-full h-full object-cover rounded-md overflow-hidden"
+                              src={BASE_URL + cart?.image}
                               alt={cart?.name}
                             />
                           </div>
@@ -1166,7 +1198,7 @@ const page = () => {
               className={`lg:bg-themeLight rounded-2xl text-white  relative xl:min-w-[399px] w-full lg:shadow-checkoutBoxShadow lg:p-6 lg:col-span-2 h-max space-y-6 lg:sticky lg:top-40 lg:right-7 lg:-mt-32`}
             >
               <div className="flex flex-col text-xl md:text-2xl text-white ">
-                <h3 className="font-semibold">Prices in $</h3>
+                <h3 className="font-semibold">Prices in USD ($)</h3>
                 <p className="text-sm font-light text-checkoutTextColor/65 pb-6">
                   incl. taxes (if applicable)
                 </p>
@@ -1183,7 +1215,7 @@ const page = () => {
               <div className="space-y-2.5 my-4">
                 <div className="flex items-center justify-between gap-x-2">
                   <h5 className="text-base text-checkoutTextColor">Subtotal</h5>
-                  <h6>{totalPrice} $</h6>
+                  <h6>$ {totalPrice.toFixed(2)}</h6>
                 </div>
                 {deliveryData.how === 1 && (
                   <>
@@ -1198,7 +1230,9 @@ const page = () => {
                         Total Weight
                       </h5>
 
-                      <h6 className="flex gap-x-2">{totalWeight} kg</h6>
+                      <h6 className="flex gap-x-2">
+                        {totalWeight.toFixed(2)} kg
+                      </h6>
                     </div>
 
                     {tip?.tip >= 1 && (
@@ -1219,7 +1253,7 @@ const page = () => {
                     Total
                   </h5>
                   <h6 className="font-semibold text-checkoutTextColor text-base">
-                    {totalPrice} $
+                    $ {totalPrice.toFixed(2)}
                   </h6>
                 </div>
                 <div className="border-dashed border" />
