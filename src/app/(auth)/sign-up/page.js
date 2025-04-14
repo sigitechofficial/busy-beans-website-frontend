@@ -1,6 +1,6 @@
 "use client";
 import MiniLoader from "@/components/ui/MiniLoader";
-import { emailValidity } from "@/utilities/authValidation";
+import { emailValidity, passwordStrength } from "@/utilities/authValidation";
 import { SignupAPI } from "@/utilities/PostAPI";
 import {
   error_toaster,
@@ -108,8 +108,16 @@ export default function SignUpStep1() {
       info_toaster("Name cannot be empty");
     } else if (userData?.info?.email.trim() === "") {
       info_toaster("Email cannot be empty");
-    } else if (userData?.info?.password.trim() === "") {
-      info_toaster("Password cannot be empty");
+    } else if (!emailValidity.test(userData?.info?.email.trim())) {
+      info_toaster("Invalid Email");
+    } else if (userData?.info?.password.trim().length < 6) {
+      info_toaster("Password must be of minimum 6");
+    } else if (
+      !passwordStrength?.weak?.test(userData?.info?.password.trim()) ||
+      !passwordStrength?.medium?.test(userData?.info?.password.trim()) ||
+      !passwordStrength?.strong?.test(userData?.info?.password.trim())
+    ) {
+      info_toaster("Password must be Strong");
     } else if (userData?.info?.confirmPassword.trim() === "") {
       info_toaster("Enter password again");
     } else if (
@@ -424,6 +432,23 @@ export default function SignUpStep1() {
                         placeholder="Enter Password"
                         className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                       />
+                      {userData?.info?.password.length > 0 && (
+                        <p className="text-red-700 text font-semibold text-sm">
+                          {!passwordStrength?.weak?.test(
+                            userData?.info?.password.trim()
+                          )
+                            ? "Password is too weak, contain atleat 6 characters consider adding more complexity"
+                            : !passwordStrength?.medium?.test(
+                                userData?.info?.password.trim()
+                              )
+                            ? "Password should include both uppercase and lowercase letters"
+                            : !passwordStrength?.strong.test(
+                                userData?.info?.password.trim()
+                              )
+                            ? "Password is strong! It should include at least one uppercase letter, one lowercase letter, one number, and one special character"
+                            : ""}
+                        </p>
+                      )}
                     </div>
                     <div className="flex flex-col gap-y-2">
                       <label className="text-white font-medium">
