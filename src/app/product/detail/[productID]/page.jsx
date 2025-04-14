@@ -3,9 +3,13 @@ import CoffeSolution from "@/components/ui/CoffeSolution";
 import ProdBanner from "@/components/ui/ProdBanner";
 import ProductCard from "@/components/ui/ProductCard";
 import ProductDetailImageCard from "@/components/ui/ProductDetailImageCard";
+import { useParams } from "next/navigation";
 import { FaMinus, FaPlus } from "react-icons/fa";
 
 export default function ProductDetail() {
+  const { productID } = useParams();
+  
+  console.log("🚀 ~ ProductDetail ~ productID:", productID);
   return (
     <div className="w-full">
       <div className=" bg-themeLight pt-[140px] relative">
@@ -39,7 +43,9 @@ export default function ProductDetail() {
               {/* image detail */}
               <div className="font-switzer flex flex-col gap-y-4 justify-between text-white py-4">
                 <div className="space-y-2 md:space-y-4">
-                  <p className="text-2xl lg:text-3xl xl:text-4xl font-bold">Whole Bean</p>
+                  <p className="text-2xl lg:text-3xl xl:text-4xl font-bold">
+                    Whole Bean
+                  </p>
                   <p className="font-semibold text-xl md:text-2xl">$220.00</p>
                   <p className="font-normal md:text-xl leading-tight">
                     For those who like a darker roast, this bean will not
