@@ -8,8 +8,6 @@ import { FaMinus, FaPlus } from "react-icons/fa";
 
 export default function ProductDetail() {
   const { productID } = useParams();
-  
-  console.log("🚀 ~ ProductDetail ~ productID:", productID);
   return (
     <div className="w-full">
       <div className=" bg-themeLight pt-[140px] relative">
