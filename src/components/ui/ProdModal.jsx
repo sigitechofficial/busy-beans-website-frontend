@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Dialog, Portal } from "@chakra-ui/react";
 import { RiSubtractFill } from "react-icons/ri";
 import { BiPlus } from "react-icons/bi";
+import { success_toaster } from "@/utilities/Toaster";
+import { BASE_URL } from "@/utilities/URL";
 
 const ProdModal = ({ productModalData, productModal, setProductModal }) => {
   const { productId, image, name, description, qty, discount, price, unit } =
@@ -37,7 +39,6 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
       const checkItemIndex = existingCartItems.findIndex(
         (item) => item?.productId === productId
       );
-
       if (checkItemIndex !== -1) {
         const updatedItem = {
           ...existingCartItems[checkItemIndex],
@@ -46,6 +47,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
         };
         existingCartItems[checkItemIndex] = updatedItem;
         localStorage.setItem("cartItems", JSON.stringify(existingCartItems));
+        success_toaster("Product updated successfully");
       } else {
         existingCartItems.push({
           productId: productId,
@@ -56,8 +58,10 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
           price: price,
           weight: price * orderStatus?.qty,
           unit: unit,
+          image:image
         });
         localStorage.setItem("cartItems", JSON.stringify(existingCartItems));
+        success_toaster("Product Added successfully");
       }
     } else {
       localStorage.setItem(
@@ -72,9 +76,11 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
             price: price,
             weight: price * orderStatus?.qty,
             unit: unit,
+            image:image
           },
         ])
       );
+      success_toaster("Product added successfully");
     }
     setProductModal(false);
   };
@@ -89,7 +95,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
         placement={{ sm: "center" }}
         open={productModal}
         onOpenChange={(e) => setProductModal(e.open)}
-         motionPreset="slide-in-bottom"
+        motionPreset="slide-in-bottom"
       >
         <Portal>
           <Dialog.Backdrop />
@@ -106,7 +112,6 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
               bottom={{ base: "0", sm: "auto" }}
               left={{ base: "0", sm: "50%" }}
               transform={{ sm: "translateX(-50%)" }}
-              
             >
               <Dialog.Header
                 p={0}
@@ -150,7 +155,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
                   <div className="w-full h-[292px] mb-3">
                     <img
                       className="w-full h-full object-cover"
-                      src={image}
+                      src={BASE_URL+ image}
                       alt=""
                     />
                   </div>

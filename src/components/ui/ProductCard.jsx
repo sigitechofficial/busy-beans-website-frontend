@@ -9,11 +9,12 @@ const ProductCard = (props) => {
       onClick={props.onClick}
       className="w-full max-w-[448px] rounded-md border border-quantityBtn overflow-hidden cursor-pointer"
     >
-      <div className="w-full h-auto [&>img]:w-full [&>img]:h-[130px] sm:[&>img]:h-auto [&>img]:object-cover">
+      <div className="w-full h-52">
         {/* <img src={BASE_URL + imageURL} alt="product image" /> */}
         <img
-          src={"/images/prodImages/prod-italian-espresso.avif"}
+          src={BASE_URL+imageURL}
           alt="product image"
+          className="object-cover h-full w-full"
         />
       </div>
 

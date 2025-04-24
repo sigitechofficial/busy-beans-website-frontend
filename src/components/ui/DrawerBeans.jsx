@@ -6,6 +6,7 @@ import { RiSubtractFill } from "react-icons/ri";
 import { BiPlus, BiTrash } from "react-icons/bi";
 import { IoMdClose } from "react-icons/io";
 import { useRouter } from "next/navigation";
+import { BASE_URL } from "@/utilities/URL";
 
 const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
   const router = useRouter();
@@ -55,7 +56,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
         (item) => Number(item.productId) !== id
       );
       localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-       setRender(!render);
+      setRender(!render);
     }
   };
 
@@ -143,7 +144,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                         >
                           <div className="flex justify-center sm:w-[150px] w-[72px] sm:h-[72px] h-[72px] rounded-2xl">
                             <img
-                              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2975y5Wi7suYu48FfPSEZSmjfRBvPjmsH4g&s"
+                              src={BASE_URL + cartI?.image}
                               alt="cutlery"
                               className="w-full h-full rounded-md object-cover"
                             />
@@ -282,7 +283,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                         </div>
                         <p> Go to checkout </p>
                       </div>
-                      ${totalPrice} {activeResData?.currencyUnit}
+                      ${totalPrice.toFixed(2)} {activeResData?.currencyUnit}
                     </button>
                   </div>
                 ) : (
