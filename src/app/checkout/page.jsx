@@ -251,7 +251,7 @@ const page = () => {
             note: order?.note,
             paymentMethod: order.paymentMethod,
             poNumber: order?.poNumber,
-            orderFrequency: order?.orderFrequency, // 'just-onces', 'weekly', 'every-two-weeks', 'every-four-weeks'
+            frequency: order?.orderFrequency, // 'just-onces', 'weekly', 'every-two-weeks', 'every-four-weeks'
             addressId: addressId,
             userId: userId,
           },
