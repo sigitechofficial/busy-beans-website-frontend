@@ -174,7 +174,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
               </Dialog.Body>
               <Dialog.Footer p={0}>
                 <div className="flex flex-col w-full">
-                  <div className="px-5 py-5 flex justify-center items-center  gap-3 w-full">
+                  <div className="px-5 py-5 flex justify-center items-center gap-3 w-full">
                     <div className="shadow-smButtonShadow  w-40 h-14 rounded-full flex items-center justify-around text-[#707175] bg-white">
                       <button
                         disabled={orderStatus?.qty === 1}
