@@ -45,8 +45,8 @@ export default function VerifyEmail() {
         if (res?.data?.status === "success") {
           router.push("/reset-password");
           localStorage.setItem("userID", res?.data?.data?.data?.userId);
-          localStorage.removeItem("otpStatus")
-          localStorage.removeItem("userEmail")
+          localStorage.removeItem("otpStatus");
+          localStorage.removeItem("userEmail");
           setLoader(false);
           success_toaster("OTP verified Successfully");
         } else {
@@ -66,6 +66,7 @@ export default function VerifyEmail() {
           otp: `${inputRefs.current[0].value}${inputRefs.current[1].value}${inputRefs.current[2].value}${inputRefs.current[3].value}`,
           on: "signup",
         });
+        console.log("🚀 ~ handleVerifyOTP ~ res:", res);
         if (res?.data?.status === "success") {
           router.push("/");
           setLoader(false);
@@ -76,6 +77,17 @@ export default function VerifyEmail() {
           localStorage.setItem("userID", res?.data?.data?.user?.id);
           localStorage.setItem("userEmail", res?.data?.data?.user?.email);
           localStorage.setItem("addressId", res?.data?.data?.user?.address?.id);
+          localStorage.setItem("address", res?.data?.data?.user?.address?.id);
+          localStorage.setItem(
+            "address",
+            `${res?.data?.data?.user?.address?.companyaddress},
+            ${res?.data?.data?.user?.address?.addressLineOne}, 
+            ${res?.data?.data?.user?.address?.addressLineTwo}, 
+            ${res?.data?.data?.user?.address?.town}, 
+            ${res?.data?.data?.user?.address?.zipCode}, 
+            ${res?.data?.data?.user?.address?.country}, 
+            ${res?.data?.data?.user?.address?.state}`
+          );
           localStorage.setItem(
             "phoneNumber",
             res?.data?.data?.user?.phoneNumber
