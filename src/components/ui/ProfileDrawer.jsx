@@ -47,6 +47,7 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
 
   const logoutFunc = () => {
     localStorage.clear();
+    router.push("/sign-in")
     setProfileDrawer(false);
     info_toaster("Successfully Logged Out!");
   };
