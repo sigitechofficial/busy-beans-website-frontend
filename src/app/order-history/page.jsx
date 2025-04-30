@@ -1,0 +1,95 @@
+"use client";
+import GetAPI from "@/utilities/GetAPI";
+import React from "react";
+
+function History() {
+  let userId = "";
+  if (typeof window !== "undefined") {
+    userId = localStorage.getItem("userID");
+  }
+  const { data } = GetAPI(`api/v1/users/orders?userId=${userId}`);
+  const pastOrder = [];
+  const activeOrders = [];
+
+  data?.data?.data?.forEach((item) => {
+    if (item?.statusId == 5 || item?.statusId == 6) {
+      pastOrder.push(item);
+    } else {
+      activeOrders.push(item);
+    }
+  });
+
+  return (
+    <div className="w-full ">
+      <div className=" bg-theme pt-36 sm:pt-[180px] pb-10 relative">
+        {/* overlay */}
+        <div className="w-full h-full absolute top-0 left-0 z-10 [&>img]:opacity-[0.05] bg-gradient-to-b from-[#00000097] to-transparent pointer-events-none"></div>
+        {/* content */}
+        <div className="w-[90%] md:w-[75%] min-h-[50vh] mx-auto bg-themeLight border-theme border text-white rounded-xl shadow-md pb-10 relative z-20">
+          <h4 className="mx-6 pt-6 md:mx-14 text-2xl font-semibold">
+            Order History
+          </h4>
+          <h4 className="mx-6 pt-6 md:mx-14 text-xl font-semibold">
+            Active Orders
+          </h4>
+
+          <div className="grid lg:grid-cols-2 gap-5 px-6 md:px-14 cursor-pointer">
+            {activeOrders?.map((item, idx) => {
+              return (
+                <div className=" border-b border-theme py-6 flex items-center gap-x-4">
+                  <img
+                    src="https://backend.fomino.ch/Public/Images/Restaurant/restaurant-logo-1724242016985.jpg"
+                    alt="product image"
+                    className="w-36 object-cover h-24 rounded-md"
+                  />
+
+                  <div>
+                    <h4 className="font-semibold text-lg">
+                      {item?.items[0]?.product}
+                    </h4>
+                    <p className="text-sm py-1">
+                      Payment Method: {item?.paymentMethod}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      {item?.orderCurrentStatus}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <h4 className="mx-6 pt-6 md:mx-14 text-xl font-semibold">
+            Past Orders
+          </h4>
+
+          <div className="grid lg:grid-cols-2 gap-5 px-6 md:px-14 cursor-pointer">
+            {pastOrder?.map((item, idx) => {
+              return (
+                <div className=" border-b border-theme py-6 flex items-center gap-x-4">
+                  <img
+                    src="https://backend.fomino.ch/Public/Images/Restaurant/restaurant-logo-1724242016985.jpg"
+                    alt="product image"
+                    className="w-36 object-cover h-24 rounded-md"
+                  />
+
+                  <div>
+                    <h4 className="font-semibold text-lg">
+                      {item?.items[0]?.product}
+                    </h4>
+                    <p>description</p>
+                    <p className="text-xs text-gray-400 mt-2">
+                      {item?.orderCurrentStatus}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default History;

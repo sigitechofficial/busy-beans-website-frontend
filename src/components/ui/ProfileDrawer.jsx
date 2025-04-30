@@ -47,7 +47,7 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
 
   const logoutFunc = () => {
     localStorage.clear();
-    router.push("/sign-in")
+    router.push("/sign-in");
     setProfileDrawer(false);
     info_toaster("Successfully Logged Out!");
   };
@@ -203,6 +203,10 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                         <DrawerItem
                           Icon={RxCounterClockwiseClock}
                           text={"Order history"}
+                          onClick={() => {
+                            router.push("/order-history");
+                            setProfileDrawer(false);
+                          }}
                         />
 
                         <DrawerItem Icon={TbUserCircle} text={"Account"} />

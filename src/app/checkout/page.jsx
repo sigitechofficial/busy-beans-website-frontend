@@ -896,8 +896,8 @@ const page = () => {
                       >
                         <img
                           src={`${
-                            order?.paymentMethod?.includes("Cards")
-                              ? "/images/credit-card.webp"
+                            order?.paymentMethod?.includes("cheque")
+                              ? "/images/cheque1.png"
                               : order?.paymentMethod?.includes("Apple")
                               ? "/images/epay.webp"
                               : order?.paymentMethod?.includes("Google")
@@ -1306,8 +1306,8 @@ const page = () => {
                           <div className="flex items-center gap-x-4">
                             <img
                               src={`${
-                                itm?.name.includes("Cards")
-                                  ? "/images/credit-card.webp"
+                                itm?.name.includes("Cheque")
+                                  ? "/images/cheque1.png"
                                   : itm?.name.includes("Apple")
                                   ? "/images/epay.webp"
                                   : itm?.name.includes("Google")
