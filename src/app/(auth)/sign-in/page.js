@@ -40,6 +40,14 @@ export default function SignIn() {
               "phoneNumber",
               res?.data?.data?.user?.phoneNumber
             );
+            localStorage.setItem(
+              "emailToSendInvoices",
+              res?.data?.data?.user?.emailToSendInvoices
+            );
+            localStorage.setItem(
+              "companyName",
+              res?.data?.data?.user?.companyName
+            );
             localStorage.setItem("userEmail", res?.data?.data?.user?.email);
             localStorage.setItem(
               "phoneNumber",

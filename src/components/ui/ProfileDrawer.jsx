@@ -56,6 +56,7 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
     var userName = localStorage.getItem("userName");
     var phoneNumber = localStorage.getItem("phoneNumber");
     var userEmail = localStorage.getItem("userEmail");
+    var loginStatus = localStorage.getItem("loginStatus");
   }
 
   return (
@@ -215,20 +216,6 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                           Icon={FaRegAddressBook}
                           text={"My addresses"}
                         />
-                        {true ? (
-                          <>
-                            <DrawerItem
-                              onClick={logoutFunc}
-                              Icon={MdLogout}
-                              text={"Logout"}
-                            />
-                          </>
-                        ) : (
-                          <>
-                            <DrawerItem Icon={GrUserAdmin} text="Log in" />
-                            <DrawerItem Icon={FiLogOut} text="Sign up" />
-                          </>
-                        )}
                       </div>
 
                       <div>
@@ -304,6 +291,35 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                             }}
                           />
                         </div>
+
+                        {loginStatus === "true" ? (
+                          <>
+                            <DrawerItem
+                              onClick={logoutFunc}
+                              Icon={MdLogout}
+                              text={"Logout"}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <DrawerItem
+                              Icon={GrUserAdmin}
+                              onClick={() => {
+                                router.push("/sign-in");
+                                setProfileDrawer(false);
+                              }}
+                              text="Log in"
+                            />
+                            <DrawerItem
+                              Icon={FiLogOut}
+                              onClick={() => {
+                                router.push("/sign-up");
+                                setProfileDrawer(false);
+                              }}
+                              text="Sign up"
+                            />
+                          </>
+                        )}
                       </div>
                     </div>
                   </section>

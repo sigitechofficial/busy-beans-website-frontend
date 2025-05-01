@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import { BASE_URL } from "./URL";
 
 export const PutAPI = async (url, postData) => {
