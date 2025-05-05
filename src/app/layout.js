@@ -14,6 +14,7 @@ import Header from "@/components/ui/Header";
 import { usePathname } from "next/navigation";
 import Footer from "@/components/ui/Footer";
 import { Provider } from "@/components/ui/provider";
+import { CartProvider } from "@/utilities/cartContext";
 
 const satoshi = localFont({
   src: [
@@ -129,10 +130,15 @@ export default function RootLayout({ children }) {
       >
         <Provider>
           <ToastContainer />
+          <CartProvider>
+
           {!isAuth && <Header />}
 
           <section>{children}</section>
+
+
           {!isAuth && <Footer />}
+          </CartProvider>
         </Provider>
       </body>
     </html>

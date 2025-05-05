@@ -30,7 +30,6 @@ export default function Product() {
   });
 
   const { data } = GetAPI("api/v1/admin/product");
-  console.log("🚀 ~ Product ~ data:", data?.data?.data);
   const { data: categoryData } = GetAPI("api/v1/admin/category");
 
   return data.length === 0 ? (

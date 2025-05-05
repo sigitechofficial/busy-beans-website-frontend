@@ -4,10 +4,12 @@ import { RiSubtractFill } from "react-icons/ri";
 import { BiPlus } from "react-icons/bi";
 import { success_toaster } from "@/utilities/Toaster";
 import { BASE_URL } from "@/utilities/URL";
+import { useCart } from "@/utilities/cartContext";
 
 const ProdModal = ({ productModalData, productModal, setProductModal }) => {
   const { productId, image, name, description, qty, discount, price, unit } =
     productModalData;
+  const { cartItems, addOrUpdateCartItem } = useCart();
 
   const [modalScroll, setModalScroll] = useState(0);
   const [headerShadow, setHeaderShadow] = useState(false);
@@ -35,53 +37,25 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
   });
 
   const handleCart = () => {
-    if (existingCartItems) {
-      const checkItemIndex = existingCartItems.findIndex(
-        (item) => item?.productId === productId
-      );
-      if (checkItemIndex !== -1) {
-        const updatedItem = {
-          ...existingCartItems[checkItemIndex],
-          qty: orderStatus?.qty,
-          weight: orderStatus?.qty * existingCartItems[checkItemIndex]?.price,
-        };
-        existingCartItems[checkItemIndex] = updatedItem;
-        localStorage.setItem("cartItems", JSON.stringify(existingCartItems));
-        success_toaster("Product updated successfully");
-      } else {
-        existingCartItems.push({
-          productId: productId,
-          name: name,
-          description: description,
-          qty: orderStatus?.qty,
-          discount: discount,
-          price: price,
-          weight: price * orderStatus?.qty,
-          unit: unit,
-          image:image
-        });
-        localStorage.setItem("cartItems", JSON.stringify(existingCartItems));
-        success_toaster("Product Added successfully");
-      }
-    } else {
-      localStorage.setItem(
-        "cartItems",
-        JSON.stringify([
-          {
-            productId: productId,
-            name: name,
-            description: description,
-            qty: orderStatus?.qty,
-            discount: discount,
-            price: price,
-            weight: price * orderStatus?.qty,
-            unit: unit,
-            image:image
-          },
-        ])
-      );
-      success_toaster("Product added successfully");
-    }
+    const newItem = {
+      productId,
+      name,
+      description,
+      qty: orderStatus.qty,
+      discount,
+      price,
+      unit,
+      image,
+    };
+
+    addOrUpdateCartItem(newItem);
+
+    success_toaster(
+      cartItems.find((item) => item.productId === productId)
+        ? "Product updated successfully"
+        : "Product added successfully"
+    );
+
     setProductModal(false);
   };
 
@@ -155,7 +129,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
                   <div className="w-full h-[292px] mb-3">
                     <img
                       className="w-full h-full object-cover"
-                      src={BASE_URL+ image}
+                      src={BASE_URL + image}
                       alt=""
                     />
                   </div>

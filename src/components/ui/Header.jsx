@@ -8,9 +8,11 @@ import ToggleMenu from "./ToggleMenu";
 import { useState } from "react";
 import DrawerBeans from "./DrawerBeans";
 import ProfileDrawer from "./ProfileDrawer";
+import { useCart } from "@/utilities/cartContext";
 
 export default function Header() {
   const router = useRouter();
+  const { cartItems: cart } = useCart();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [profileDrawer, setProfileDrawer] = useState(false);
   const [render, setRender] = useState(false);
@@ -30,10 +32,18 @@ export default function Header() {
 
         <div className="hidden md:flex gap-x-6">
           <ul className="flex gap-x-2 xl:gap-x-5 text-base [&>li]:flex [&>li]:cursor-pointer [&>li]:items-center text-white">
-            <li onClick={() => router.push("/our-story")}>Our Story</li>
-            <li onClick={() => router.push("/financing")}>Financing</li>
-            <li onClick={() => router.push("/recepies")}>Resources</li>
-            <li onClick={() => router.push("/product")}>Products</li>
+            <li>
+              <Link href="/our-story">Our Story</Link>
+            </li>
+            <li>
+              <Link href="/financing">Financing</Link>
+            </li>
+            <li>
+              <Link href="/recepies">Resources</Link>
+            </li>
+            <li>
+              <Link href="/product">Products</Link>
+            </li>
           </ul>
         </div>
 
@@ -47,7 +57,7 @@ export default function Header() {
 
               {cartItems?.length > 0 && (
                 <p className="absolute -top-1 -right-1 bg-black text-xs font-semibold rounded-full size-4 flex justify-center items-center">
-                  {cartItems ? cartItems?.length : ""}
+                  {cart?.length || cartItems?.length}
                 </p>
               )}
             </div>
@@ -78,16 +88,18 @@ export default function Header() {
             onClick={() => setProfileDrawer(!profileDrawer)}
             className=" bg-themeLight text-white rounded-full shrink-0 size-8 text-xs flex justify-center items-center"
           >
-            {userName && userName[0] + userName?.split(" ")?.pop()[0]}
-          </div>
-          <div className="text-white bg-themeLight rounded-full p-1.5 size-8 flex justify-center items-center relative">
-            <IoCart size={18} onClick={() => setDrawerOpen(true)} />
-
-            <p className="absolute -top-1 -right-2 bg-white text-black text-xs font-semibold rounded-full size-4 flex justify-center items-center">
-              {cartItems?.length > 0 ? cartItems?.length : ""}
-            </p>
+            {userName ? userName[0] + userName?.split(" ")?.pop()[0] : "U"}
           </div>
 
+          {cartItems?.length > 0 && (
+            <div className="text-white bg-themeLight rounded-full p-1.5 size-8 flex justify-center items-center relative">
+              <IoCart size={18} onClick={() => setDrawerOpen(true)} />
+
+              <p className="absolute -top-1 -right-2 bg-white text-black text-xs font-semibold rounded-full size-4 flex justify-center items-center">
+                {cart?.length || cartItems?.length}
+              </p>
+            </div>
+          )}
           {/* <div className="text-white bg-themeLight rounded-full p-1.5 size-8 flex justify-center items-center">
             <FaBars size={18} onClick={toggleMenu} />
           </div> */}

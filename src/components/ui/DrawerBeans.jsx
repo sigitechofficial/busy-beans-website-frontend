@@ -7,11 +7,12 @@ import { BiPlus, BiTrash } from "react-icons/bi";
 import { IoMdClose } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import { BASE_URL } from "@/utilities/URL";
+import { useCart } from "@/utilities/cartContext";
 
 const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
   const router = useRouter();
+  const {handleItemClick}=useCart()
   const [counter, setCounter] = useState(null);
-  const [render, setRender] = useState(false);
   const [drawerScroll, setDrawerScroll] = useState(0);
   if (typeof window !== "undefined") {
     var cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
@@ -31,34 +32,34 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
     setDrawerScroll(scrollTop);
   };
 
-  const handleItemClick = (type, id) => {
-    let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-    if (type === "plus") {
-      let updatedCart = cartItems.map((item) => {
-        if (Number(item.productId) === id) {
-          return { ...item, qty: item.qty + 1 };
-        }
-        return item;
-      });
-      localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-      setRender(!render);
-    } else if (type === "minus") {
-      let updatedCart = cartItems.map((item) => {
-        if (Number(item.productId) === id && item.qty > 1) {
-          return { ...item, qty: item.qty - 1 };
-        }
-        return item;
-      });
-      localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-      setRender(!render);
-    } else if (type === "delete") {
-      let updatedCart = cartItems.filter(
-        (item) => Number(item.productId) !== id
-      );
-      localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-      setRender(!render);
-    }
-  };
+  // const handleItemClick = (type, id) => {
+  //   let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+  //   if (type === "plus") {
+  //     let updatedCart = cartItems.map((item) => {
+  //       if (Number(item.productId) === id) {
+  //         return { ...item, qty: item.qty + 1 };
+  //       }
+  //       return item;
+  //     });
+  //     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+  //     setRender(!render);
+  //   } else if (type === "minus") {
+  //     let updatedCart = cartItems.map((item) => {
+  //       if (Number(item.productId) === id && item.qty > 1) {
+  //         return { ...item, qty: item.qty - 1 };
+  //       }
+  //       return item;
+  //     });
+  //     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+  //     setRender(!render);
+  //   } else if (type === "delete") {
+  //     let updatedCart = cartItems.filter(
+  //       (item) => Number(item.productId) !== id
+  //     );
+  //     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+  //     setRender(!render);
+  //   }
+  // };
 
   useEffect(() => {
     if (drawerBodyRef.current) {

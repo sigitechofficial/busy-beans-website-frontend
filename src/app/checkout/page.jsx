@@ -65,15 +65,12 @@ const page = () => {
   });
   const [activeResData, setActiveResData] = useState([]);
   const [existingCartItems, setExistingCartItems] = useState([]);
-  console.log("🚀 ~ page ~ existingCartItems:", existingCartItems);
 
   const totalPrice = existingCartItems?.reduce((a, b) => {
-    console.log("🚀 ~ totalPrice ~ existingCartItems:", existingCartItems);
     return a + b?.price * b?.qty;
   }, 0);
 
   const totalWeight = existingCartItems?.reduce((a, b) => {
-    console.log("🚀 ~ totalWeight ~ existingCartItems:", existingCartItems);
     return a + b?.weight;
   }, 0);
 
@@ -778,10 +775,6 @@ const page = () => {
               {true && (
                 <div className="bg-theme text-white rounded-lg my-4 space-y-3">
                   {existingCartItems?.map((cart, index) => {
-                    console.log(
-                      "🚀 ~ {existingCartItems?.map ~ existingCartItems:",
-                      existingCartItems
-                    );
                     return (
                       <div key={index} className="flex justify-between gap-x-2">
                         <div className="flex gap-x-5">

@@ -12,6 +12,8 @@ const FloatingLabelInput = ({
   cursor = "cursor-pointer",
 }) => {
   const [visible, setVisible] = useState(false);
+
+  console.log(value,"valuevaluevalue")
   return (
     <div className="relative w-full font-sf font-normal text-base text-black cursor-text">
       <input

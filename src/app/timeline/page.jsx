@@ -53,7 +53,7 @@ const Timeline = () => {
                   </div>
                 </div>
 
-                <div>
+                <div className="w-full">
                   <p className="text-xl mt-16">Need help with your order?</p>
 
                   <div className="flex items-center gap-x-4 p-4 rounded-lg border w-full max-w-[400px] mt-4 cursor-pointer">
@@ -61,7 +61,7 @@ const Timeline = () => {
                       <BsChatLeftTextFill size={17} />
                     </div>
 
-                    <div>
+                    <div className="w-full">
                       <h5>Contact support</h5>
                       <p>If you need help with your order</p>
                     </div>

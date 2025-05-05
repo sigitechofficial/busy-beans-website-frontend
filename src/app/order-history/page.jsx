@@ -64,7 +64,7 @@ function History() {
                       {item?.items?.map((elem, i) => (
                         <div key={i} className="py-6 flex items-center gap-x-4">
                           <img
-                            src="https://backend.fomino.ch/Public/Images/Restaurant/restaurant-logo-1724242016985.jpg"
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrJDWSOHW_Bm1hqobe1KDhoLyFhG1m5y5W25JwhlLWVAol441ajn4MmCjAN9hnm33Vd8U&usqp=CAU"
                             alt="product image"
                             className="w-36 object-cover h-24 rounded-md"
                           />
@@ -110,7 +110,7 @@ function History() {
                       {item?.items?.map((elem, i) => (
                         <div key={i} className="py-6 flex items-center gap-x-4">
                           <img
-                            src="https://backend.fomino.ch/Public/Images/Restaurant/restaurant-logo-1724242016985.jpg"
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrJDWSOHW_Bm1hqobe1KDhoLyFhG1m5y5W25JwhlLWVAol441ajn4MmCjAN9hnm33Vd8U&usqp=CAU"
                             alt="product image"
                             className="w-36 object-cover h-24 rounded-md"
                           />

@@ -14,19 +14,19 @@ const personalDetails = () => {
   const [loader, setLoader] = useState(false);
   const [profile, setProfile] = useState({
     userId: 1,
-    name: "John Doe",
-    phoneNumber: "123-456-7890",
-    saleTaxNumber: "TX1234567890",
-    emailToSendInvoices: "invoicedss@company.com",
+    name: "",
+    phoneNumber: "",
+    saleTaxNumber: "",
+    emailToSendInvoices: "",
     companyName: null,
     addressId: "",
     companyaddress: "",
-    addressLineOne: "123as Business St",
-    addressLineTwo: "Suasite 100",
+    addressLineOne: "",
+    addressLineTwo: "",
     town: "",
-    zipCode: "12312",
-    country: "Pakistan",
-    state: "Punjab",
+    zipCode: "",
+    country: "",
+    state: "",
   });
 
   let userData = {
@@ -58,7 +58,7 @@ const personalDetails = () => {
       saleTaxNumber: localStorage.getItem("saleTaxNumber") || "",
       userEmail: localStorage.getItem("userEmail") || "",
       userId: localStorage.getItem("userID") || "",
-      name: localStorage.getItem("userName") || "",
+      name: localStorage.getItem("userName"),
       emailToSendInvoices: localStorage.getItem("emailToSendInvoices") || "",
       companyName: localStorage.getItem("companyName") || "",
       companyaddress: localStorage.getItem("address")?.split(",")[0] || "",
@@ -86,11 +86,46 @@ const personalDetails = () => {
           state: profile.state,
         },
       };
+    } else if (type === "name") {
+      data = {
+        userId: profile?.userId,
+        userData: {
+          name: profile?.name,
+        },
+      };
+    } else if (type === "companyName") {
+      data = {
+        userId: profile?.userId,
+        userData: {
+          companyName: profile?.companyName,
+        },
+      };
+    } else if (type === "emailToSendInvoices") {
+      data = {
+        userId: profile?.userId,
+        userData: {
+          emailToSendInvoices: profile?.emailToSendInvoices,
+        },
+      };
+    } else if (type === "saleTaxNumber") {
+      data = {
+        userId: profile?.userId,
+        userData: {
+          saleTaxNumber: profile?.saleTaxNumber,
+        },
+      };
+    } else if (type === "phoneNumber") {
+      data = {
+        userId: profile?.userId,
+        userData: {
+          phoneNumber: profile?.phoneNumber,
+        },
+      };
     }
+
     setLoader(true);
 
     let res = await PutAPI("api/v1/users/drawer/update-profile", data);
-    console.log("🚀 ~ handleProfileUpdate ~ res:", res);
 
     if (res?.data?.status === "success") {
       setLoader(false);
@@ -156,26 +191,72 @@ const personalDetails = () => {
                   {userData?.name}
                 </p>
               )}
-              <p
-                onClick={() => setModel({ ...model, type: "name" })}
-                className="text-sm sm:text-lg font-medium flex justify-end"
-              >
-                Edit
-              </p>
+              {model.type === "name" ? (
+                <button
+                  className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
+                  onClick={() => {
+                    handleProfileUpdate("name");
+                    setModel({ ...model, type: "" });
+                  }}
+                >
+                  Save
+                </button>
+              ) : (
+                <p
+                  onClick={() => {
+                    setProfile({ ...profile, name: userData.name });
+                    setModel({ ...model, type: "name" });
+                  }}
+                  className="text-sm sm:text-lg font-medium flex justify-end"
+                >
+                  Edit
+                </p>
+              )}
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 border-b border-theme py-3 sm:py-6 font-inter">
               <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2">
                 Company Name
               </p>
-              <p className="text-sm sm:text-base font-light opacity-60">
-                {userData?.companyName}
-              </p>
-              <p
-                onClick={() => setModel({ ...model, type: "companyName" })}
-                className="text-sm sm:text-lg font-medium flex justify-end"
-              >
-                Edit
-              </p>
+              {model.type === "companyName" ? (
+                <input
+                  className="w-full p-2 rounded-lg bg-transparent outline-none border border-theme/50"
+                  type="text"
+                  name="name"
+                  id="name"
+                  value={profile?.companyName}
+                  onChange={(e) =>
+                    setProfile({ ...profile, companyName: e.target.value })
+                  }
+                />
+              ) : (
+                <p className="text-sm sm:text-base font-light opacity-60">
+                  {userData?.companyName}
+                </p>
+              )}
+              {model.type === "companyName" ? (
+                <button
+                  className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
+                  onClick={() => {
+                    handleProfileUpdate("companyName");
+                    setModel({ ...model, type: "" });
+                  }}
+                >
+                  Save
+                </button>
+              ) : (
+                <p
+                  onClick={() => {
+                    setProfile({
+                      ...profile,
+                      companyName: userData.companyName,
+                    });
+                    setModel({ ...model, type: "companyName" });
+                  }}
+                  className="text-sm sm:text-lg font-medium flex justify-end"
+                >
+                  Edit
+                </p>
+              )}
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 py-3 sm:py-6 font-inter max-lg:border-b border-theme ">
               <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2">
@@ -189,60 +270,156 @@ const personalDetails = () => {
                   This is the email address you can to sign in.
                 </p>
               </div>
-              <p
-                onClick={() => setModel({ ...model, type: "email" })}
-                className="text-sm sm:text-lg font-medium flex justify-end"
-              >
-                Edit
-              </p>
             </div>
+
             <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 border-b border-theme py-3 sm:py-6 font-inter">
               <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2">
                 Email to send invoice
               </p>{" "}
               <div className="text-lg font-light space-y-2">
-                <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2 opacity-60">
-                  {userData?.emailToSendInvoices}
-                </p>
+                {model.type === "emailToSendInvoices" ? (
+                  <input
+                    className="w-full p-2 rounded-lg bg-transparent outline-none border border-theme/50"
+                    type="text"
+                    name="emailToSendInvoices"
+                    id="emailToSendInvoices"
+                    value={profile?.emailToSendInvoices}
+                    onChange={(e) =>
+                      setProfile({
+                        ...profile,
+                        emailToSendInvoices: e.target.value,
+                      })
+                    }
+                  />
+                ) : (
+                  <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2 opacity-60">
+                    {userData?.emailToSendInvoices}
+                  </p>
+                )}
                 <p className="text-xs opacity-60">
                   This email use to send Invoice
                 </p>
               </div>
-              <p
-                onClick={() => setModel({ ...model, type: "invoice" })}
-                className="text-sm sm:text-lg font-medium flex justify-end"
-              >
-                Edit
-              </p>
+              {model.type === "emailToSendInvoices" ? (
+                <button
+                  className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
+                  onClick={() => {
+                    handleProfileUpdate("emailToSendInvoices");
+                    setModel({ ...model, type: "" });
+                  }}
+                >
+                  Save
+                </button>
+              ) : (
+                <p
+                  onClick={() => {
+                    setProfile({
+                      ...profile,
+                      emailToSendInvoices: userData.emailToSendInvoices,
+                    });
+                    setModel({ ...model, type: "emailToSendInvoices" });
+                  }}
+                  className="text-sm sm:text-lg font-medium flex justify-end"
+                >
+                  Edit
+                </p>
+              )}
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 border-b border-theme py-3 sm:py-6 font-inter">
               <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2">
                 Phone Number
               </p>{" "}
-              <p className="text-sm sm:text-base font-light opacity-60">
-                {userData?.phoneNumber}
-              </p>{" "}
-              <p
-                onClick={() => setModel({ ...model, type: "phone" })}
-                className="text-sm sm:text-lg font-medium flex justify-end"
-              >
-                Edit
-              </p>
+              {model.type === "phoneNumber" ? (
+                <input
+                  className="w-full p-2 rounded-lg bg-transparent outline-none border border-theme/50"
+                  type="text"
+                  name="phoneNumber"
+                  id="phoneNumber"
+                  value={profile?.phoneNumber}
+                  onChange={(e) =>
+                    setProfile({
+                      ...profile,
+                      phoneNumber: e.target.value,
+                    })
+                  }
+                />
+              ) : (
+                <p className="text-sm sm:text-base font-light opacity-60">
+                  {userData?.phoneNumber}
+                </p>
+              )}
+              {model.type === "phoneNumber" ? (
+                <button
+                  className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
+                  onClick={() => {
+                    handleProfileUpdate("phoneNumber");
+                    setModel({ ...model, type: "" });
+                  }}
+                >
+                  Save
+                </button>
+              ) : (
+                <p
+                  onClick={() => {
+                    setProfile({
+                      ...profile,
+                      phoneNumber: userData.phoneNumber,
+                    });
+                    setModel({ ...model, type: "phoneNumber" });
+                  }}
+                  className="text-sm sm:text-lg font-medium flex justify-end"
+                >
+                  Edit
+                </p>
+              )}
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 border-b border-theme py-3 sm:py-6 font-inter">
               <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2">
                 Sales Tax Number
-              </p>{" "}
-              <p className="text-sm sm:text-base font-light opacity-60">
-                {" "}
-                {userData?.saleTaxNumber}
               </p>
-              <p
-                onClick={() => setModel({ ...model, type: "tax" })}
-                className="text-sm sm:text-lg font-medium flex justify-end"
-              >
-                Edit
-              </p>
+              {model.type === "saleTaxNumber" ? (
+                <input
+                  className="w-full p-2 rounded-lg bg-transparent outline-none border border-theme/50"
+                  type="text"
+                  name="saleTaxNumber"
+                  id="saleTaxNumber"
+                  value={profile?.saleTaxNumber}
+                  onChange={(e) =>
+                    setProfile({
+                      ...profile,
+                      saleTaxNumber: e.target.value,
+                    })
+                  }
+                />
+              ) : (
+                <p className="text-sm sm:text-base font-light opacity-60">
+                  {userData?.saleTaxNumber}
+                </p>
+              )}
+              {model.type === "saleTaxNumber" ? (
+                <button
+                  className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
+                  onClick={() => {
+                    handleProfileUpdate("saleTaxNumber");
+                    setModel({ ...model, type: "" });
+                  }}
+                >
+                  Save
+                </button>
+              ) : (
+                <p
+                  onClick={() => {
+                    setProfile({
+                      ...profile,
+                      saleTaxNumber: userData.saleTaxNumber,
+                    });
+                    setModel({ ...model, type: "saleTaxNumber" });
+                  }}
+                  className="text-sm sm:text-lg font-medium flex justify-end"
+                >
+                  Edit
+                </p>
+              )}
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 border-b border-theme py-3 sm:py-6 font-inter">
               <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2">
