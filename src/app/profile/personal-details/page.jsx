@@ -13,12 +13,12 @@ const personalDetails = () => {
   });
   const [loader, setLoader] = useState(false);
   const [profile, setProfile] = useState({
-    userId: 1,
+    userId: "",
     name: "",
     phoneNumber: "",
     saleTaxNumber: "",
     emailToSendInvoices: "",
-    companyName: null,
+    companyName: "",
     addressId: "",
     companyaddress: "",
     addressLineOne: "",
@@ -129,19 +129,37 @@ const personalDetails = () => {
 
     if (res?.data?.status === "success") {
       setLoader(false);
-      localStorage.setItem(
-        "address",
-        `${profile?.companyaddress},
-        ${profile?.addressLineOne}, 
-        ${profile?.addressLineTwo}, 
-        ${profile?.town}, 
-        ${profile?.zipCode}, 
-        ${profile?.country}, 
-        ${profile?.state}`
-      );
+
+      if (model.type === "address") {
+        localStorage.setItem(
+          "address",
+          `${profile?.companyaddress},
+          ${profile?.addressLineOne}, 
+          ${profile?.addressLineTwo}, 
+          ${profile?.town}, 
+          ${profile?.zipCode}, 
+          ${profile?.country}, 
+          ${profile?.state}`
+        );
+      } else if (model.type === "name") {
+        localStorage.setItem("userName", profile.name);
+      } else if (model.type === "companyName") {
+        localStorage.setItem("companyName", profile.companyName);
+      } else if (model.type === "emailToSendInvoices") {
+        localStorage.setItem(
+          "emailToSendInvoices",
+          profile.emailToSendInvoices
+        );
+      } else if (model.type === "saleTaxNumber") {
+        localStorage.setItem("saleTaxNumber", profile.saleTaxNumber);
+      } else if (model.type === "phoneNumber") {
+        localStorage.setItem("phoneNumber", profile.phoneNumber);
+      }
+      setModel({ ...model, type: "" });
       success_toaster("Profile Updated");
     } else {
       setLoader(false);
+
       info_toaster("failed !");
     }
   };
@@ -196,7 +214,6 @@ const personalDetails = () => {
                   className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
                   onClick={() => {
                     handleProfileUpdate("name");
-                    setModel({ ...model, type: "" });
                   }}
                 >
                   Save
@@ -238,7 +255,6 @@ const personalDetails = () => {
                   className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
                   onClick={() => {
                     handleProfileUpdate("companyName");
-                    setModel({ ...model, type: "" });
                   }}
                 >
                   Save
@@ -305,7 +321,6 @@ const personalDetails = () => {
                   className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
                   onClick={() => {
                     handleProfileUpdate("emailToSendInvoices");
-                    setModel({ ...model, type: "" });
                   }}
                 >
                   Save
@@ -353,7 +368,6 @@ const personalDetails = () => {
                   className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
                   onClick={() => {
                     handleProfileUpdate("phoneNumber");
-                    setModel({ ...model, type: "" });
                   }}
                 >
                   Save
@@ -401,7 +415,6 @@ const personalDetails = () => {
                   className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
                   onClick={() => {
                     handleProfileUpdate("saleTaxNumber");
-                    setModel({ ...model, type: "" });
                   }}
                 >
                   Save
@@ -508,7 +521,6 @@ const personalDetails = () => {
                   className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
                   onClick={() => {
                     handleProfileUpdate("address");
-                    setModel({ ...model, type: "" });
                   }}
                 >
                   Save
