@@ -136,7 +136,6 @@ export default function RootLayout({ children }) {
 
           <section>{children}</section>
 
-
           {!isAuth && <Footer />}
           </CartProvider>
         </Provider>
