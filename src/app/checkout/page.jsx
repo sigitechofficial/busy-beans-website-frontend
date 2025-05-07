@@ -1216,7 +1216,7 @@ const page = () => {
                       <h5 className="text-base md:text-md text-checkoutTextColor">
                         VAT
                       </h5>
-                      <h6>5.00</h6>
+                      <h6>0.00 %</h6>
                     </div>
                     <div className="flex items-center justify-between gap-x-2">
                       <h5 className="text-base md:text-md text-checkoutTextColor">
@@ -1278,11 +1278,11 @@ const page = () => {
         <Portal>
           <Dialog.Backdrop />
           <Dialog.Positioner>
-            <Dialog.Content className="rounded-tl-xl rounded-bl-xl bg-theme text-white">
+            <Dialog.Content className="rounded-tl-xl rounded-bl-xl bg-theme text-white px-4 py-4">
               {/* <Dialog.Header></Dialog.Header> */}
               <Dialog.Body>
                 <>
-                  <h4 className="text-3xl text-theme-black-2 font-omnes font-bold mt-16 mb-6">
+                  <h4 className="text-3xl text-theme-black-2 font-omnes font-bold mt-16 mb-8">
                     Payment methods
                   </h4>
 

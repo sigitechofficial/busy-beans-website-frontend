@@ -47,7 +47,7 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
 
   const logoutFunc = () => {
     localStorage.clear();
-    router.push("/sign-in");
+    router.push("/");
     setProfileDrawer(false);
     info_toaster("Successfully Logged Out!");
   };
@@ -166,22 +166,22 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                             {userEmail ?? "user@gmail.com"}
                           </p>
                           <div className="flex gap-10">
-                            <div>
+                            {/* <div>
                               <p className="text-base font-bold  font-sf  capitalize">
                                 {5}
                               </p>
                               <p className="text-theme-black-2 text-opacity-60 font-normal">
                                 Orders
                               </p>
-                            </div>
-                            <div>
+                            </div> */}
+                            {/* <div>
                               <p className="text-base font-bold font-sf  capitalize">
                                 {19}
                               </p>
                               <p className="text-theme-black-2 text-opacity-60 font-normal">
                                 Tokens
                               </p>
-                            </div>
+                            </div> */}
                           </div>
                         </div>
                       </div>

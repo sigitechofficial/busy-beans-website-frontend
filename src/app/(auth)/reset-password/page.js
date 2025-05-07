@@ -61,7 +61,7 @@ export default function ResetPassword() {
           localStorage.setItem("userID", res?.data?.data?.user?.id);
           localStorage.setItem("addressId", res?.data?.data?.user?.address?.id);
           localStorage.removeItem("userID");
-          success_toaster("Login Successfully");
+          success_toaster("Password Reset Sucessfully");
         } else {
           throw new Error(
             res?.data?.message || "An unexpected error occurred."
