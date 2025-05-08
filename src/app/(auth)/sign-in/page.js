@@ -2,6 +2,7 @@
 import MiniLoader from "@/components/ui/MiniLoader";
 import { loginSchema } from "@/schema";
 import ErrorHandler from "@/utilities/ErrorHandler";
+import { handleGoogleLogin } from "@/utilities/LoginMethods";
 import { loginAPI } from "@/utilities/PostAPI";
 import { error_toaster, success_toaster } from "@/utilities/Toaster";
 import { useFormik } from "formik";
@@ -10,11 +11,14 @@ import { useRouter } from "next/navigation";
 import { Checkbox } from "primereact/checkbox";
 import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { FaApple, FaFacebook } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 
 export default function SignIn() {
   const router = useRouter();
   const [loader, setLoader] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [disable, setdisbale] = useState(false);
   const initialValues = {
     email: "",
     password: "",
@@ -184,10 +188,27 @@ export default function SignIn() {
               <div>
                 <button
                   type="submit"
-                  className="bg-theme font-satoshi text-white py-2 rounded-lg w-full font-medium outline-none "
+                  className="bg-theme font-satoshi text-white py-2.5 rounded-lg w-full font-medium outline-none "
                 >
                   Sign In
                 </button>
+              </div>
+              <div className="space-y-2">
+                <p className="text-white text-opacity-60 text-center">
+                  Or continue with
+                </p>
+                <div className="flex gap-x-2 justify-center items-center">
+                  <button
+                    type="button"
+                    className="bg-white w-full rounded-3xl py-2.5 text-center flex items-center justify-center gap-x-2 font-robotoSerif font-semibold text-black text-lg"
+                    disabled={disable}
+                    onClick={async () =>
+                      await handleGoogleLogin(router, setdisbale)
+                    }
+                  >
+                    <FcGoogle size={"28px"} /> Continue with Google
+                  </button>
+                </div>
               </div>
               <p className="font-switzer">
                 <span className="text-opacity-70 text-white">

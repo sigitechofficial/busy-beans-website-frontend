@@ -566,9 +566,7 @@ const page = () => {
                                 type="text"
                                 id="courier-note"
                                 className={`w-full h-full py-5 pt-7 pb-2 focus:outline-none bg-transparent peer ${
-                                  deliveryAddress?.instructions
-                                    ? "placeholder-transparent"
-                                    : ""
+                                  order?.note ? "placeholder-transparent" : ""
                                 }`}
                                 value={order?.note}
                                 onChange={(e) =>
@@ -578,12 +576,14 @@ const page = () => {
                               <label
                                 htmlFor="courier-note"
                                 className={`absolute left-0 top-4 text-gray-400 transition-all ${
-                                  deliveryAddress?.instructions
+                                  order?.note
                                     ? "top-[5px] text-[13px] peer-focus:text-goldenLight"
                                     : "peer-placeholder-shown:top-5 peer-placeholder-shown:text-goldenLight peer-focus:top-[7px] peer-focus:text-[13px] peer-focus:text-goldenLight"
                                 }`}
                               >
-                                Add note for the supplier
+                                {order?.note
+                                  ? "Note for the supplier"
+                                  : "Add note for the supplier"}
                               </label>
                             </div>
                           </div>

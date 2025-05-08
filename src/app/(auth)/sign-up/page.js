@@ -10,12 +10,17 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 
 export default function SignUpStep1() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [loader, setLoader] = useState(false);
+  const [visibility, setVisibility] = useState({
+    pass: false,
+    confirmPass: false,
+  });
   const [userData, setUserData] = useState({
     info: {
       name: "",
@@ -422,10 +427,10 @@ export default function SignUpStep1() {
                         className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                       />
                     </div>
-                    <div className="flex flex-col gap-y-2">
+                    <div className="flex flex-col gap-y-2 relative">
                       <label className="text-white font-medium">Password</label>
                       <input
-                        type="password"
+                        type={visibility?.pass ? "text" : "password"}
                         name="password"
                         onChange={handleInfo}
                         value={userData?.info?.password}
@@ -449,19 +454,51 @@ export default function SignUpStep1() {
                             : ""}
                         </p>
                       )}
+                      <button
+                        onClick={() =>
+                          setVisibility({
+                            ...visibility,
+                            pass: !visibility?.pass,
+                          })
+                        }
+                        type="button"
+                        className="text-labelColor absolute right-4 top-10"
+                      >
+                        {visibility?.pass ? (
+                          <AiOutlineEye size={24} color="#ffffff" />
+                        ) : (
+                          <AiOutlineEyeInvisible size={24} color="#ffffff" />
+                        )}
+                      </button>
                     </div>
-                    <div className="flex flex-col gap-y-2">
+                    <div className="flex flex-col gap-y-2 relative">
                       <label className="text-white font-medium">
                         Confirm Password
                       </label>
                       <input
-                        type="password"
+                        type={visibility?.confirmPass ? "text" : "password"}
                         name="confirmPassword"
                         onChange={handleInfo}
                         value={userData?.info?.confirmPassword}
                         placeholder="Enter password again"
                         className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                       />
+                      <button
+                        onClick={() =>
+                          setVisibility({
+                            ...visibility,
+                            confirmPass: !visibility?.confirmPass,
+                          })
+                        }
+                        type="button"
+                        className="text-labelColor absolute right-4 top-10"
+                      >
+                        {visibility?.confirmPass ? (
+                          <AiOutlineEye size={24} color="#ffffff" />
+                        ) : (
+                          <AiOutlineEyeInvisible size={24} color="#ffffff" />
+                        )}
+                      </button>
                     </div>
                   </div>
                   <div>

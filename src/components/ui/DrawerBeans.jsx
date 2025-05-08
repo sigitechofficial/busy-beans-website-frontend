@@ -11,7 +11,7 @@ import { useCart } from "@/utilities/cartContext";
 
 const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
   const router = useRouter();
-  const {handleItemClick}=useCart()
+  const { handleItemClick } = useCart();
   const [counter, setCounter] = useState(null);
   const [drawerScroll, setDrawerScroll] = useState(0);
   if (typeof window !== "undefined") {
@@ -183,7 +183,9 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                                               >
                                                 {`${add?.qty}x ${add?.name} ${
                                                   add?.total > 0
-                                                    ? `(${add?.total}.00)`
+                                                    ? `(${add?.total?.toFixed(
+                                                        2
+                                                      )})`
                                                     : ""
                                                 }`}
                                               </div>
@@ -195,7 +197,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                                         <div className="ml-2 mt-1">
                                           {`${add?.qty}x ${add?.name} ${
                                             add?.total > 0
-                                              ? `(${add?.total}.00)`
+                                              ? `(${add?.total?.toFixed(2)})`
                                               : ""
                                           }`}
                                         </div>
@@ -206,10 +208,11 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-x-3">
                                 <span className="font-semibold text-sm text-white mt-1">
+                                  {`$${cartI?.price} x ${cartI?.qty}`} ={" "}
+                                  {activeResData?.currencyUnit || "$"}
                                   {parseFloat(
                                     Number(cartI?.price) * cartI?.qty
-                                  )}{" "}
-                                  {activeResData?.currencyUnit || "$"}
+                                  )?.toFixed(2)}{" "}
                                 </span>
                               </div>
                             </div>
