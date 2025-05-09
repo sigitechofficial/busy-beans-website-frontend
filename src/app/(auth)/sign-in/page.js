@@ -197,7 +197,7 @@ export default function SignIn() {
                 <p className="text-white text-opacity-60 text-center">
                   Or continue with
                 </p>
-                <div className="flex gap-x-2 justify-center items-center">
+                {/* <div className="flex gap-x-2 justify-center items-center">
                   <button
                     type="button"
                     className="bg-white w-full rounded-3xl py-2.5 text-center flex items-center justify-center gap-x-2 font-robotoSerif font-semibold text-black text-lg"
@@ -208,7 +208,7 @@ export default function SignIn() {
                   >
                     <FcGoogle size={"28px"} /> Continue with Google
                   </button>
-                </div>
+                </div> */}
               </div>
               <p className="font-switzer">
                 <span className="text-opacity-70 text-white">
