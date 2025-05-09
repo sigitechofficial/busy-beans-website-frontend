@@ -2,7 +2,7 @@
 import MiniLoader from "@/components/ui/MiniLoader";
 import { loginSchema } from "@/schema";
 import ErrorHandler from "@/utilities/ErrorHandler";
-import { handleGoogleLogin } from "@/utilities/LoginMethods";
+// import { handleGoogleLogin } from "@/utilities/LoginMethods";
 import { loginAPI } from "@/utilities/PostAPI";
 import { error_toaster, success_toaster } from "@/utilities/Toaster";
 import { useFormik } from "formik";
@@ -202,9 +202,11 @@ export default function SignIn() {
                     type="button"
                     className="bg-white w-full rounded-3xl py-2.5 text-center flex items-center justify-center gap-x-2 font-robotoSerif font-semibold text-black text-lg"
                     disabled={disable}
-                    onClick={async () =>
-                      await handleGoogleLogin(router, setdisbale)
-                    }
+                    onClick={async () => {
+                      if (typeof window !== undefined) {
+                        await handleGoogleLogin(router, setdisbale);
+                      }
+                    }}
                   >
                     <FcGoogle size={"28px"} /> Continue with Google
                   </button>

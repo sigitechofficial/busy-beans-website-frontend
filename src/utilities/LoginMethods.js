@@ -6,7 +6,7 @@ import {
 import { signInWithPopup } from "firebase/auth";
 import { loginAPI } from "./PostAPI";
 import { error_toaster, success_toaster } from "./Toaster";
-import ErrorHandler from "./ErrorHandler";
+
 
 export const handleGoogleLogin = async (router, setdisbale) => {
   try {
