@@ -38,8 +38,10 @@ import { PostAPI } from "@/utilities/PostAPI";
 import Loader from "@/components/ui/Loader";
 import ErrorHandler from "@/utilities/ErrorHandler";
 import { FaLocationCrosshairs } from "react-icons/fa6";
+import { useCart } from "@/utilities/cartContext";
 
 const page = () => {
+  const { setCartItems } = useCart();
   if (typeof window !== "undefined") {
     var addressId = localStorage.getItem("addressId") || "";
     var address = localStorage.getItem("address") || "";
@@ -129,12 +131,6 @@ const page = () => {
     updatedDeliveryCharges: null,
   });
 
-  const [leaveAtDoor, setLeaveAtDoor] = useState(0);
-
-  const handleLeaveAtDoor = () => {
-    setLeaveAtDoor((prev) => (prev === 0 ? 1 : 0));
-  };
-
   const navigateTo = () => {
     router.push("/product");
   };
@@ -191,22 +187,6 @@ const page = () => {
     lng: 74.358749 || 0,
   };
 
-  const checkCoupon = async () => {
-    if (coupon === "") {
-      info_toaster("Please enter Coupon Code");
-    } else {
-      let res = await PostAPI("users/applyvoucher", {
-        code: coupon,
-        userId: localStorage.getItem("userID"),
-        restaurantId: localStorage.getItem("resId"),
-      });
-      if (res?.data?.status === "1") {
-        success_toaster(res?.data?.message);
-      } else {
-        error_toaster(res?.data?.message);
-      }
-    }
-  };
   const PayM = [];
   const paymentMethods = [
     ...(PayM.data?.data?.simplifiedPaymentMethods || []),
@@ -215,12 +195,9 @@ const page = () => {
   ];
 
   useEffect(() => {
-    const activeRes = JSON.parse(localStorage.getItem("activeResData")) || [];
     const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
     const paymentMethod =
       JSON.parse(localStorage.getItem("paymentMethod")) || {};
-
-    setActiveResData(activeRes);
     setExistingCartItems(cartItems);
   }, []);
 
@@ -255,9 +232,10 @@ const page = () => {
           items: cartItems,
         });
         if (res?.data?.status === "success") {
-          router.push("/product");
+          setCartItems([])
           setLoader(false);
-          localStorage.removeItem("cartItems");
+          router.push("/product");
+          localStorage.setItem("cartItems", JSON.stringify([]));
           success_toaster("Order Created Successfully");
         } else {
           throw new Error(
