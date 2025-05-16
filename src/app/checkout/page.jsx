@@ -39,6 +39,13 @@ import Loader from "@/components/ui/Loader";
 import ErrorHandler from "@/utilities/ErrorHandler";
 import { FaLocationCrosshairs } from "react-icons/fa6";
 import { useCart } from "@/utilities/cartContext";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import StripeCardForm from "@/components/ui/StripeCardForm";
+
+const stripePromise = loadStripe(
+  "pk_test_51QwUMCCmsFtCbz25F30vy7aCrxw8swscrpB2phj4tUOUimhYltvrCXZoZIsmzwWOYdn3qUh4GNjVql9o4KNQcNHb009BpHlDAA"
+);
 
 const page = () => {
   const { setCartItems } = useCart();
@@ -71,7 +78,8 @@ const page = () => {
   const totalPrice = existingCartItems?.reduce((a, b) => {
     return a + b?.price * b?.qty;
   }, 0);
-
+  console.log("🚀 ~ totalPrice ~ totalPrice:", totalPrice)
+  
   const totalWeight = existingCartItems?.reduce((a, b) => {
     return a + b?.weight;
   }, 0);
@@ -80,6 +88,7 @@ const page = () => {
   const [coupon, setCoupon] = useState("");
   const [feeWorks, setFeeWorks] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
+  const [stripeModal, setStripeModal] = useState(false);
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [deliveryData, setDeliveryData] = useState({
     how: 1,
@@ -192,6 +201,7 @@ const page = () => {
     ...(PayM.data?.data?.simplifiedPaymentMethods || []),
     { name: "COD", type: "cod" }, // New COD payment method
     { name: "Cheque", type: "cheque" }, // New Cheque payment method
+    { name: "Card", type: "card" }, // New Cheque payment method
   ];
 
   useEffect(() => {
@@ -199,7 +209,39 @@ const page = () => {
     const paymentMethod =
       JSON.parse(localStorage.getItem("paymentMethod")) || {};
     setExistingCartItems(cartItems);
+
+    fetch(BASE_URL + "api/v1/users/create-payment-intent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: 1000 }), // amount in cents
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("🚀 ~ useEffect ~ data:", data);
+        console.log("🚀 ~ .then ~ clientSecret:", clientSecret);
+        return setClientSecret(data?.data?.clientSecret);
+      });
   }, []);
+
+  const [clientSecret, setClientSecret] = useState("");
+
+  // useEffect(() => {
+  // Call your backend to create a PaymentIntent and return the client secret
+  // fetch(BASE_URL + "api/v1/users/create-payment-intent", {
+  //   method: "POST",
+  //   headers: { "Content-Type": "application/json" },
+  //   body: JSON.stringify({ amount: 1000 }), // amount in cents
+  // })
+  //   .then((res) => res.json())
+  //   .then((data) => {
+  //     console.log("🚀 ~ useEffect ~ data:", data);
+  //     console.log("🚀 ~ .then ~ clientSecret:", clientSecret);
+  //     return setClientSecret(data?.data?.clientSecret);
+  //   });
+  // }, []);
+
+  const appearance = { theme: "stripe" };
+  const options = { clientSecret, appearance };
 
   const createOrder = async () => {
     if (totalPrice === "") {
@@ -211,40 +253,45 @@ const page = () => {
     } else if (order.paymentMethod.trim() === "") {
       info_toaster("Select payment Method");
     } else {
-      setLoader(true);
-      try {
-        const res = await PostAPI("api/v1/users/book-order", {
-          order: {
-            totalBill: totalPrice,
-            subTotal: totalPrice,
-            discountPrice: 0,
-            discountPercentage: 0,
-            itemsPrice: totalPrice,
-            vat: 0,
-            totalWeight: totalWeight,
-            note: order?.note,
-            paymentMethod: order.paymentMethod,
-            poNumber: order?.poNumber,
-            frequency: order?.orderFrequency, // 'just-onces', 'weekly', 'every-two-weeks', 'every-four-weeks'
-            addressId: addressId,
-            userId: userId,
-          },
-          items: cartItems,
-        });
-        if (res?.data?.status === "success") {
-          setCartItems([])
+      if (order?.paymentMethod?.includes("card")) {
+        setStripeModal(true);
+        // router.push("/card-payment");
+      } else {
+        setLoader(true);
+        try {
+          const res = await PostAPI("api/v1/users/book-order", {
+            order: {
+              totalBill: totalPrice,
+              subTotal: totalPrice,
+              discountPrice: 0,
+              discountPercentage: 0,
+              itemsPrice: totalPrice,
+              vat: 0,
+              totalWeight: totalWeight,
+              note: order?.note,
+              paymentMethod: order.paymentMethod,
+              poNumber: order?.poNumber,
+              frequency: order?.orderFrequency, // 'just-onces', 'weekly', 'every-two-weeks', 'every-four-weeks'
+              addressId: addressId,
+              userId: userId,
+            },
+            items: cartItems,
+          });
+          if (res?.data?.status === "success") {
+            setCartItems([]);
+            setLoader(false);
+            router.push("/product");
+            localStorage.setItem("cartItems", JSON.stringify([]));
+            success_toaster("Order Created Successfully");
+          } else {
+            throw new Error(
+              res?.data?.message || "An unexpected error occurred."
+            );
+          }
+        } catch (error) {
+          ErrorHandler(error);
           setLoader(false);
-          router.push("/product");
-          localStorage.setItem("cartItems", JSON.stringify([]));
-          success_toaster("Order Created Successfully");
-        } else {
-          throw new Error(
-            res?.data?.message || "An unexpected error occurred."
-          );
         }
-      } catch (error) {
-        ErrorHandler(error);
-        setLoader(false);
       }
     }
   };
@@ -875,6 +922,8 @@ const page = () => {
                               ? "/images/gpay.webp"
                               : order?.paymentMethod?.includes("cod")
                               ? "/images/cashPay.png"
+                              : order?.paymentMethod?.includes("card")
+                              ? "/images/credit-card.webp"
                               : ""
                           }`}
                           alt="payment-card"
@@ -1250,7 +1299,7 @@ const page = () => {
       <Dialog.Root
         placement="center"
         size="md"
-        open={paymentModal}
+        open={paymentModal || stripeModal}
         onOpenChange={(e) => setPaymentModal(e.open)}
       >
         <Portal>
@@ -1259,60 +1308,73 @@ const page = () => {
             <Dialog.Content className="rounded-tl-xl rounded-bl-xl bg-theme text-white px-4 py-4">
               {/* <Dialog.Header></Dialog.Header> */}
               <Dialog.Body>
-                <>
-                  <h4 className="text-3xl text-theme-black-2 font-omnes font-bold mt-16 mb-8">
-                    Payment methods
-                  </h4>
-
-                  <div className="">
-                    {paymentMethods?.map((itm) => (
-                      <div
-                        className={`py-2 cursor-pointer h-[76px] border-b flex items-center w-full`}
-                        onClick={() => {
-                          // handleSelect(itm?.name, itm.type);
-                          setPaymentModal(false);
-                        }}
-                      >
-                        <div className="flex items-center gap-3 justify-between w-full">
-                          <div className="flex items-center gap-x-4">
-                            <img
-                              src={`${
-                                itm?.name.includes("Cheque")
-                                  ? "/images/cheque1.png"
-                                  : itm?.name.includes("Apple")
-                                  ? "/images/epay.webp"
-                                  : itm?.name.includes("Google")
-                                  ? "/images/gpay.webp"
-                                  : itm?.name.includes("COD")
-                                  ? "/images/cashPay.png"
-                                  : ""
-                              }`}
-                              alt="payment-card"
-                              className="w-9 h-9 object-contain"
-                            />
-                            <span className="text-base font-sf font-medium text-theme-black-2">
-                              {itm?.name}
-                            </span>
-                          </div>
-
-                          {order?.paymentMethod !== itm?.type && (
-                            <button
-                              onClick={() => {
-                                setOrder({
-                                  ...order,
-                                  paymentMethod: itm?.type,
-                                });
-                              }}
-                              className="bg-themeLight text-white bg-opacity-20 flex justify-center items-center text-end rounded-md py-2 px-4 font-semibold"
-                            >
-                              Choose
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                {stripeModal ? (
+                  <div className="p-8">
+                    <h2 className="text-2xl font-semibold mb-4">Payment</h2>
+                    {clientSecret && (
+                      <Elements stripe={stripePromise} options={options}>
+                        <StripeCardForm clientSecret={clientSecret} />
+                      </Elements>
+                    )}
                   </div>
-                </>
+                ) : (
+                  <>
+                    <h4 className="text-3xl text-theme-black-2 font-omnes font-bold mt-16 mb-8">
+                      Payment methods
+                    </h4>
+
+                    <div className="">
+                      {paymentMethods?.map((itm) => (
+                        <div
+                          className={`py-2 cursor-pointer h-[76px] border-b flex items-center w-full`}
+                          onClick={() => {
+                            // handleSelect(itm?.name, itm.type);
+                            setPaymentModal(false);
+                          }}
+                        >
+                          <div className="flex items-center gap-3 justify-between w-full">
+                            <div className="flex items-center gap-x-4">
+                              <img
+                                src={`${
+                                  itm?.name.includes("Cheque")
+                                    ? "/images/cheque1.png"
+                                    : itm?.name.includes("Apple")
+                                    ? "/images/epay.webp"
+                                    : itm?.name.includes("Google")
+                                    ? "/images/gpay.webp"
+                                    : itm?.name.includes("COD")
+                                    ? "/images/cashPay.png"
+                                    : itm?.name.includes("Card")
+                                    ? "/images/credit-card.webp"
+                                    : ""
+                                }`}
+                                alt="payment-card"
+                                className="w-9 h-9 object-contain"
+                              />
+                              <span className="text-base font-sf font-medium text-theme-black-2">
+                                {itm?.name}
+                              </span>
+                            </div>
+
+                            {order?.paymentMethod !== itm?.type && (
+                              <button
+                                onClick={() => {
+                                  setOrder({
+                                    ...order,
+                                    paymentMethod: itm?.type,
+                                  });
+                                }}
+                                className="bg-themeLight text-white bg-opacity-20 flex justify-center items-center text-end rounded-md py-2 px-4 font-semibold"
+                              >
+                                Choose
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </Dialog.Body>
               {/* <Dialog.Footer></Dialog.Footer> */}
             </Dialog.Content>
