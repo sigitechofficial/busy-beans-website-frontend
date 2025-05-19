@@ -75,12 +75,12 @@ const page = () => {
   const [activeResData, setActiveResData] = useState([]);
   const [existingCartItems, setExistingCartItems] = useState([]);
 
-  const totalPrice = existingCartItems?.reduce((a, b) => {
+  const totalPrice = cartItems?.reduce((a, b) => {
     return a + b?.price * b?.qty;
   }, 0);
-  console.log("🚀 ~ totalPrice ~ totalPrice:", totalPrice)
-  
-  const totalWeight = existingCartItems?.reduce((a, b) => {
+  console.log("🚀 ~ totalPrice ~ totalPrice:", totalPrice);
+
+  const totalWeight = cartItems?.reduce((a, b) => {
     return a + b?.weight;
   }, 0);
 
@@ -205,23 +205,21 @@ const page = () => {
   ];
 
   useEffect(() => {
-    const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-    const paymentMethod =
-      JSON.parse(localStorage.getItem("paymentMethod")) || {};
-    setExistingCartItems(cartItems);
-
-    fetch(BASE_URL + "api/v1/users/create-payment-intent", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: 1000 }), // amount in cents
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("🚀 ~ useEffect ~ data:", data);
-        console.log("🚀 ~ .then ~ clientSecret:", clientSecret);
-        return setClientSecret(data?.data?.clientSecret);
-      });
-  }, []);
+    const fetchClientSecret = async () => {
+      try {
+        const res = await PostAPI("api/v1/users/create-payment-intent", {
+          amount: totalPrice * 100,
+        });
+        console.log("🚀 ~ fetchClientSecret ~ res:", res);
+        if (res?.data?.status === "success") {
+          setClientSecret(res?.data?.data?.clientSecret);
+        }
+      } catch (err) {
+        error_toaster("Failed to fetch client secret", err);
+      }
+    };
+    fetchClientSecret();
+  }, [totalPrice]);
 
   const [clientSecret, setClientSecret] = useState("");
 
@@ -255,7 +253,6 @@ const page = () => {
     } else {
       if (order?.paymentMethod?.includes("card")) {
         setStripeModal(true);
-        // router.push("/card-payment");
       } else {
         setLoader(true);
         try {
@@ -799,7 +796,7 @@ const page = () => {
               </div>
               {true && (
                 <div className="bg-theme text-white rounded-lg my-4 space-y-3">
-                  {existingCartItems?.map((cart, index) => {
+                  {cartItems?.map((cart, index) => {
                     return (
                       <div key={index} className="flex justify-between gap-x-2">
                         <div className="flex gap-x-5">
@@ -1309,11 +1306,22 @@ const page = () => {
               {/* <Dialog.Header></Dialog.Header> */}
               <Dialog.Body>
                 {stripeModal ? (
-                  <div className="p-8">
+                  <div className="">
                     <h2 className="text-2xl font-semibold mb-4">Payment</h2>
                     {clientSecret && (
                       <Elements stripe={stripePromise} options={options}>
-                        <StripeCardForm clientSecret={clientSecret} />
+                        <StripeCardForm
+                          cartItems={cartItems}
+                          addressId={addressId}
+                          userId={userId}
+                          order={order}
+                          totalPrice={totalPrice}
+                          setStripeModal={setStripeModal}
+                          clientSecret={clientSecret}
+                          setCartItems={setCartItems}
+                          setLoader={setLoader}
+                          router={router}
+                        />
                       </Elements>
                     )}
                   </div>
