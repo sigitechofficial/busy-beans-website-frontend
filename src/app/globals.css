@@ -92,3 +92,8 @@
     right: 0px;
   }
 }
+
+
+.pac-container {
+      z-index : 1600 !important
+    }

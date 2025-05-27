@@ -1,6 +1,7 @@
 "use client";
 import MiniLoader from "@/components/ui/MiniLoader";
 import { emailValidity, passwordStrength } from "@/utilities/authValidation";
+import ErrorHandler from "@/utilities/ErrorHandler";
 import { SignupAPI } from "@/utilities/PostAPI";
 import {
   error_toaster,
@@ -130,42 +131,48 @@ export default function SignUpStep1() {
     ) {
       info_toaster("Password and confirm password must be same");
     } else {
-      setLoader(true);
-      const res = await SignupAPI("api/v1/users/signup", {
-        info: {
-          name: userData?.info?.name,
-          email: userData?.info?.email,
-          password: userData?.info?.password,
-          status: true,
-          phoneNumber: userData?.info?.phoneNumber,
-          saleTaxNumber: userData?.info?.saleTaxNumber,
-          emailToSendInvoices: userData?.info?.emailToSendInvoices,
-          companyName: userData?.info?.companyName,
-          companyInfo: userData?.info?.companyInfo,
-        },
-        address: {
-          companyaddress: userData?.address?.companyaddress,
-          addressLineOne: userData?.address?.addressLineOne,
-          addressLineTwo: userData?.address?.addressLineTwo,
-          town: userData?.address?.town,
-          zipCode: userData?.address?.zipCode,
-          country: userData?.address?.country,
-          state: userData?.address?.state,
-          status: true,
-        },
-      });
-      if (res?.data?.status === "success") {
-        router.push("/verify-email");
+      try {
+        setLoader(true);
+        const res = await SignupAPI("api/v1/users/signup", {
+          info: {
+            name: userData?.info?.name,
+            email: userData?.info?.email,
+            password: userData?.info?.password,
+            status: true,
+            phoneNumber: userData?.info?.phoneNumber,
+            saleTaxNumber: userData?.info?.saleTaxNumber,
+            emailToSendInvoices: userData?.info?.emailToSendInvoices,
+            companyName: userData?.info?.companyName,
+            companyInfo: userData?.info?.companyInfo,
+          },
+          address: {
+            companyaddress: userData?.address?.companyaddress,
+            addressLineOne: userData?.address?.addressLineOne,
+            addressLineTwo: userData?.address?.addressLineTwo,
+            town: userData?.address?.town,
+            zipCode: userData?.address?.zipCode,
+            country: userData?.address?.country,
+            state: userData?.address?.state,
+            status: true,
+          },
+        });
+        if (res?.data?.status === "success") {
+          router.push("/verify-email");
+          setLoader(false);
+          success_toaster(res?.data?.data?.message);
+          localStorage.setItem("userName", res?.data?.data?.data?.name);
+          localStorage.setItem("userID", res?.data?.data?.data?.id);
+          localStorage.setItem("userEmail", res?.data?.data?.data?.email);
+          localStorage.setItem("addressId", res?.data?.data?.data?.address?.id);
+          localStorage.setItem("otpStatus", "signUp");
+        } else {
+          throw new Error(
+            res?.data?.message || "An unexpected error occurred."
+          );
+        }
+      } catch (error) {
+        ErrorHandler(error);
         setLoader(false);
-        success_toaster(res?.data?.data?.message);
-        localStorage.setItem("userName", res?.data?.data?.data?.name);
-        localStorage.setItem("userID", res?.data?.data?.data?.id);
-        localStorage.setItem("userEmail", res?.data?.data?.data?.email);
-        localStorage.setItem("addressId", res?.data?.data?.data?.address?.id);
-        localStorage.setItem("otpStatus", "signUp");
-      } else if (res?.data?.status === "error") {
-        setLoader(false);
-        error_toaster(res?.data?.message);
       }
     }
   };

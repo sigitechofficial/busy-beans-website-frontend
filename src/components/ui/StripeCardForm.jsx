@@ -43,7 +43,7 @@ const StripeCardForm = ({
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  const handleCreateOrder = async () => {
+  const handleCreateOrder = async (id, payment_method) => {
     setLoader(true);
     try {
       const res = await PostAPI("api/v1/users/book-order", {
@@ -61,6 +61,9 @@ const StripeCardForm = ({
           frequency: order?.orderFrequency, // 'just-onces', 'weekly', 'every-two-weeks', 'every-four-weeks'
           addressId: addressId,
           userId: userId,
+          paymentMethodId: payment_method,
+          paymentIntentId: id,
+          paymentStatus: "done",
         },
         items: cartItems,
       });
@@ -98,7 +101,7 @@ const StripeCardForm = ({
       setError(error.message);
       setProcessing(false);
     } else if (paymentIntent?.status === "succeeded") {
-      handleCreateOrder();
+      handleCreateOrder(paymentIntent?.id, paymentIntent?.payment_method);
       setSuccess(true);
       setError(null);
     }

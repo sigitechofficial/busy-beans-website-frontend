@@ -1,11 +1,13 @@
 "use client";
 import CustomDeliveryIcon from "@/components/ui/CustomDeliveryIcon";
 import CustomRadioBtn from "@/components/ui/CustomRadioBtn";
+import { FaLocationDot } from "react-icons/fa6";
 // import { Switch } from "@chakra-ui/react";
 import { Dialog, Portal } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FaAngleRight,
+  FaArrowLeft,
   FaDoorOpen,
   FaMinus,
   FaPlus,
@@ -26,6 +28,8 @@ import {
   GoogleMap,
   MarkerF,
   LoadScript,
+  Autocomplete,
+  Marker,
 } from "@react-google-maps/api";
 import { BASE_URL, googleApiKey } from "@/utilities/URL";
 import {
@@ -42,9 +46,14 @@ import { useCart } from "@/utilities/cartContext";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import StripeCardForm from "@/components/ui/StripeCardForm";
+import GetAPI from "@/utilities/GetAPI";
+import { drawerSelectStyles } from "@/utilities/SelectStyle";
+import axios from "axios";
+import { RxCross2 } from "react-icons/rx";
+import BackButton from "@/components/ui/BackButton";
 
 const stripePromise = loadStripe(
-  "pk_test_51QwUMCCmsFtCbz25F30vy7aCrxw8swscrpB2phj4tUOUimhYltvrCXZoZIsmzwWOYdn3qUh4GNjVql9o4KNQcNHb009BpHlDAA"
+  "pk_test_51JScKSIUi1Nn55FGXU26SOW61CwAnurZDwnFj2WTRvc7aKTxdcQbWUfOzTEqLahNS1g3osEE0SdIzccFR2nIH8ZB00K9gYxdtj"
 );
 
 const page = () => {
@@ -73,23 +82,45 @@ const page = () => {
     userId: "",
   });
   const [activeResData, setActiveResData] = useState([]);
-  const [existingCartItems, setExistingCartItems] = useState([]);
+  const inputRef = useRef();
+  const autocompleteRef = useRef();
+  const mapRef = useRef(null);
+  const [center, setCenter] = useState({
+    lat: "",
+    lng: "",
+  });
+  console.log("🚀 ~ page ~ center:", center);
+
+  const { data: addressData, reFetch: reFetchAddresses } = GetAPI(
+    `api/v1/users/address/view-all?userId=${userId}`
+  );
+
+  const { data: countriesData } = GetAPI(
+    "api/v1/admin/address-management/country"
+  );
+
+  const allCountriesData = [];
+  countriesData?.data?.data?.map((country) =>
+    allCountriesData.push({
+      value: country?.isoCode,
+      label: country?.name,
+    })
+  );
 
   const totalPrice = cartItems?.reduce((a, b) => {
     return a + b?.price * b?.qty;
   }, 0);
-  console.log("🚀 ~ totalPrice ~ totalPrice:", totalPrice);
 
   const totalWeight = cartItems?.reduce((a, b) => {
     return a + b?.weight;
   }, 0);
 
   let getProfile = [];
-  const [coupon, setCoupon] = useState("");
   const [feeWorks, setFeeWorks] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
   const [stripeModal, setStripeModal] = useState(false);
-  const [directionsResponse, setDirectionsResponse] = useState(null);
+  const [addressModal, setAddressModal] = useState(""); // open, addNewAddress, map
+
   const [deliveryData, setDeliveryData] = useState({
     how: 1,
     where: 1,
@@ -99,7 +130,9 @@ const page = () => {
     whenShow: false,
     schedule: "",
   });
-
+  const [selectedCountryCode, setSelectedCountryCode] = useState("PK");
+  const [selectedCountryCities, setSelectedCountryCities] = useState([]);
+  const [clientSecret, setClientSecret] = useState("");
   const [schedule, setSchedule] = useState({
     day: "",
     time: "",
@@ -114,30 +147,19 @@ const page = () => {
   });
 
   const [deliveryAddress, setDeliveryAddress] = useState({
-    id: "",
+    companyaddress: "",
+    addressLineOne: "",
+    addressLineTwo: "",
+    town: "",
+    country: "",
+    state: "",
+    countryInSystemId: "",
+    stateInSystemId: "",
+    cityInSystemId: "",
+    zipCode: "",
     lat: "",
     lng: "",
-    building: "",
-    city: "",
-    AddressType: "",
-    locationType: "",
-    state: "",
-    streetAddress: "",
-    zipCode: "",
-    entrance: "",
-    door: "",
-    instructions: "",
-    other: false,
-  });
-  const [deliveryCharges, setDeliveryCharges] = useState({
-    distance: "",
-    distanceUnit: "",
-    currencyUnit: "",
-    packingFee: "",
-    deliveryCharges: "",
-    serviceCharges: "",
-    VAT: "",
-    updatedDeliveryCharges: null,
+    status: true,
   });
 
   const navigateTo = () => {
@@ -186,16 +208,6 @@ const page = () => {
     setTimeChunks(times);
   };
 
-  const origin = {
-    lat: parseFloat(activeResData?.lat || 0),
-    lng: parseFloat(activeResData?.lng || 0),
-  };
-
-  const destination = {
-    lat: 31.52037 || 0,
-    lng: 74.358749 || 0,
-  };
-
   const PayM = [];
   const paymentMethods = [
     ...(PayM.data?.data?.simplifiedPaymentMethods || []),
@@ -204,42 +216,43 @@ const page = () => {
     { name: "Card", type: "card" }, // New Cheque payment method
   ];
 
-  useEffect(() => {
-    const fetchClientSecret = async () => {
-      try {
-        const res = await PostAPI("api/v1/users/create-payment-intent", {
-          amount: totalPrice * 100,
-        });
-        console.log("🚀 ~ fetchClientSecret ~ res:", res);
-        if (res?.data?.status === "success") {
-          setClientSecret(res?.data?.data?.clientSecret);
-        }
-      } catch (err) {
-        error_toaster("Failed to fetch client secret", err);
-      }
-    };
-    fetchClientSecret();
-  }, [totalPrice]);
-
-  const [clientSecret, setClientSecret] = useState("");
-
-  // useEffect(() => {
-  // Call your backend to create a PaymentIntent and return the client secret
-  // fetch(BASE_URL + "api/v1/users/create-payment-intent", {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({ amount: 1000 }), // amount in cents
-  // })
-  //   .then((res) => res.json())
-  //   .then((data) => {
-  //     console.log("🚀 ~ useEffect ~ data:", data);
-  //     console.log("🚀 ~ .then ~ clientSecret:", clientSecret);
-  //     return setClientSecret(data?.data?.clientSecret);
-  //   });
-  // }, []);
-
   const appearance = { theme: "stripe" };
   const options = { clientSecret, appearance };
+
+  const handleChooseAddress = (address) => {
+    localStorage.setItem(
+      "address",
+      `${address?.companyaddress},
+              ${address?.town}, 
+              ${address?.zipCode}, 
+              ${address?.country}, 
+              ${address?.state}`
+    );
+    localStorage.setItem("addressId", address?.id);
+    success_toaster("Address updated successfully");
+    setAddressModal("");
+  };
+
+  const handleNewAddress = () => {
+    setAddressModal("addNewAddress");
+  };
+
+  const handleSelectedCountryCities = async (countryName) => {
+    const selectedCountry = countriesData?.data?.data?.find(
+      (country) => country?.name === countryName
+    );
+    try {
+      const res = await axios.get(
+        BASE_URL +
+          `api/v1/admin/address-management/city?countryInSystemId=${selectedCountry?.id}`
+      );
+      if (res?.data?.status === "success") {
+        setSelectedCountryCities([...res?.data?.data?.data]);
+      }
+    } catch (error) {
+      ErrorHandler(error);
+    }
+  };
 
   const createOrder = async () => {
     if (totalPrice === "") {
@@ -293,67 +306,219 @@ const page = () => {
     }
   };
 
+  const handleModalBackButton = () => {
+    addressModal === "map"
+      ? setAddressModal("addNewAddress")
+      : addressModal === "addNewAddress"
+      ? setAddressModal("open")
+      : "";
+  };
+
+  const calculateRoute = () => {
+    const place = autocompleteRef.current.getPlace();
+    if (!autocompleteRef.current) {
+      console.warn("Autocomplete not loaded yet");
+      return;
+    }
+
+    if (!place) {
+      console.warn("No place returned from getPlace()");
+      return;
+    }
+
+    const formattedAddress = place.formatted_address;
+
+    const addressComponents = place.address_components || [];
+
+    const getAddressComponent = (type) =>
+      addressComponents.find((component) => component.types.includes(type))
+        ?.long_name || "";
+
+    const countryName = getAddressComponent("country");
+    const countryShortName =
+      addressComponents.find((c) => c.types.includes("country"))?.short_name ||
+      "";
+    const city =
+      getAddressComponent("locality") ||
+      getAddressComponent("administrative_area_level_2");
+    const state = getAddressComponent("administrative_area_level_1");
+    const postalCode = getAddressComponent("postal_code");
+
+    if (!place.geometry || !place.geometry.location) {
+      info_toaster("Please select an address");
+      return;
+    }
+
+    // const latLng = {
+    //   lat: place.geometry.location.lat(),
+    //   lng: place.geometry.location.lng(),
+    // };
+
+    setDeliveryAddress({
+      ...deliveryAddress,
+      country: countryName,
+      zipCode: postalCode,
+      state: state,
+      town: city,
+      companyaddress: formattedAddress,
+      lat: place.geometry.location.lat(),
+      lng: place.geometry.location.lng(),
+    });
+    setCenter({
+      lat: place.geometry.location.lat(),
+      lng: place.geometry.location.lng(),
+    });
+    // console.log("Country Short Name:", countryShortName);
+    // console.log("Country Name:", countryName);
+    // console.log("City:", city);
+    // console.log("State:", state);
+    // console.log("Postal Code:", postalCode);
+    // console.log("Formatted Address:", formattedAddress);
+  };
+
+  const handleAddAddress = async () => {
+    let cityStatus = selectedCountryCities.find(
+      (city) => city?.name === deliveryAddress?.town
+    );
+    if (cityStatus) {
+      try {
+        const res = await PostAPI(`api/v1/users/address/add-new/${userId}`, {
+          address: {
+            companyaddress: deliveryAddress?.companyaddress,
+            addressLineOne: "",
+            addressLineTwo: "",
+            town: deliveryAddress?.town,
+            country: deliveryAddress?.country,
+            state: deliveryAddress?.state,
+            countryInSystemId: cityStatus?.countryInSystemId,
+            stateInSystemId: cityStatus?.stateInSystemId,
+            cityInSystemId: cityStatus?.id,
+            zipCode: deliveryAddress?.zipCode,
+            lat: deliveryAddress?.lat,
+            lng: deliveryAddress?.lng,
+            status: true,
+          },
+        });
+        if (res?.data?.status === "success") {
+          success_toaster("Address added successfully");
+          setAddressModal("");
+          reFetchAddresses();
+          cityStatus = {};
+        } else {
+          throw new Error(
+            res?.data?.message || "An unexpected error occurred."
+          );
+        }
+      } catch (error) {
+        ErrorHandler(error);
+      }
+    } else {
+      info_toaster("Service not operational here");
+    }
+  };
+
+  const handleDragEnd = () => {
+    if (mapRef.current) {
+      const newCenter = mapRef.current.getCenter();
+      const lat = newCenter.lat();
+      const lng = newCenter.lng();
+
+      setCenter({ lat, lng });
+
+      const geocoder = new window.google.maps.Geocoder();
+
+      geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+        if (status === "OK" && results && results.length > 0) {
+          const addressComponents = results[0].address_components;
+
+          const cityComponent = addressComponents.find((component) =>
+            component.types.includes("locality")
+          );
+
+          const stateComponent = addressComponents.find((component) =>
+            component.types.includes("administrative_area_level_1")
+          );
+
+          const city = cityComponent ? cityComponent.long_name : "Unknown";
+          const state = stateComponent ? stateComponent.long_name : "Unknown";
+
+          console.log("City:", city);
+          console.log("State:", state);
+
+          setDeliveryAddress({
+            ...deliveryAddress,
+            lat,
+            lng,
+            town: city,
+            state: state,
+          });
+        } else {
+          console.error("Geocoder failed:", status);
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    const fetchClientSecret = async () => {
+      try {
+        const res = await PostAPI("api/v1/users/create-payment-intent", {
+          amount: totalPrice * 100,
+        });
+        if (res?.data?.status === "success") {
+          setClientSecret(res?.data?.data?.clientSecret);
+        }
+      } catch (err) {
+        error_toaster("Failed to fetch client secret", err);
+      }
+    };
+    fetchClientSecret();
+  }, [totalPrice]);
+
   return (
     <>
       <div className="bg-theme font-satoshi">
         <section className="bg-theme-green font-satoshi">
           <div className="h-96 relative text-black hover:text-opacity-50">
-            <div className="lg:hidden absolute z-10 bottom-0 w-full h-16 bg-gradient-to-t from-white to-transparent"></div>
-            <LoadScript googleMapsApiKey={googleApiKey}>
+            <LoadScript googleMapsApiKey={googleApiKey} libraries={["places"]}>
               <GoogleMap
-                key={`${deliveryData?.how}-${deliveryAddress?.lat}-${deliveryAddress?.lng}`}
-                zoom={deliveryData?.how === 1 ? 12 : 16}
-                center={deliveryData?.how === 1 ? destination : origin}
+                zoom={14}
+                center={{
+                  lat: 31.4711,
+                  lng: 74.24192,
+                }}
                 mapContainerStyle={{
                   width: "100%",
                   height: "100%",
                 }}
                 options={{
                   disableDefaultUI: true,
+                  draggable: false,
+                  scrollwheel: false,
+                  disableDoubleClickZoom: true,
+                  zoomControl: false,
                 }}
               >
-                {/* <MarkerF
-                position={origin}
-                icon={{
-                  url:
-                    deliveryData.how === 1
-                      ? "/images/restaurants/greenDot.svg"
-                      : iconUrl,
-                  scaledSize: new window.google.maps.Size(
-                    deliveryData.how === 1 ? 25 : 100,
-                    deliveryData.how === 1 ? 30 : 100
-                  ),
-                }}
-              />
-
-              {deliveryData.how === 1 && (
-                <MarkerF
-                  position={destination}
-                  icon={{
-                    url: iconUrl,
-                    scaledSize: new window.google.maps.Size(100, 100),
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    zIndex: 1,
                   }}
-                />
-              )} */}
-
-                {/* {directionsResponse && deliveryData?.how == 1 && (
-                <DirectionsRenderer
-                  directions={directionsResponse}
-                  options={{
-                    suppressMarkers: true,
-                    polylineOptions: {
-                      strokeColor: "#09820f",
-                      strokeWeight: 5,
-                    },
-                  }}
-                />
-              )} */}
+                  className="customMarkF"
+                >
+                  {/* <img src="/images/pin-location.svg" alt="Fixed Marker" /> */}
+                </div>
               </GoogleMap>
             </LoadScript>
+            <div className="lg:hidden absolute z-10 bottom-0 w-full h-16 bg-gradient-to-t from-white to-transparent"></div>
+
             <div className="max-w-[1200px] px-[30px] mx-auto -mt-20 md:-mt-48 z-20 relative pointer-events-none">
               {/* <div
                 onClick={() => {
-                  window.history.back();
+                  router.back();
                 }}
                 className="absolute left-5 -top-56 md:-top-28 z-10 flex items-center gap-x-2 "
               >
@@ -377,201 +542,35 @@ const page = () => {
         ) : (
           <section className="max-w-[1200px] px-4 sm:px-[30px] xl:pr-11 grid grid-cols-1 lg:grid-cols-5 lg:gap-x-[10%] gap-y-5  mx-auto mt-10 pb-10 font-sf">
             <div className="lg:max-w-[570px] lg:col-span-3">
-              <div className="space-y-3">
-                {/* <div className="h-12 p-1 rounded-[6.25rem] bg-themeLight grid grid-cols-2 mb-6">
-                <button
-                  onClick={() => {
-                    setDeliveryData({ ...deliveryData, how: 1 });
-                    localStorage.setItem("how", 1);
-                  }}
-                  className={`font-medium text-base flex items-center justify-center gap-x-2 rounded-[6.25rem] ${
-                    deliveryData.how === 1
-                      ? "bg-theme"
-                      : "bg-transparent text-goldenLight"
-                  }`}
-                >
-                  <CustomDeliveryIcon
-                    size={20}
-                    color={deliveryData.how === 2 ? "#F8E4BE" : "#fff"}
-                  />
-                  <span
-                    className={
-                      deliveryData.how === 1 ? "font-bold text-white" : ""
-                    }
-                  >
-                    Delivery
-                  </span>
-                </button>
-                <button
-                  onClick={() => {
-                    setDeliveryData({ ...deliveryData, how: 2 });
-                    localStorage.setItem("how", 2);
-                  }}
-                  className={`font-medium text-base flex items-center justify-center gap-x-2 rounded-[6.25rem] ${
-                    deliveryData.how === 2
-                      ? "bg-theme"
-                      : "bg-transparent text-goldenLight"
-                  }`}
-                >
-                  <FaWalking
-                    size={20}
-                    color={deliveryData.how === 2 ? "#fff" : ""}
-                  />
-                  <span
-                    className={
-                      deliveryData.how === 2 ? "font-bold text-white" : ""
-                    }
-                  >
-                    Pickup
-                  </span>
-                </button>
-              </div> */}
-
-                {/* {deliveryData.how === 1 && (
-                <>
-                  <div className="w-full flex justify-between items-center p-4 cursor-pointer !my-4 !mb-12 rounded-lg bg-themeLight">
-                    <div className="flex items-center gap-x-4 p-2">
-                      <CustomDeliveryIcon size={20} color="white" />
-                      <div className=" font-sf">
-                        <h4 className="leading-6 text-base font-semibold text-white">
-                          Delivery in approximately{" "}
-                          <span className="text-gray-400">
-                            {activeResData?.deliveryTime}
-                          </span>{" "}
-                          {activeResData?.dropOffAddress?.streetAddress}
-                        </h4>
-                      </div>
-                    </div>
-                  </div>
-
-                  {true == false && (
-                    <div className="flex gap-x-2 items-center p-4 bg-[#ffefee] rounded-lg [&>p]:text-sm !mb-10">
-                      <FaCircleExclamation
-                        className="text-[#f93a25]"
-                        size="16"
-                      />
-                      <p>The address is outside of the delivery range. </p>
-                    </div>
-                  )}
-
-                  <div className="">
-                    <h1 className="font-semibold text-xl sm:text-[1.75rem] text-white">
-                      Delivery location
-                    </h1>
-                  </div>
-                </>
-              )} */}
-
-                {/* {deliveryData.how === 2 && (
-                <>
-                  <div className="w-full flex justify-between items-center p-4 cursor-pointer !my-4  !mb-12 rounded-lg bg-themeLight">
-                    <div className="flex items-center gap-x-4 p-2">
-                      <GiCardPickup size={24} color="white" />
-                      <div className=" font-sf">
-                        <h4 className="leading-6 text-base font-semibold text-white">
-                          Pickup in approximately{" "}
-                          <span className="text-gray-400">
-                            {activeResData?.pickupTime}
-                          </span>{" "}
-                          {activeResData?.dropOffAddress?.streetAddress}
-                        </h4>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="">
-                    <h1 className="font-semibold text-xl sm:text-[1.75rem]">
-                      Pickup location
-                    </h1>
-                  </div>
-                </>
-              )} */}
-              </div>
               <div className="space-y-8">
                 <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
                   Delivery Details
                 </h3>
                 <div className="text-white rounded-lg bg-themeLight  my-4 mb-12">
-                  {/* <div className="flex items-center justify-between gap-x-2 px-5 py-5">
-                <div className="flex items-center gap-x-3">
-                  <span>
-                    <IoMdHome size={24} />
-                  </span>
-                  <div>
-                    <div className="text-base font-semibold">
-                      {deliveryData.how === 1 ? (
-                        deliveryAddress?.id !== "" ? (
-                          <span className="font-semibold">
-                            {`${deliveryAddress?.AddressType}`}:{" "}
-                            <span className="text-gray-400 font-light">
-                              {" "}
-                              {`${deliveryAddress.streetAddress}`}{" "}
-                            </span>
-                          </span>
-                        ) : (
-                          "Please add a delivery address"
-                        )
-                      ) : (
-                        <>
-                          <span className="font-semibold">
-                            {` ${activeResData.location}`}
-                          </span>{" "}
-                          <span className="ms-2 text-gray-500">{`${deliveryCharges.distance} ${deliveryCharges.distanceUnit}`}</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {deliveryData.how === 1 && (
-                  <div className="bg-theme text-theme-green-2 font-semibold font-sf rounded-md px-3 py-1">
-                    <button
-                    //  onClick={() => setAddressModal(true)}
-                    >
-                      Change
-                    </button>
-                  </div>
-                )}
-              </div> */}
-
                   {deliveryData.how === 1 && (
                     <>
-                      {/* <hr className="mx-5 " />
-                  <div className="flex items-center justify-between gap-x-2 px-5 py-5">
-                    <div className="flex items-center gap-x-3">
-                      <span>
-                        <FaDoorOpen size={24} />
-                      </span>
-                      <div>
-                        <div className="text-base font-semibold">
-                          Leave order at the door
-                        </div>
-                      </div>
-                    </div>
-                    <Switch
-                      onChange={handleLeaveAtDoor}
-                      checked={leaveAtDoor}
-                      onColor="#379465"
-                      offColor="#d9d9d9"
-                      checkedIcon={false}
-                      uncheckedIcon={false}
-                      height={29}
-                      width={52}
-                      handleDiameter={23}
-                    />
-                  </div> */}
                       <div>
                         <div className="relative w-full group">
                           <div className="font-sf font-normal text-base text-theme-black-2 flex items-center gap-3 px-5 py-[5px] duration-300 border-2 border-white hover:border-goldenLight focus-within:border-goldenLight rounded-t-lg">
                             <FaLocationCrosshairs size={24} />
                             <div className="relative w-full">
-                              <input
-                                type="text"
-                                id="courier-note"
-                                disabled
-                                className={`w-full h-full py-5 pt-7 pb-2 focus:outline-none bg-transparent peer placeholder-transparent`}
-                                value={address}
-                              />
+                              <div className="flex justify-between items-center w-full">
+                                <div
+                                  type="text"
+                                  id="courier-note"
+                                  disabled
+                                  className={`w-full h-full py-5 pt-7 pb-2 focus:outline-none bg-transparent peer placeholder-transparent`}
+                                >
+                                  {address}
+                                </div>
+                                <button
+                                  onClick={() => setAddressModal("open")}
+                                  type="button"
+                                  className="px-3 py-1 h-10 rounded-md font-semibold text-themeGreen bg-[#40875D24]"
+                                >
+                                  Change
+                                </button>
+                              </div>
                               <label
                                 htmlFor="courier-note"
                                 className={`absolute left-0 top-[5px] text-[13px] text-goldenLight`}
@@ -615,101 +614,6 @@ const page = () => {
                   )}
                 </div>
               </div>
-
-              {/* {deliveryData.how === 1 && (
-              <>
-                <div className="space-y-6">
-                  <h1 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
-                    Delivery Time
-                  </h1>
-                </div>
-              </>
-            )}
-
-            {deliveryData.how === 2 && (
-              <>
-                <div className="space-y-6">
-                  <h1 className="font-semibold text-xl sm:text-[1.75rem] ">
-                    Pickup Time
-                  </h1>
-                </div>
-              </>
-            )} */}
-              {/* <div
-              className={`flex items-center space-x-4 px-4 py-3 mt-4 bg-themeLight text-white rounded-lg ${
-                deliveryData.when === 1 && "border-theme-green-2"
-              }`}
-            >
-              <CustomRadioBtn
-                onChange={() =>
-                  setDeliveryData({
-                    ...deliveryData,
-                    when: 1,
-                    whenShow: false,
-                    schedule: "",
-                  })
-                }
-                type="radio"
-                id="when-asap"
-                name="when"
-                checked={deliveryData.when === 1}
-              />
-
-              <label
-                htmlFor="when-asap"
-                className="w-full cursor-pointer flex items-center space-x-4"
-              >
-                <div>
-                  <label className="font-sf font-semibold text-base">
-                    Standard
-                  </label>
-                  <p className="text-sm font-light text-checkoutTextColor/65">
-                    {deliveryData.how === 1
-                      ? activeResData?.deliveryTime?.split(" ")[0] +
-                        "-" +
-                        (parseInt(activeResData?.deliveryTime) + 10)
-                      : activeResData?.pickupTime?.split(" ")[0] +
-                        "-" +
-                        (parseInt(activeResData?.pickupTime) + 10)}{" "}
-                    min
-                  </p>
-                </div>
-              </label>
-            </div> */}
-
-              {/* <div
-              className={`flex items-center space-x-4 px-4 py-3 mt-2 bg-themeLight text-white rounded-lg ${
-                deliveryData.when === 2 && "border-theme-green-2"
-              }`}
-            >
-              <CustomRadioBtn
-                onChange={() =>
-                  setDeliveryData({
-                    ...deliveryData,
-                    when: 2,
-                  })
-                }
-                type="radio"
-                id="when-later"
-                name="when"
-                checked={deliveryData.when === 2}
-                className="custom-radio "
-              />
-
-              <label
-                htmlFor="when-later"
-                className="w-full cursor-pointer flex items-center space-x-4"
-              >
-                <div>
-                  <label className="font-sf font-semibold text-base">
-                    Schedule
-                  </label>
-                  <p className="text-sm font-light text-checkoutTextColor/65">
-                    Choose a delivery time
-                  </p>
-                </div>
-              </label>
-            </div> */}
 
               {deliveryData.when === 2 && (
                 <div className="flex  justify-between space-x-7 my-3">
@@ -818,53 +722,6 @@ const page = () => {
                             </div>
                             <div className="capitalize text-sm font-normal text-white text-opacity-60">
                               {cart?.qty * cart?.price} {cart?.unit}
-                              {/* <ul>
-                              {cart?.addOnsCat && cart?.addOnsCat?.length > 0
-                                ? cart?.addOnsCat
-                                    ?.filter(
-                                      (ele) =>
-                                        ele?.id ===
-                                        cart?.addOns?.find(
-                                          (fil) => fil?.collectionId === ele?.id
-                                        )?.collectionId
-                                    )
-                                    ?.map((cat, key) => (
-                                      <li key={key}>
-                                        <span>{cat?.name}: </span>
-                                        <br />
-                                        {cart?.addOns
-                                          ?.filter(
-                                            (fil) =>
-                                              fil?.collectionId === cat?.id
-                                          )
-                                          ?.map((add, addKey) => (
-                                            <div
-                                              key={addKey}
-                                              className="ml-2 mt-1"
-                                            >
-                                              {`${add?.qty}x ${
-                                                add?.name
-                                              } ${
-                                                add?.total > 0
-                                                  ? `(${add?.total}.00)`
-                                                  : ""
-                                              }`}
-                                            </div>
-                                          ))}
-                                      </li>
-                                    ))
-                                : cart?.addOns?.map((add, addKey) => (
-                                    <li key={addKey}>
-                                      <div className="ml-2 mt-1">
-                                        {`${add?.qty}x ${add?.name} ${
-                                          add?.total > 0
-                                            ? `(${add?.total}.00)`
-                                            : ""
-                                        }`}
-                                      </div>
-                                    </li>
-                                  ))}
-                            </ul> */}
                             </div>
                           </div>
                         </div>
@@ -996,156 +853,12 @@ const page = () => {
                         </p>
                       </div>
                     </div>{" "}
-                    {/* <Switch
-                    onChange={handleFominoCredits}
-                    checked={fominoCredits}
-                    onColor="#379465"
-                    offColor="#d9d9d9"
-                    checkedIcon={false}
-                    uncheckedIcon={false}
-                    height={29}
-                    width={52}
-                    handleDiameter={23}
-                  /> */}
                   </div>
                 </div>
               )}
 
               {deliveryData.how === 1 && (
                 <>
-                  {/* <div className="flex items-center gap-x-2 mt-10 mb-8">
-                  <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
-                    Tip the courier
-                  </h3>
-                </div>
-                <div className="bg-themeLight text-white rounded-lg  p-5 my-4">
-                  <div>
-                    <div className="flex justify-between items-center">
-                      <p className="text-sm font-light text-checkoutTextColor/65 max-w-[70%]">
-                        They'll get 100% of your tip after the delivery.
-                      </p>
-                      <p className="text-sm font-light text-checkoutTextColor/65 whitespace-nowrap">
-                        {activeResData?.currencyUnit}{" "}
-                        {parseFloat(tip?.tip) || "0.00"}
-                      </p>
-                    </div>
-
-                    <div className="grid grid-cols-5 gap-2 mt-5 cursor-pointer ">
-                      <button
-                        onClick={() => setTip({ ...tip, other: false, tip: 0 })}
-                        className={`h-8 font-medium text-sm text-white text-opacity-80 border-2 sm:px-5 rounded-full w-full hover:bg-theme-red hover:bg-opacity-20 hover:border-theme-red ${
-                          tip.tip === 0
-                            ? "border-theme-red"
-                            : "border-checkoutGrayBorder text-checkoutTextColor/60"
-                        }`}
-                      >
-                        0 CHF
-                      </button>
-                      <button
-                        onClick={() => setTip({ ...tip, other: false, tip: 1 })}
-                        className={`h-8 font-medium text-sm text-white text-opacity-80 border-2 sm:px-5 rounded-full w-full hover:bg-theme-red hover:bg-opacity-20 hover:border-theme-red ${
-                          tip.tip === 1
-                            ? "border-theme-red"
-                            : "border-checkoutGrayBorder text-checkoutTextColor/60"
-                        }`}
-                      >
-                        1 CHF
-                      </button>
-                      <button
-                        onClick={() => setTip({ ...tip, other: false, tip: 2 })}
-                        className={`h-8 font-medium text-sm text-white text-opacity-80 border-2 sm:px-5 rounded-full w-full hover:bg-theme-red hover:bg-opacity-20 hover:border-theme-red ${
-                          tip.tip === 2
-                            ? "border-theme-red"
-                            : "border-checkoutGrayBorder text-checkoutTextColor/60"
-                        }`}
-                      >
-                        2 CHF
-                      </button>
-                      <button
-                        onClick={() => setTip({ ...tip, other: false, tip: 5 })}
-                        className={`h-8 font-medium text-sm text-white text-opacity-80 border-2 sm:px-5 rounded-full w-full hover:bg-theme-red hover:bg-opacity-20 hover:border-theme-red ${
-                          tip.tip === 5
-                            ? "border-theme-red"
-                            : "border-checkoutGrayBorder text-checkoutTextColor/60"
-                        }`}
-                      >
-                        5 CHF
-                      </button>
-                      <button
-                        onClick={() => setTip({ ...tip, other: true, tip: 10 })}
-                        className={`h-8 font-medium text-sm text-white text-opacity-80 border-2 sm:px-5 rounded-full w-full hover:bg-theme-red hover:bg-opacity-20 hover:border-theme-red ${
-                          tip.other
-                            ? "border-theme-red"
-                            : "border-checkoutGrayBorder text-checkoutTextColor/60"
-                        }`}
-                      >
-                        Other
-                      </button>
-                    </div>
-                    {tip.other && (
-                      <div className="relative mt-4">
-                        <input
-                          value={tip.tip}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (value === "" || /^[1-9]\d*$/.test(value)) {
-                              setTip({ ...tip, tip: value });
-                            }
-                          }}
-                          type="text"
-                          min={1}
-                          className="py-3 px-5 w-full rounded-lg font-normal text-base text-center bg-theme focus:outline-theme-red"
-                        />
-                        <button
-                          onClick={() => setTip({ ...tip, tip: tip.tip - 1 })}
-                          disabled={tip.tip === 1 ? true : false}
-                          className={`p-1 rounded-full hover:bg-opacity-40 absolute top-1/2 left-5 -translate-y-1/2 ${
-                            tip.tip === 1
-                              ? "text-black bg-black bg-opacity-20 cursor-not-allowed"
-                              : "text-theme-red bg-theme-red bg-opacity-20"
-                          }`}
-                        >
-                          <FaMinus size={12} />
-                        </button>
-                        <button
-                          onClick={() => setTip({ ...tip, tip: tip.tip + 1 })}
-                          className={`p-1 rounded-full hover:bg-opacity-40 absolute top-1/2 right-5 -translate-y-1/2 text-theme-red bg-theme-red bg-opacity-20
-                    }`}
-                        >
-                          <FaPlus size={12} />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div> */}
-
-                  {/* =====Redeem code======= */}
-
-                  {/* <div className="flex items-center gap-x-2 mt-10 pb-5">
-                  <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
-                    Redeem code
-                  </h3>
-                </div>
-                <div className="">
-                  <p className="text-sm font-light text-checkoutTextColor mb-4 text-white">
-                    If you have a Fomino gift card or promo code, enter it below
-                    to claim your benefits.
-                  </p>
-
-                  <div className="flex gap-x-4">
-                    <FloatingLabelInput
-                      value={coupon}
-                      onChange={(e) => setCoupon(e.target.value)}
-                      placeholder="Enter code..."
-                    />
-                    <button
-                      //   onClick={checkCoupon}
-                      className="text-base text-center font-bold bg-themeDark rounded-lg h-[54px] text-white min-w-[115px] w-[40%] whitespace-nowrap"
-                    >
-                      Submit
-                    </button>
-                  </div>
-                </div> */}
                   {/* order frequency */}
                   <div className="flex items-center gap-x-2 mt-10 pb-5">
                     <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white">
@@ -1232,7 +945,7 @@ const page = () => {
               <div className="space-y-2.5 my-4">
                 <div className="flex items-center justify-between gap-x-2">
                   <h5 className="text-base text-checkoutTextColor">Subtotal</h5>
-                  <h6>$ {totalPrice.toFixed(2)}</h6>
+                  <h6>$ {totalPrice?.toFixed(2)}</h6>
                 </div>
                 {deliveryData.how === 1 && (
                   <>
@@ -1248,7 +961,7 @@ const page = () => {
                       </h5>
 
                       <h6 className="flex gap-x-2">
-                        {totalWeight.toFixed(2)} kg
+                        {totalWeight?.toFixed(2)} kg
                       </h6>
                     </div>
 
@@ -1258,7 +971,7 @@ const page = () => {
                           Tip the courier
                         </h5>
                         <h6>
-                          {tip?.tip ? parseFloat(tip?.tip).toFixed(2) : 0} $
+                          {tip?.tip ? parseFloat(tip?.tip)?.toFixed(2) : 0} $
                         </h6>
                       </div>
                     )}
@@ -1270,7 +983,7 @@ const page = () => {
                     Total
                   </h5>
                   <h6 className="font-semibold text-checkoutTextColor text-base">
-                    $ {totalPrice.toFixed(2)}
+                    $ {totalPrice?.toFixed(2)}
                   </h6>
                 </div>
                 <div className="border-dashed border" />
@@ -1285,7 +998,6 @@ const page = () => {
                   {order?.paymentMethod == ""
                     ? "Select Payment Method"
                     : "Place Order"}
-                  {/* {disabled && <RotatingLoader w="30" h="30" />} */}
                 </button>
               </div>
             </div>
@@ -1295,18 +1007,64 @@ const page = () => {
 
       <Dialog.Root
         placement="center"
-        size="md"
-        open={paymentModal || stripeModal}
-        onOpenChange={(e) => setPaymentModal(e.open)}
+        size="lg"
+        open={
+          paymentModal ||
+          stripeModal ||
+          addressModal === "open" ||
+          addressModal === "addNewAddress" ||
+          addressModal === "map"
+        }
+        onOpenChange={(e) => {
+          if (!e.open) {
+            setPaymentModal(false);
+            setStripeModal(false);
+            setAddressModal(null);
+          }
+        }}
       >
         <Portal>
           <Dialog.Backdrop />
           <Dialog.Positioner>
             <Dialog.Content className="rounded-tl-xl rounded-bl-xl bg-theme text-white px-4 py-4">
-              {/* <Dialog.Header></Dialog.Header> */}
-              <Dialog.Body>
+              <Dialog.CloseTrigger />
+              {/* <Dialog.Header> */}
+                
+              {/* </Dialog.Header> */}
+                <div
+                  className={`${
+                    addressModal === "map" || addressModal === "addNewAddress"
+                      ? "flex justify-between items-center"
+                      : "flex justify-end"
+                  }  w-full`}
+                >
+                  <button
+                    className={`${
+                      addressModal === "map" || addressModal === "addNewAddress"
+                        ? "flex"
+                        : "hidden"
+                    } justify-center items-center p-1 size-7 text-black rounded-full hover:bg-black hover:text-white duration-200`}
+                    onClick={handleModalBackButton}
+                  >
+                    <FaArrowLeft size={30} />
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setPaymentModal(false);
+                      setAddressModal("");
+                      setStripeModal(false);
+                    }}
+                  >
+                    <RxCross2
+                      size={30}
+                      className=" cursor-pointer border border-white text-themeDark hover:text-white hover:bg-themeDark rounded-md"
+                    />
+                  </button>
+                </div>
+              <Dialog.Body className="pt-4">
                 {stripeModal ? (
-                  <div className="">
+                  <div className="w-full">
                     <h2 className="text-2xl font-semibold mb-4">Payment</h2>
                     {clientSecret && (
                       <Elements stripe={stripePromise} options={options}>
@@ -1325,9 +1083,9 @@ const page = () => {
                       </Elements>
                     )}
                   </div>
-                ) : (
+                ) : paymentModal ? (
                   <>
-                    <h4 className="text-3xl text-theme-black-2 font-omnes font-bold mt-16 mb-8">
+                    <h4 className="text-3xl text-theme-black-2 font-omnes font-bold mb-8">
                       Payment methods
                     </h4>
 
@@ -1382,6 +1140,285 @@ const page = () => {
                       ))}
                     </div>
                   </>
+                ) : addressModal === "open" ? (
+                  <div className="space-y-4">
+                    <p className="text-3xl text-theme-black-2 font-inter font-bold">
+                      Where To ?
+                    </p>
+                    {/* 
+                    {addressData?.data?.data?.map((address, i) => (
+                      <div key={i} className="flex items-center gap-x-2 min-h-10">
+                        <div className="flex items-start">
+                          <FaLocationDot size={30} />
+                        </div>
+                        <div className="min-h-12 w-full flex flex-col justify-between">
+                          <div className="flex justify-between items-center gap-y-6 w-full">
+                            <p className="text-sm font-normal text-white font-sf ellipsis6">
+                              {address?.companyaddress}, {address?.town},{" "}
+                              {address?.zipCode}, {address?.country},{" "}
+                              {address?.state}
+                            </p>
+                            {addressId != address?.id && (
+                              <button
+                                onClick={() => handleChooseAddress(address)}
+                                className="bg-white text-themeDark bg-opacity-20 flex justify-center items-center text-end rounded-md py-2 px-4 font-semibold"
+                              >
+                                Choose
+                              </button>
+                            )}
+                          </div>
+                          <hr className="h-[1px] bg-white w-full" />
+                        </div>
+                      </div>
+                    ))} */}
+
+                    {addressData?.data?.data?.map((address, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-x-2 [&>div]:pb-4 min-h-14"
+                      >
+                        <div>
+                          <FaLocationDot size={30} />
+                        </div>
+                        <div className="w-full flex justify-between items-center border-b-[1px] border-white">
+                          <p
+                            className={`${addressId == address?.id && "py-2"}`}
+                          >
+                            {" "}
+                            {address?.companyaddress}, {address?.town},{" "}
+                            {address?.zipCode}, {address?.country},{" "}
+                            {address?.state}
+                          </p>
+                          {addressId != address?.id && (
+                            <button
+                              onClick={() => handleChooseAddress(address)}
+                              className="bg-white text-themeDark bg-opacity-20 flex justify-center items-center text-end rounded-md py-2 px-4 font-semibold"
+                            >
+                              Choose
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* <div className="flex">
+                      <div>
+                        <FaPlus size={30} />
+                      </div>
+                      <div className="w-full space-y-4">
+                        <div className="">
+                          <button
+                            onClick={handleNewAddress}
+                            type="button"
+                            className="text-sm font-normal text-white font-sf ellipsis6"
+                          >
+                            Add New Address
+                          </button>
+                          <hr className="h-[1px] bg-white w-full pt-4" />
+                        </div>
+                      </div>
+                    </div> */}
+
+                    <div className="flex items-center gap-x-2 [&>div]:pb-4">
+                      <div>
+                        <FaPlus size={30} />
+                      </div>
+                      <div className="w-full flex justify-between items-center border-b-[1px] border-white">
+                        <button
+                          onClick={handleNewAddress}
+                          type="button"
+                          className="py-2"
+                        >
+                          Add New Address
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : addressModal === "addNewAddress" ? (
+                  <div className="space-y-6">
+                    <p className="text-3xl text-theme-black-2 font-inter font-bold">
+                      Add New Address
+                    </p>
+
+                    <div className="space-y-4">
+                      <Select
+                        placeholder="Select Country"
+                        className="w-full"
+                        styles={drawerSelectStyles}
+                        options={allCountriesData}
+                        onChange={(e) => {
+                          setDeliveryAddress({
+                            ...deliveryAddress,
+                            country: e.label,
+                          });
+                          setSelectedCountryCode(e.value);
+                          handleSelectedCountryCities(e.label);
+                        }}
+                      />
+
+                      <div className="space-y-2 w-full">
+                        <Autocomplete
+                          onLoad={(autocomplete) =>
+                            (autocompleteRef.current = autocomplete)
+                          }
+                          options={{
+                            componentRestrictions: {
+                              country: [selectedCountryCode],
+                            },
+                          }}
+                          onPlaceChanged={calculateRoute}
+                        >
+                          <input
+                            ref={inputRef}
+                            type="text"
+                            placeholder="Choose a delivery address"
+                            className="w-full rounded-md border border-themeLight bg-white placeholder:text-themeLight text-themeLight outline-none px-3 py-3"
+                          />
+                        </Autocomplete>
+                      </div>
+
+                      <div className="md:grid md:grid-cols-2 gap-x-4 max-md:space-y-4">
+                        <div className="flex flex-col gap-y-2">
+                          <label className="text-white font-medium">
+                            Country
+                          </label>
+                          <input
+                            type="text"
+                            name="country"
+                            // onChange={handleAddress}
+                            value={deliveryAddress?.country}
+                            placeholder="Enter Country"
+                            className="w-full rounded-md border border-themeLight bg-white placeholder:text-themeLight text-themeLight outline-none px-3 py-3"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-y-2">
+                          <label className="text-white font-medium">
+                            State
+                          </label>
+                          <input
+                            type="text"
+                            name="state"
+                            // onChange={handleAddress}
+                            value={deliveryAddress?.state}
+                            placeholder="Enter State"
+                            className="w-full rounded-md border border-themeLight bg-white placeholder:text-themeLight text-themeLight outline-none px-3 py-3"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="md:grid md:grid-cols-2 gap-x-4 max-md:space-y-4">
+                        <div className="flex flex-col gap-y-2">
+                          <label className="text-white font-medium">
+                            Town / City
+                          </label>
+                          <input
+                            type="text"
+                            name="town"
+                            // onChange={handleAddress}
+                            value={deliveryAddress?.town}
+                            placeholder="Enter Town / City"
+                            className="w-full rounded-md border border-themeLight bg-white placeholder:text-themeLight text-themeLight outline-none px-3 py-3"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-y-2">
+                          <label className="text-white font-medium">
+                            Zip Code
+                          </label>
+                          <input
+                            type="text"
+                            name="zipCode"
+                            // onChange={handleAddress}
+                            value={deliveryAddress?.zipCode}
+                            placeholder="Enter Zip Code"
+                            className="w-full rounded-md border border-themeLight bg-white placeholder:text-themeLight text-themeLight outline-none px-3 py-3"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <button
+                        type="button"
+                        onClick={() => setAddressModal("map")}
+                        className="bg-white w-full text-base font-bold text-themeDark rounded-md h-[54px]"
+                      >
+                        Select from Map
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleAddAddress}
+                        className="bg-themeDark w-full text-base font-bold text-white rounded-md h-[54px]"
+                      >
+                        Save Address
+                      </button>
+                    </div>
+                  </div>
+                ) : addressModal === "map" ? (
+                  <div className="space-y-6">
+                    <div className="space-y-4 [&>div]:space-y-2">
+                      <div>
+                        <p className="capitalize text-3xl text-white font-bold font-inter">
+                          Address Details
+                        </p>
+                        <p className="text-base font-serif font-normal text-theme-black-2 text-opacity-60 ">
+                          Giving exact address details helps us deliver your
+                          order faster.
+                        </p>
+                      </div>
+                      <div>
+                        <p className="capitalize text-xl text-themeLight font-semibold font-inter">
+                          Address
+                        </p>
+                        <p className="text-sm font-normal text-theme-black-2 text-opacity-60">
+                          {deliveryAddress?.companyaddress}
+                        </p>
+                      </div>
+                    </div>
+                    <GoogleMap
+                      zoom={14}
+                      center={center}
+                      mapContainerStyle={{
+                        width: "100%",
+                        height: "200px",
+                      }}
+                      onLoad={(map) => (mapRef.current = map)}
+                      onDragEnd={handleDragEnd}
+                      options={{
+                        disableDefaultUI: true,
+                        draggable: true,
+                        scrollwheel: true,
+                        disableDoubleClickZoom: true,
+                        zoomControl: true,
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          left: "50%",
+                          transform: "translate(-50%, -100%)",
+                          pointerEvents: "none",
+                        }}
+                      >
+                        <img
+                          src="/images/pin-location.svg"
+                          alt="center marker"
+                          width={40}
+                          height={40}
+                        />
+                      </div>
+                    </GoogleMap>
+
+                    <button
+                      type="button"
+                      onClick={handleAddAddress}
+                      className="bg-themeDark w-full text-base font-bold text-white rounded-md h-[54px]"
+                    >
+                      Save Address
+                    </button>
+                  </div>
+                ) : (
+                  <></>
                 )}
               </Dialog.Body>
               {/* <Dialog.Footer></Dialog.Footer> */}
