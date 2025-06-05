@@ -41,7 +41,7 @@ export default function page() {
             <div>
               <div className="w-96 h-48">
                 <img
-                  src="/images/logowhite.png"
+                  src="/images/logocoffee.png"
                   alt="busy_beans_logo"
                   className="object-contain h-full w-full"
                 />

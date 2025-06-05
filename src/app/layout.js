@@ -119,7 +119,8 @@ export default function RootLayout({ children }) {
     pathname.startsWith("/forgot-password") ||
     pathname.startsWith("/verify-email") ||
     pathname.startsWith("/reset") ||
-    pathname.startsWith("/payment");
+    pathname.startsWith("/payment") ||
+    pathname.startsWith("/invoice")
 
   return (
     <html lang="en">
