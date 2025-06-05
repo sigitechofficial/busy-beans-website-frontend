@@ -53,7 +53,7 @@ import { RxCross2 } from "react-icons/rx";
 import BackButton from "@/components/ui/BackButton";
 
 const stripePromise = loadStripe(
-  "pk_test_51JScKSIUi1Nn55FGXU26SOW61CwAnurZDwnFj2WTRvc7aKTxdcQbWUfOzTEqLahNS1g3osEE0SdIzccFR2nIH8ZB00K9gYxdtj"
+  "pk_test_51RPXZNCxTuXimvwHkvKO6MrVTckQ45X3JC2AkCVyV9fxLCK442YPbG8yM2NOexEqnD3wNAXdKfrOyEH2dTSzYKpt00WTyK7kzl"
 );
 
 const page = () => {
@@ -467,6 +467,10 @@ const page = () => {
         });
         if (res?.data?.status === "success") {
           setClientSecret(res?.data?.data?.clientSecret);
+        } else {
+          throw new Error(
+            res?.data?.message || "An unexpected error occurred."
+          );
         }
       } catch (err) {
         error_toaster("Failed to fetch client secret", err);
@@ -1029,39 +1033,39 @@ const page = () => {
             <Dialog.Content className="rounded-tl-xl rounded-bl-xl bg-theme text-white px-4 py-4">
               <Dialog.CloseTrigger />
               {/* <Dialog.Header> */}
-                
+
               {/* </Dialog.Header> */}
-                <div
+              <div
+                className={`${
+                  addressModal === "map" || addressModal === "addNewAddress"
+                    ? "flex justify-between items-center"
+                    : "flex justify-end"
+                }  w-full`}
+              >
+                <button
                   className={`${
                     addressModal === "map" || addressModal === "addNewAddress"
-                      ? "flex justify-between items-center"
-                      : "flex justify-end"
-                  }  w-full`}
+                      ? "flex"
+                      : "hidden"
+                  } justify-center items-center p-1 size-7 text-black rounded-full hover:bg-black hover:text-white duration-200`}
+                  onClick={handleModalBackButton}
                 >
-                  <button
-                    className={`${
-                      addressModal === "map" || addressModal === "addNewAddress"
-                        ? "flex"
-                        : "hidden"
-                    } justify-center items-center p-1 size-7 text-black rounded-full hover:bg-black hover:text-white duration-200`}
-                    onClick={handleModalBackButton}
-                  >
-                    <FaArrowLeft size={30} />
-                  </button>
+                  <FaArrowLeft size={30} />
+                </button>
 
-                  <button
-                    onClick={() => {
-                      setPaymentModal(false);
-                      setAddressModal("");
-                      setStripeModal(false);
-                    }}
-                  >
-                    <RxCross2
-                      size={30}
-                      className=" cursor-pointer border border-white text-themeDark hover:text-white hover:bg-themeDark rounded-md"
-                    />
-                  </button>
-                </div>
+                <button
+                  onClick={() => {
+                    setPaymentModal(false);
+                    setAddressModal("");
+                    setStripeModal(false);
+                  }}
+                >
+                  <RxCross2
+                    size={30}
+                    className=" cursor-pointer border border-white text-themeDark hover:text-white hover:bg-themeDark rounded-md"
+                  />
+                </button>
+              </div>
               <Dialog.Body className="pt-4">
                 {stripeModal ? (
                   <div className="w-full">

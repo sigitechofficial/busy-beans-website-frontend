@@ -3,7 +3,9 @@ import BrandsMarquee from "@/components/ui/BrandsMarquee";
 import CustomerCarousel from "@/components/ui/Carousel";
 import CoffeSolution from "@/components/ui/CoffeSolution";
 import SwiperSider from "@/components/ui/SwiperSlider";
+import socket from "@/utilities/Socket";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
   const router = useRouter();
@@ -40,6 +42,13 @@ export default function Home() {
     "/images/bistroElite.png",
     "/images/gourmethub.png",
   ];
+
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("✅ Connected to socket server");
+      socket.emit("message", "Hello from client!");
+    });
+  }, []);
 
   return (
     <>

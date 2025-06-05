@@ -118,7 +118,8 @@ export default function RootLayout({ children }) {
     pathname.startsWith("/sign") ||
     pathname.startsWith("/forgot-password") ||
     pathname.startsWith("/verify-email") ||
-    pathname.startsWith("/reset");
+    pathname.startsWith("/reset") ||
+    pathname.startsWith("/payment");
 
   return (
     <html lang="en">
@@ -131,12 +132,11 @@ export default function RootLayout({ children }) {
         <Provider>
           <ToastContainer />
           <CartProvider>
+            {!isAuth && <Header />}
 
-          {!isAuth && <Header />}
+            <section>{children}</section>
 
-          <section>{children}</section>
-
-          {!isAuth && <Footer />}
+            {!isAuth && <Footer />}
           </CartProvider>
         </Provider>
       </body>
