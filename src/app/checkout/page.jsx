@@ -81,6 +81,8 @@ const page = () => {
     addressId: "",
     userId: "",
   });
+  console.log("🚀 ~ page ~ order:", order);
+
   const [activeResData, setActiveResData] = useState([]);
   const inputRef = useRef();
   const autocompleteRef = useRef();
@@ -89,7 +91,6 @@ const page = () => {
     lat: "",
     lng: "",
   });
-  console.log("🚀 ~ page ~ center:", center);
 
   const { data: addressData, reFetch: reFetchAddresses } = GetAPI(
     `api/v1/users/address/view-all?userId=${userId}`
@@ -110,13 +111,13 @@ const page = () => {
   const totalPrice = cartItems?.reduce((a, b) => {
     return a + b?.price * b?.qty;
   }, 0);
+  console.log("🚀 ~ totalPrice ~ totalPrice:", totalPrice);
 
   const totalWeight = cartItems?.reduce((a, b) => {
     return a + b?.weight;
   }, 0);
 
   let getProfile = [];
-  const [feeWorks, setFeeWorks] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
   const [stripeModal, setStripeModal] = useState(false);
   const [addressModal, setAddressModal] = useState(""); // open, addNewAddress, map
@@ -133,18 +134,6 @@ const page = () => {
   const [selectedCountryCode, setSelectedCountryCode] = useState("PK");
   const [selectedCountryCities, setSelectedCountryCities] = useState([]);
   const [clientSecret, setClientSecret] = useState("");
-  const [schedule, setSchedule] = useState({
-    day: "",
-    time: "",
-    date: "",
-  });
-  const [days, setDays] = useState([]);
-  const [timeChunks, setTimeChunks] = useState([]);
-
-  const [tip, setTip] = useState({
-    tip: undefined,
-    other: false,
-  });
 
   const [deliveryAddress, setDeliveryAddress] = useState({
     companyaddress: "",
@@ -166,51 +155,8 @@ const page = () => {
     router.push("/product");
   };
 
-  const normalizeTimeFormat = (time) => {
-    return time.toLowerCase().replace("am", " AM").replace("pm", " PM");
-  };
-
-  const generateTimeChunks = (startTime, endTime, date) => {
-    const currentDate = dayjs(date, "DD-MM-YYYY");
-    const now = dayjs();
-    const start = currentDate
-      .hour(dayjs(normalizeTimeFormat(startTime.trim()), "h:mm").hour())
-      .minute(dayjs(normalizeTimeFormat(startTime.trim()), "h:mm").minute())
-      .second(0);
-    const end = currentDate
-      .hour(dayjs(normalizeTimeFormat(endTime.trim()), "h:mm").hour())
-      .minute(dayjs(normalizeTimeFormat(endTime.trim()), "h:mm").minute())
-      .second(0);
-    let currentTime;
-    if (currentDate.isSame(now, "day")) {
-      const roundedMinutes = Math.ceil(now.minute() / 5) * 5;
-      currentTime = now.minute(roundedMinutes).second(0);
-      if (currentTime.isBefore(now)) {
-        currentTime = currentTime.add(5, "minute");
-      }
-      if (currentTime.isBefore(start)) {
-        currentTime = start;
-      }
-    } else {
-      currentTime = start;
-    }
-    const times = [];
-    let index = 1;
-    let time = currentTime.isBefore(start) ? start : currentTime;
-    while (time.isBefore(end) || time.isSame(end)) {
-      times.push({ label: time.format("HH:mm"), value: index.toString() });
-      time = time.add(5, "minute");
-      index++;
-    }
-    if (time.isBefore(end.add(5, "minute"))) {
-      times.push({ label: end.format("HH:mm"), value: index.toString() });
-    }
-    setTimeChunks(times);
-  };
-
   const PayM = [];
   const paymentMethods = [
-    ...(PayM.data?.data?.simplifiedPaymentMethods || []),
     { name: "COD", type: "cod" }, // New COD payment method
     { name: "Cheque", type: "cheque" }, // New Cheque payment method
     { name: "Card", type: "card" }, // New Cheque payment method
@@ -327,13 +273,10 @@ const page = () => {
     }
 
     const formattedAddress = place.formatted_address;
-
     const addressComponents = place.address_components || [];
-
     const getAddressComponent = (type) =>
       addressComponents.find((component) => component.types.includes(type))
         ?.long_name || "";
-
     const countryName = getAddressComponent("country");
     const countryShortName =
       addressComponents.find((c) => c.types.includes("country"))?.short_name ||
@@ -368,12 +311,6 @@ const page = () => {
       lat: place.geometry.location.lat(),
       lng: place.geometry.location.lng(),
     });
-    // console.log("Country Short Name:", countryShortName);
-    // console.log("Country Name:", countryName);
-    // console.log("City:", city);
-    // console.log("State:", state);
-    // console.log("Postal Code:", postalCode);
-    // console.log("Formatted Address:", formattedAddress);
   };
 
   const handleAddAddress = async () => {
@@ -442,9 +379,6 @@ const page = () => {
           const city = cityComponent ? cityComponent.long_name : "Unknown";
           const state = stateComponent ? stateComponent.long_name : "Unknown";
 
-          console.log("City:", city);
-          console.log("State:", state);
-
           setDeliveryAddress({
             ...deliveryAddress,
             lat,
@@ -477,7 +411,7 @@ const page = () => {
       }
     };
     fetchClientSecret();
-  }, [totalPrice]);
+  }, []);
 
   return (
     <>
@@ -619,79 +553,6 @@ const page = () => {
                 </div>
               </div>
 
-              {deliveryData.when === 2 && (
-                <div className="flex  justify-between space-x-7 my-3">
-                  <Select
-                    value={schedule.day}
-                    onChange={(e) => {
-                      const day = JSON.parse(
-                        localStorage.getItem("activeResData")
-                      ).times.find((ele) => ele.name === e.value.toLowerCase());
-                      generateTimeChunks(day.startAt, day.endAt, day.date);
-                      setSchedule({
-                        ...schedule,
-                        day: e,
-                        date: day.date,
-                      });
-                    }}
-                    isClearable={true}
-                    isDisabled={deliveryData.when === 1 ? true : false}
-                    options={days}
-                    placeholder="Select day"
-                    className="rounded-xl font-sf w-full"
-                    styles={{
-                      control: (base, state) => ({
-                        ...base,
-                        borderRadius: "8px",
-
-                        border: state.isFocused
-                          ? "2px solid green-700"
-                          : "2px solid #E4E4E5",
-                        borderColor: state.isFocused ? "green-700" : "#E4E4E5",
-                        boxShadow: state.isFocused ? "0 0 0 1px green" : "none",
-                        padding: "6px 6px",
-                        "&:hover": {
-                          borderColor: "green",
-
-                          cursor: "pointer",
-                        },
-                      }),
-                    }}
-                  />
-                  <Select
-                    value={schedule.time}
-                    onChange={(e) =>
-                      setSchedule({
-                        ...schedule,
-                        time: e,
-                      })
-                    }
-                    isClearable={true}
-                    isDisabled={deliveryData.when === 1 ? true : false}
-                    options={timeChunks}
-                    placeholder="Select time"
-                    styles={{
-                      control: (base, state) => ({
-                        ...base,
-                        borderRadius: "8px",
-                        border: state.isFocused
-                          ? "2px solid green-700"
-                          : "2px solid #E4E4E5",
-                        borderColor: state.isFocused ? "green-700" : "#E4E4E5",
-                        boxShadow: state.isFocused ? "0 0 0 1px green" : "none",
-                        padding: "6px 6px",
-                        "&:hover": {
-                          borderColor: "green",
-
-                          cursor: "pointer",
-                        },
-                      }),
-                    }}
-                    className="rounded-xl font-sf w-full"
-                  />
-                </div>
-              )}
-
               <div className="flex items-center font-semibold text-xl md:text-2xl gap-x-2 mt-12 mb-8">
                 {true && (
                   <>
@@ -759,7 +620,6 @@ const page = () => {
                     className="flex items-center gap-3 justify-between"
                     onClick={() => {
                       setPaymentModal(true);
-                      setFeeWorks(false);
                     }}
                   >
                     <div className="flex items-center gap-3">
@@ -767,7 +627,6 @@ const page = () => {
                         className="flex items-center justify-between gap-x-4 w-full text-lg cursor-pointer"
                         onClick={() => {
                           setPaymentModal(true);
-                          setFeeWorks(false);
                         }}
                       >
                         <img
@@ -809,7 +668,6 @@ const page = () => {
                   <div
                     className="flex items-center justify-between w-full text-lg cursor-pointer"
                     onClick={() => {
-                      setFeeWorks(false);
                       setPaymentModal(true);
                     }}
                   >
@@ -938,7 +796,6 @@ const page = () => {
                 </p>
                 <p
                   onClick={() => {
-                    setFeeWorks(true);
                     setPaymentModal(true);
                   }}
                   className="text-base font-normal text-theme-red-2 cursor-pointer"
@@ -968,17 +825,6 @@ const page = () => {
                         {totalWeight?.toFixed(2)} kg
                       </h6>
                     </div>
-
-                    {tip?.tip >= 1 && (
-                      <div className="flex items-center justify-between gap-x-2">
-                        <h5 className="text-base md:text-md text-checkoutTextColor">
-                          Tip the courier
-                        </h5>
-                        <h6>
-                          {tip?.tip ? parseFloat(tip?.tip)?.toFixed(2) : 0} $
-                        </h6>
-                      </div>
-                    )}
                   </>
                 )}
 

@@ -176,7 +176,7 @@ export default function SignUpStep1() {
       }
     }
   };
-
+ 
   return (
     <div className="min-h-screen bg-themeLight py-5">
       {/* main section start */}
