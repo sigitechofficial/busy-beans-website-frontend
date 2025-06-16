@@ -75,7 +75,7 @@ const personalDetails = () => {
     let data = {};
     if (type === "address") {
       data = {
-        addressId: profile.addressId,
+        addressId: userData?.addressId,
         addressData: {
           companyaddress: profile.companyaddress,
           addressLineOne: profile.addressLineOne,
@@ -88,35 +88,35 @@ const personalDetails = () => {
       };
     } else if (type === "name") {
       data = {
-        userId: profile?.userId,
+        userId: userData?.userId,
         userData: {
           name: profile?.name,
         },
       };
     } else if (type === "companyName") {
       data = {
-        userId: profile?.userId,
+        userId: userData?.userId,
         userData: {
           companyName: profile?.companyName,
         },
       };
     } else if (type === "emailToSendInvoices") {
       data = {
-        userId: profile?.userId,
+        userId: userData?.userId,
         userData: {
           emailToSendInvoices: profile?.emailToSendInvoices,
         },
       };
     } else if (type === "saleTaxNumber") {
       data = {
-        userId: profile?.userId,
+        userId: userData?.userId,
         userData: {
           saleTaxNumber: profile?.saleTaxNumber,
         },
       };
     } else if (type === "phoneNumber") {
       data = {
-        userId: profile?.userId,
+        userId: userData?.userId,
         userData: {
           phoneNumber: profile?.phoneNumber,
         },
