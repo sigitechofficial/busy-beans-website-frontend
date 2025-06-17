@@ -3,7 +3,7 @@ import React from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
 
 const ProductCard = (props) => {
-  const { name, unit, imageURL, price, desc } = props;
+  const { name, unit, imageURL, price, desc, buttonText } = props;
   return (
     <div
       onClick={props.onClick}
@@ -39,8 +39,8 @@ const ProductCard = (props) => {
               <FaPlus className="text-[10px] sm:text-lg" />
             </div>
           </div> */}
-          <p className="w-max px-1 whitespace-nowrap sm:w-32 h-7 sm:h-14 flex justify-center items-center gap-x-2 font-medium bg-white text-black text-[10px] sm:text-sm rounded-full text-center cursor-pointer max-sm:leading-3">
-            Order Now{" "}
+          <p className={`w-max px-2 whitespace-nowrap h-7 sm:h-14 flex justify-between items-center gap-x-2 bg-white text-black ${buttonText === "Order Now" ? "text-[10px] sm:text-sm sm:w-32 font-medium":"sm:w-20 text-2xl font-semibold"}  rounded-full text-center cursor-pointer max-sm:leading-3`}>
+            {buttonText}{" "}
             <span className="bg-black size-6 sm:size-8 rounded-full flex items-center justify-center">
               <FaPlus color="#ffffff" className="text-sm sm:text-xl" />
             </span>

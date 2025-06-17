@@ -1,8 +1,11 @@
 "use client";
+import BackButton from "@/components/ui/BackButton";
 import MiniLoader from "@/components/ui/MiniLoader";
 import GetAPI from "@/utilities/GetAPI";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { BsChatLeftTextFill } from "react-icons/bs";
+import { FaArrowLeft } from "react-icons/fa";
 
 const Timeline = () => {
   const [tab, setTab] = useState(1);
@@ -21,14 +24,17 @@ const Timeline = () => {
         {data?.data?.order ? (
           <div className="w-[90%] md:w-[75%] min-h-[50vh] mx-auto bg-themeLight border-theme border text-white rounded-xl shadow-md pb-10 relative z-20 px-6 pt-6 md:px-14 space-y-10">
             <div className="text-2xl font-semibold flex gap-x-10">
-              <p
-                className={` ${
-                  tab === 1 ? "underline" : ""
-                }   underline-offset-8 cursor-pointer`}
-                onClick={() => setTab(1)}
-              >
-                Status
-              </p>
+              <div className="flex items-center gap-x-2">
+                <BackButton route="/order-history" />
+                <p
+                  className={` ${
+                    tab === 1 ? "underline" : ""
+                  }   underline-offset-8 cursor-pointer`}
+                  onClick={() => setTab(1)}
+                >
+                  Status
+                </p>
+              </div>
               <p
                 className={` ${
                   tab === 2 ? "underline" : ""

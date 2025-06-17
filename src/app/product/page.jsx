@@ -16,6 +16,12 @@ import { useState } from "react";
 import Loader from "@/components/ui/Loader";
 
 export default function Product() {
+  if (typeof window !== "undefined") {
+    var existingCartItems = localStorage.getItem("cartItems")
+      ? JSON.parse(localStorage.getItem("cartItems"))
+      : [];
+  }
+
   const router = useRouter();
   const [productModal, setProductModal] = useState(false);
   const [productModalData, setProductModalData] = useState({
@@ -27,10 +33,37 @@ export default function Product() {
     qty: "",
     price: "",
     unit: "",
+    wholesalePrice: "",
   });
 
   const { data } = GetAPI("api/v1/admin/product");
+  console.log("🚀 ~ Product ~ data:", data);
   const { data: categoryData } = GetAPI("api/v1/admin/category");
+
+  const handleOrderNowButton = (id) => {
+    if (existingCartItems) {
+      const item = existingCartItems.find((item) => item?.productId === id);
+      return item ? item?.qty : "Order Now";
+    } else {
+      return "Order Now";
+    }
+  };
+
+  const handleOrderNowButtonQty = (id) => {
+    if (existingCartItems) {
+      console.log(
+        "🚀 ~ handleOrderNowButtonQty ~ existingCartItems:",
+        existingCartItems
+      );
+      const item = existingCartItems.find((item) => {
+        return item?.productId === id;
+      });
+      console.log("🚀 ~ handleOrderNowButtonQty ~ item:", item?.qty);
+      return item ? item?.qty : 1;
+    } else {
+      return 1;
+    }
+  };
 
   return data.length === 0 ? (
     <Loader />
@@ -119,6 +152,7 @@ export default function Product() {
                     unit={item?.unit}
                     price={item?.price}
                     desc={item?.desc}
+                    buttonText={handleOrderNowButton(item?.id)}
                     onClick={() => {
                       setProductModalData({
                         productId: item?.id,
@@ -126,9 +160,10 @@ export default function Product() {
                         name: item?.name,
                         description: item?.desc,
                         discount: 0,
-                        qty: 1,
+                        qty: handleOrderNowButtonQty(item?.id),
                         price: item?.price,
                         unit: item?.unit,
+                        wholesalePrice: item?.wholesalePrice,
                       });
                       setProductModal(true);
                     }}

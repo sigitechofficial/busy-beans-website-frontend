@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dialog, Portal } from "@chakra-ui/react";
 import { RiSubtractFill } from "react-icons/ri";
 import { BiPlus } from "react-icons/bi";
@@ -7,8 +7,9 @@ import { BASE_URL } from "@/utilities/URL";
 import { useCart } from "@/utilities/cartContext";
 
 const ProdModal = ({ productModalData, productModal, setProductModal }) => {
-  const { productId, image, name, description, qty, discount, price, unit } =
+  const { productId, image, name, description, qty, discount, price, unit, wholesalePrice } =
     productModalData;
+  console.log("🚀 ~ ProdModal ~ qty:", qty);
   const { cartItems, addOrUpdateCartItem } = useCart();
 
   const [modalScroll, setModalScroll] = useState(0);
@@ -27,13 +28,13 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
   }
 
   const [orderStatus, setOrderStatus] = useState({
-    image: image,
-    name: name,
-    description: description,
-    qty: 1,
-    discount: discount,
-    price: price,
-    unit: unit,
+    image: "",
+    name: "",
+    description: "",
+    qty: "",
+    discount: "",
+    price: "",
+    unit: "",
   });
 
   const handleCart = () => {
@@ -46,6 +47,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
       price,
       unit,
       image,
+      wholesalePrice,
     };
 
     addOrUpdateCartItem(newItem);
@@ -55,9 +57,20 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
         ? "Product updated successfully"
         : "Product added successfully"
     );
-
     setProductModal(false);
   };
+
+  useEffect(() => {
+    setOrderStatus({
+      image: image,
+      name: name,
+      description: description,
+      qty: qty,
+      discount: discount,
+      price: price,
+      unit: unit,
+    });
+  }, [productModalData]);
 
   return (
     <>
@@ -138,7 +151,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
                       {name}
                     </h4>
                     <p className="font-sf text-lg my-5 text-red-600">
-                      {price} {unit}
+                      ${price}
                     </p>
                     <p className="capitalize text-sm font-sf text-theme-black-2  font-normal mt-3">
                       {description}

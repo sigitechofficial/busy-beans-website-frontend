@@ -117,6 +117,7 @@ const page = () => {
     return a + b?.weight;
   }, 0);
 
+
   let getProfile = [];
   const [paymentModal, setPaymentModal] = useState(false);
   const [stripeModal, setStripeModal] = useState(false);
@@ -233,11 +234,13 @@ const page = () => {
             },
             items: cartItems,
           });
+          console.log("🚀 ~ createOrder ~ res:", res?.data?.data?.id)
           if (res?.data?.status === "success") {
             setCartItems([]);
             setLoader(false);
-            router.push("/product");
+            localStorage.setItem("orderId", res?.data?.data?.id)
             localStorage.setItem("cartItems", JSON.stringify([]));
+            router.push("/timeline");
             success_toaster("Order Created Successfully");
           } else {
             throw new Error(
@@ -857,7 +860,7 @@ const page = () => {
 
       <Dialog.Root
         placement="center"
-        size="lg"
+        size={stripeModal ? "md":"lg"}
         open={
           paymentModal ||
           stripeModal ||
@@ -908,7 +911,7 @@ const page = () => {
                 >
                   <RxCross2
                     size={30}
-                    className=" cursor-pointer border border-white text-themeDark hover:text-white hover:bg-themeDark rounded-md"
+                    className="cursor-pointer border border-white text-themeDark hover:text-white hover:bg-themeDark rounded-md"
                   />
                 </button>
               </div>

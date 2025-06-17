@@ -1,6 +1,7 @@
 "use client";
 import MiniLoader from "@/components/ui/MiniLoader";
 import GetAPI from "@/utilities/GetAPI";
+import { BASE_URL } from "@/utilities/URL";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -11,6 +12,7 @@ function History() {
     userId = localStorage.getItem("userID");
   }
   const { data } = GetAPI(`api/v1/users/orders?userId=${userId}`);
+  console.log("🚀 ~ History ~ data:", data?.data?.data[0]?.items);
   const pastOrder = [];
   const activeOrders = [];
 
@@ -64,7 +66,7 @@ function History() {
                       {item?.items?.map((elem, i) => (
                         <div key={i} className="py-6 flex items-center gap-x-4">
                           <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrJDWSOHW_Bm1hqobe1KDhoLyFhG1m5y5W25JwhlLWVAol441ajn4MmCjAN9hnm33Vd8U&usqp=CAU"
+                            src={BASE_URL + elem?.image}
                             alt="product image"
                             className="w-36 object-cover h-24 rounded-md"
                           />

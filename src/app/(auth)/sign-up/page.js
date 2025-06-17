@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FaLongArrowAltLeft } from "react-icons/fa";
+import PhoneInput from "react-phone-input-2";
 
 export default function SignUpStep1() {
   const router = useRouter();
@@ -30,6 +31,7 @@ export default function SignUpStep1() {
       confirmPassword: "",
       status: true,
       phoneNumber: "",
+      countryCode: "+92",
       saleTaxNumber: "",
       emailToSendInvoices: "",
       companyName: "",
@@ -46,7 +48,7 @@ export default function SignUpStep1() {
       status: true,
     },
   });
-  // console.log("🚀 ~ SignUpStep1 ~ userData:", userData);
+  console.log("🚀 ~ SignUpStep1 ~ userData:", userData);
 
   const handleAddress = (e) => {
     setUserData({
@@ -139,7 +141,7 @@ export default function SignUpStep1() {
             email: userData?.info?.email,
             password: userData?.info?.password,
             status: true,
-            phoneNumber: userData?.info?.phoneNumber,
+            phoneNumber: `${userData?.info?.countryCode} ${userData?.info?.phoneNumber}`,
             saleTaxNumber: userData?.info?.saleTaxNumber,
             emailToSendInvoices: userData?.info?.emailToSendInvoices,
             companyName: userData?.info?.companyName,
@@ -176,7 +178,7 @@ export default function SignUpStep1() {
       }
     }
   };
- 
+
   return (
     <div className="min-h-screen bg-themeLight py-5">
       {/* main section start */}
@@ -351,17 +353,63 @@ export default function SignUpStep1() {
                       />
                     </div>
                     <div className="flex flex-col gap-y-2">
-                      <label className="text-white font-medium">
+                      <label htmlFor="phone" className="text-white font-medium">
                         Phone Number
                       </label>
-                      <input
+                      <div className="grid grid-cols-10 gap-x-2">
+                        <PhoneInput
+                          focusBorderColor="none"
+                          borderWidth="none"
+                          className="chakra_input col-span-2"
+                          inputStyle={{
+                            width: "90px",
+                            height: "45px",
+                            borderRadius: "12px",
+                            border: "1px solid #00000033",
+                            backgroundColor: "#3B3B3B",
+                            color: "#ffffff",
+                            opacity: "20",
+                          }}
+                          buttonStyle={{
+                            backgroundColor: "#3B3B3B", 
+                            border: "1px solid #86644C",
+                          }}
+                          containerStyle={{
+                            borderRadius: "12px",
+                            backgroundColor: "#6f4e37",
+                          }}
+                          dropdownStyle={{
+                            backgroundColor: "#6f4e37", 
+                            borderRadius: "8px",
+                          }}
+                          country={"pk"}
+                          onChange={(phone) =>
+                            setUserData({
+                              ...userData,
+                              info: {
+                                ...userData?.info,
+                                countryCode: phone,
+                              },
+                            })
+                          }
+                        />
+                        <input
+                          type="number"
+                          name="phoneNumber"
+                          onChange={handleInfo}
+                          value={userData?.info?.phoneNumber}
+                          placeholder="Enter Phone Number"
+                          className="border border-inputBorder rounded-xl outline-none px-3 py-2 w-full col-span-8"
+                        />
+                      </div>
+                      {/* <input
                         type="number"
                         name="phoneNumber"
                         onChange={handleInfo}
                         value={userData?.info?.phoneNumber}
                         placeholder="Enter Phone Number"
                         className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                      />
+                      /> */}
                     </div>
                     <div className="flex flex-col gap-y-2">
                       <label className="text-white font-medium">

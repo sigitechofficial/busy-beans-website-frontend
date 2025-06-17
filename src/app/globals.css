@@ -1,6 +1,7 @@
 @import "primereact/resources/themes/lara-light-blue/theme.css";
 @import "primereact/resources/primereact.min.css";
 @import "primeicons/primeicons.css";
+@import "react-phone-input-2/lib/style.css";
 
 @tailwind base;
 @tailwind components;
@@ -93,6 +94,10 @@
   }
 }
 
+.special-label {
+  display: none;
+}
+
 .pac-container {
   z-index: 1600 !important;
 }
@@ -108,4 +113,20 @@ input[type=number]::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+
+
+/* Target the dropdown menu list */
+.react-tel-input .country-list {
+  background-color: #6f4e37 !important;
+  color: #ffffff;
+  border-radius: 8px;
+}
+
+/* Target hover and selected country item */
+.react-tel-input .country-list .country:hover,
+.react-tel-input .country-list .country.highlight {
+  background-color: #322a23 !important;
+  color: #ffffff !important;
 }

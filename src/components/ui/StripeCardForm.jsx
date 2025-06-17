@@ -110,7 +110,7 @@ const StripeCardForm = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 max-w-md p-4 border rounded-2xl shadow"
+      className="space-y-4 p-4 border rounded-2xl shadow"
     >
       {/* <CardElement options={CARD_OPTIONS} /> */}
       <PaymentElement options={CARD_OPTIONS} />
