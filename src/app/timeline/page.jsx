@@ -1,11 +1,12 @@
 "use client";
 import BackButton from "@/components/ui/BackButton";
 import MiniLoader from "@/components/ui/MiniLoader";
+import TrackOrderTab from "@/components/ui/TrackOrderTab";
 import GetAPI from "@/utilities/GetAPI";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { BsChatLeftTextFill } from "react-icons/bs";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaCheck } from "react-icons/fa";
 
 const Timeline = () => {
   const [tab, setTab] = useState(1);
@@ -14,6 +15,20 @@ const Timeline = () => {
     orderId = localStorage.getItem("orderId");
   }
   const { data } = GetAPI(`api/v1/users/order-details/${orderId}`);
+
+  console.log("🚀 ~ Timeline ~ data:", data?.data?.order);
+
+  const handleTrackOrderTab = (statusId) => {
+    const result = data?.data?.order?.orderHistories?.find((history) => history?.statusId === statusId)
+    return result ? true:false
+  }
+
+  const handleTrackOrderTabTime = (statusId) => {
+  const result = data?.data?.order?.orderHistories?.find(
+    (history) => history?.statusId === statusId
+  );
+  return result?.on ?? "";
+};
 
   return (
     <div className="w-full ">
@@ -46,17 +61,15 @@ const Timeline = () => {
             </div>
             {tab === 1 ? (
               <div>
-                <div>
-                  <div className="flex items-center gap-x-4 p-4 rounded-lg border w-full max-w-[400px] mt-4 cursor-pointer">
-                    <div className="border size-10 flex justify-center items-center shrink-0 rounded-full bg-white text-black font-semibold">
-                      {data?.data?.order?.statusId}
-                    </div>
-
-                    <div>
-                      <h5>{data?.data?.order?.orderCurrentStatus}</h5>
-                      {/* <p>Order ready</p> */}
-                    </div>
-                  </div>
+                <div className="grid grid-cols-3 gap-4">
+                    {data?.data?.order?.statusId === 5 ?  <TrackOrderTab heading="Delivered Order" status={handleTrackOrderTab(5)} time={handleTrackOrderTabTime(5)} stepNo={5} />:
+                    data?.data?.order?.statusId === 6 ? <TrackOrderTab heading="Cancelled Order" status={handleTrackOrderTab(6)} time={handleTrackOrderTabTime(6)} stepNo={6} />:
+                    <><TrackOrderTab heading="Order Placed" status={handleTrackOrderTab(1)} time={handleTrackOrderTabTime(1)} stepNo={1} />
+                    <TrackOrderTab heading="Order Confirmed" status={handleTrackOrderTab(2)} time={handleTrackOrderTabTime(2)} stepNo={2} />
+                    <TrackOrderTab heading="Supplier Acknowledged" status={handleTrackOrderTab(3)} time={handleTrackOrderTabTime(3)} stepNo={3} />
+                    <TrackOrderTab heading="Dispatched Orders" status={handleTrackOrderTab(4)} time={handleTrackOrderTabTime(4)} stepNo={4} />
+                    <TrackOrderTab heading="Delivered Order" status={handleTrackOrderTab(5)} time={handleTrackOrderTabTime(5)} stepNo={5} />
+                    <TrackOrderTab heading="Cancelled Order" status={handleTrackOrderTab(6)} time={handleTrackOrderTabTime(6)} stepNo={6} /> </>}
                 </div>
 
                 <div className="w-full">

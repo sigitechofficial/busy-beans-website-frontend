@@ -93,6 +93,44 @@ function History() {
                 );
               })}
             </div>
+            {/* <div className="gap-5 px-6 md:px-14 cursor-pointer">
+              {activeOrders?.map((item, idx) => {
+                return (
+                  <div
+                    key={idx}
+                    className="border-b border-theme pb-4"
+                    onClick={() => orderDetails(item?.id)}
+                  >
+                    <div className="grid lg:grid-cols-2">
+                      {item?.items?.map((elem, i) => (
+                        <div key={i} className="py-6 flex items-center gap-x-4">
+                          <img
+                            src={BASE_URL + elem?.image}
+                            alt="product image"
+                            className="w-36 object-cover h-24 rounded-md"
+                          />
+                          <div>
+                            <h4 className="font-semibold text-lg">
+                              {elem.product}
+                            </h4>
+                            <p className="text-sm py-1">
+                              Payment Method: {item?.paymentMethod}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              {item?.orderCurrentStatus}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="text-right mt-2 pr-4 font-semibold text-base">
+                      Order Total: ${item?.itemsPrice}
+                    </div>
+                  </div>
+                );
+              })}
+            </div> */}
 
             {pastOrder?.length > 0 && (
               <h4 className="mx-6 pt-6 md:mx-14 text-xl font-semibold">
