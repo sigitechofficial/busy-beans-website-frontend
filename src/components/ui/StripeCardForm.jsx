@@ -68,8 +68,9 @@ const StripeCardForm = ({
         items: cartItems,
       });
       if (res?.data?.status === "success") {
+        router.push("/timeline");
         setCartItems([]);
-        router.push("/product");
+        localStorage.setItem("orderId", res?.data?.data?.id);
         localStorage.setItem("cartItems", JSON.stringify([]));
         success_toaster("Order Created Successfully");
       } else {

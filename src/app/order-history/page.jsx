@@ -3,7 +3,7 @@ import MiniLoader from "@/components/ui/MiniLoader";
 import GetAPI from "@/utilities/GetAPI";
 import { BASE_URL } from "@/utilities/URL";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
 function History() {
   const router = useRouter();
@@ -11,10 +11,14 @@ function History() {
   if (typeof window !== "undefined") {
     userId = localStorage.getItem("userID");
   }
+  const [orderType, setOrderType] = useState(true);
+
   const { data } = GetAPI(`api/v1/users/orders?userId=${userId}`);
   console.log("🚀 ~ History ~ data:", data?.data?.data[0]?.items);
   const pastOrder = [];
+  console.log("🚀 ~ History ~ pastOrder:", pastOrder);
   const activeOrders = [];
+  console.log("🚀 ~ History ~ activeOrders:", activeOrders);
 
   data?.data?.data?.forEach((item) => {
     if (item?.statusId == 5 || item?.statusId == 6) {
@@ -50,12 +54,60 @@ function History() {
             <h4 className="mx-6 pt-6 md:mx-14 text-2xl font-semibold">
               Order History
             </h4>
-            <h4 className="mx-6 pt-6 md:mx-14 text-xl font-semibold">
-              Active Orders
-            </h4>
+            <div
+              onClick={() => setOrderType(!orderType)}
+              className="[&>button]:border [&>button]:py-3 [&>button]:px-16  pt-6"
+            >
+              <button
+                className={`ms-6 md:ms-14 text-xl font-semibold rounded-l-md ${
+                  orderType
+                    ? "bg-white text-theme"
+                    : "bg-transparent text-white"
+                }`}
+              >
+                Active Orders
+              </button>
+              <button
+                onClick={() => setOrderType(!orderType)}
+                className={`text-xl font-semibold rounded-r-md ${
+                  !orderType
+                    ? "bg-white text-theme"
+                    : "bg-transparent text-white"
+                }`}
+              >
+                Past Orders
+              </button>
+            </div>
 
             <div className="gap-5 px-6 md:px-14 cursor-pointer">
-              {activeOrders?.map((item, idx) => {
+              {(orderType ? activeOrders : pastOrder)?.map((item, idx) => {
+                return (
+                  <div
+                    key={idx}
+                    className="border-b border-theme pb-4"
+                    onClick={() => orderDetails(item?.id)}
+                  >
+                    {/* order no. , Order date , Order Status , Amount and Order Quantity. */}
+
+                    <div className="py-6 space-y-2">
+                      <h4 className="font-semibold text-lg">
+                        Order ID: {item?.id}
+                      </h4>
+                      <p className="text-gray-400">
+                        Quantity: {item?.totalQuantity ?? 0}
+                      </p>
+                      <p className="text-gray-400">
+                        Order Status: {item?.orderCurrentStatus}
+                      </p>
+                      <p className="text-gray-400">Order Date: {item?.on}</p>
+                      <p className="text-gray-400">
+                        Amount: ${item?.totalBill ?? 0}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+              {/* {activeOrders?.map((item, idx) => {
                 return (
                   <div
                     key={idx}
@@ -85,13 +137,12 @@ function History() {
                       ))}
                     </div>
 
-                    {/* Order total section */}
                     <div className="text-right mt-2 pr-4 font-semibold text-base">
                       Order Total: ${item?.itemsPrice}
                     </div>
                   </div>
                 );
-              })}
+              })} */}
             </div>
             {/* <div className="gap-5 px-6 md:px-14 cursor-pointer">
               {activeOrders?.map((item, idx) => {

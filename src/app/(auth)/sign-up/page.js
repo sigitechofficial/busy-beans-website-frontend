@@ -2,18 +2,27 @@
 import MiniLoader from "@/components/ui/MiniLoader";
 import { emailValidity, passwordStrength } from "@/utilities/authValidation";
 import ErrorHandler from "@/utilities/ErrorHandler";
+import GetAPI from "@/utilities/GetAPI";
 import { SignupAPI } from "@/utilities/PostAPI";
+import selectStyles, {
+  drawerSelectStyles,
+  drawerSelectStyles2,
+  selectStyles2,
+} from "@/utilities/SelectStyle";
 import {
   error_toaster,
   info_toaster,
   success_toaster,
 } from "@/utilities/Toaster";
+import { BASE_URL } from "@/utilities/URL";
+import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import PhoneInput from "react-phone-input-2";
+import Select from "react-select";
 
 export default function SignUpStep1() {
   const router = useRouter();
@@ -23,6 +32,8 @@ export default function SignUpStep1() {
     pass: false,
     confirmPass: false,
   });
+  const [allStates, setAllStates] = useState([]);
+  const [allCities, setAllCities] = useState([]);
   const [userData, setUserData] = useState({
     info: {
       name: "",
@@ -49,6 +60,67 @@ export default function SignUpStep1() {
     },
   });
   console.log("🚀 ~ SignUpStep1 ~ userData:", userData);
+
+  const { data: countriesData } = GetAPI(
+    "api/v1/admin/address-management/country"
+  );
+
+  const allCountriesData = [];
+  countriesData?.data?.data?.map((country) =>
+    allCountriesData.push({
+      value: country?.isoCode,
+      label: country?.name,
+    })
+  );
+
+  const handleSelectedCountryStates = async (countryName) => {
+    const selectedCountry = countriesData?.data?.data?.find(
+      (country) => country?.name === countryName
+    );
+    try {
+      const res = await axios.get(
+        BASE_URL +
+          `api/v1/admin/address-management/state?countryInSystemId=${selectedCountry?.id}`
+      );
+      if (res?.data?.status === "success") {
+        const tempAllStates = [];
+        res?.data?.data?.data?.map((state) =>
+          tempAllStates.push({
+            value: state?.id,
+            label: state?.name,
+          })
+        );
+        setAllStates([...tempAllStates]);
+      } else {
+        throw new Error(res?.data?.message || "An unexpected error occurred.");
+      }
+    } catch (error) {
+      ErrorHandler(error);
+    }
+  };
+
+  const handleSelectedCountryStatesCities = async (stateID) => {
+    try {
+      const res = await axios.get(
+        BASE_URL +
+          `api/v1/admin/address-management/city?stateInSystemId=${stateID}`
+      );
+      if (res?.data?.status === "success") {
+        const tempAllCities = [];
+        res?.data?.data?.data?.map((state) =>
+          tempAllCities.push({
+            value: state?.name,
+            label: state?.name,
+          })
+        );
+        setAllCities([...tempAllCities]);
+      } else {
+        throw new Error(res?.data?.message || "An unexpected error occurred.");
+      }
+    } catch (error) {
+      ErrorHandler(error);
+    }
+  };
 
   const handleAddress = (e) => {
     setUserData({
@@ -256,15 +328,96 @@ export default function SignUpStep1() {
                     <div className="md:grid md:grid-cols-2 gap-x-4 max-md:space-y-4">
                       <div className="flex flex-col gap-y-2">
                         <label className="text-white font-medium">
+                          Country
+                        </label>
+                        {/* <input
+                          type="text"
+                          name="country"
+                          onChange={handleAddress}
+                          value={userData?.address?.country}
+                          placeholder="Enter Country"
+                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                        /> */}
+                        <Select
+                          placeholder="Select Country"
+                          className="w-full"
+                          styles={drawerSelectStyles2}
+                          options={allCountriesData}
+                          onChange={(e) => {
+                            setUserData({
+                              ...userData,
+                              address: {
+                                ...userData?.address,
+                                country: e.label,
+                              },
+                            });
+                            handleSelectedCountryStates(e.label);
+                          }}
+                        />
+                      </div>
+                      <div className="flex flex-col gap-y-2">
+                        <label className="text-white font-medium">State</label>
+                        {/* <input
+                          type="text"
+                          name="state"
+                          onChange={handleAddress}
+                          value={userData?.address?.state}
+                          placeholder="Enter State"
+                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                        /> */}
+                        <Select
+                          placeholder="Select State"
+                          className="w-full"
+                          styles={drawerSelectStyles2}
+                          value={{
+                            value: userData?.address?.state ?? null,
+                            label: userData?.address?.state ?? null,
+                          }}
+                          options={allStates}
+                          onChange={(e) => {
+                            setUserData({
+                              ...userData,
+                              address: {
+                                ...userData?.address,
+                                state: e.label,
+                              },
+                            });
+                            handleSelectedCountryStatesCities(e.value);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="md:grid md:grid-cols-2 gap-x-4 max-md:space-y-4">
+                      <div className="flex flex-col gap-y-2">
+                        <label className="text-white font-medium">
                           Town / City
                         </label>
-                        <input
+                        {/* <input
                           type="text"
                           name="town"
                           onChange={handleAddress}
                           value={userData?.address?.town}
                           placeholder="Enter Town / City"
                           className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                        /> */}
+                        <Select
+                          placeholder="Select City"
+                          className="w-full"
+                          styles={drawerSelectStyles2}
+                          value={{
+                            value: userData?.address?.town ?? null,
+                            label: userData?.address?.town ?? null,
+                          }}
+                          options={allCities ?? null}
+                          onChange={(e) => {
+                            setUserData({
+                              ...userData,
+                              address: {
+                                ...userData?.address,
+                                town: e.label,
+                              },
+                            });
+                          }}
                         />
                       </div>
                       <div className="flex flex-col gap-y-2">
@@ -277,32 +430,6 @@ export default function SignUpStep1() {
                           onChange={handleAddress}
                           value={userData?.address?.zipCode}
                           placeholder="Enter Zip Code"
-                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                        />
-                      </div>
-                    </div>
-                    <div className="md:grid md:grid-cols-2 gap-x-4 max-md:space-y-4">
-                      <div className="flex flex-col gap-y-2">
-                        <label className="text-white font-medium">
-                          Country
-                        </label>
-                        <input
-                          type="text"
-                          name="country"
-                          onChange={handleAddress}
-                          value={userData?.address?.country}
-                          placeholder="Enter Country"
-                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-y-2">
-                        <label className="text-white font-medium">State</label>
-                        <input
-                          type="text"
-                          name="state"
-                          onChange={handleAddress}
-                          value={userData?.address?.state}
-                          placeholder="Enter State"
                           className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                         />
                       </div>
@@ -371,7 +498,7 @@ export default function SignUpStep1() {
                             opacity: "20",
                           }}
                           buttonStyle={{
-                            backgroundColor: "#3B3B3B", 
+                            backgroundColor: "#3B3B3B",
                             border: "1px solid #86644C",
                           }}
                           containerStyle={{
@@ -379,7 +506,7 @@ export default function SignUpStep1() {
                             backgroundColor: "#6f4e37",
                           }}
                           dropdownStyle={{
-                            backgroundColor: "#6f4e37", 
+                            backgroundColor: "#6f4e37",
                             borderRadius: "8px",
                           }}
                           country={"pk"}

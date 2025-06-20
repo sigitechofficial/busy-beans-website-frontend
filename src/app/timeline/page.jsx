@@ -19,16 +19,18 @@ const Timeline = () => {
   console.log("🚀 ~ Timeline ~ data:", data?.data?.order);
 
   const handleTrackOrderTab = (statusId) => {
-    const result = data?.data?.order?.orderHistories?.find((history) => history?.statusId === statusId)
-    return result ? true:false
-  }
+    const result = data?.data?.order?.orderHistories?.find(
+      (history) => history?.statusId === statusId
+    );
+    return result ? true : false;
+  };
 
   const handleTrackOrderTabTime = (statusId) => {
-  const result = data?.data?.order?.orderHistories?.find(
-    (history) => history?.statusId === statusId
-  );
-  return result?.on ?? "";
-};
+    const result = data?.data?.order?.orderHistories?.find(
+      (history) => history?.statusId === statusId
+    );
+    return result?.on ?? "";
+  };
 
   return (
     <div className="w-full ">
@@ -61,15 +63,55 @@ const Timeline = () => {
             </div>
             {tab === 1 ? (
               <div>
-                <div className="grid grid-cols-3 gap-4">
-                    {data?.data?.order?.statusId === 5 ?  <TrackOrderTab heading="Delivered Order" status={handleTrackOrderTab(5)} time={handleTrackOrderTabTime(5)} stepNo={5} />:
-                    data?.data?.order?.statusId === 6 ? <TrackOrderTab heading="Cancelled Order" status={handleTrackOrderTab(6)} time={handleTrackOrderTabTime(6)} stepNo={6} />:
-                    <><TrackOrderTab heading="Order Placed" status={handleTrackOrderTab(1)} time={handleTrackOrderTabTime(1)} stepNo={1} />
-                    <TrackOrderTab heading="Order Confirmed" status={handleTrackOrderTab(2)} time={handleTrackOrderTabTime(2)} stepNo={2} />
-                    <TrackOrderTab heading="Supplier Acknowledged" status={handleTrackOrderTab(3)} time={handleTrackOrderTabTime(3)} stepNo={3} />
-                    <TrackOrderTab heading="Dispatched Orders" status={handleTrackOrderTab(4)} time={handleTrackOrderTabTime(4)} stepNo={4} />
-                    <TrackOrderTab heading="Delivered Order" status={handleTrackOrderTab(5)} time={handleTrackOrderTabTime(5)} stepNo={5} />
-                    <TrackOrderTab heading="Cancelled Order" status={handleTrackOrderTab(6)} time={handleTrackOrderTabTime(6)} stepNo={6} /> </>}
+                <div className="flex flex-col gap-y-4">
+                  {data?.data?.order?.statusId === 5 ? (
+                    <TrackOrderTab
+                      heading="Delivered Order"
+                      status={handleTrackOrderTab(5)}
+                      time={handleTrackOrderTabTime(5)}
+                      stepNo={5}
+                    />
+                  ) : data?.data?.order?.statusId === 6 ? (
+                    <TrackOrderTab
+                      heading="Cancelled Order"
+                      status={handleTrackOrderTab(6)}
+                      time={handleTrackOrderTabTime(6)}
+                      stepNo={6}
+                    />
+                  ) : (
+                    <>
+                      <TrackOrderTab
+                        heading="Order Placed"
+                        status={handleTrackOrderTab(1)}
+                        time={handleTrackOrderTabTime(1)}
+                        stepNo={1}
+                      />
+                      <TrackOrderTab
+                        heading="Order Confirmed"
+                        status={handleTrackOrderTab(2)}
+                        time={handleTrackOrderTabTime(2)}
+                        stepNo={2}
+                      />
+                      <TrackOrderTab
+                        heading="Supplier Acknowledged"
+                        status={handleTrackOrderTab(3)}
+                        time={handleTrackOrderTabTime(3)}
+                        stepNo={3}
+                      />
+                      <TrackOrderTab
+                        heading="Dispatched Orders"
+                        status={handleTrackOrderTab(4)}
+                        time={handleTrackOrderTabTime(4)}
+                        stepNo={4}
+                      />
+                      <TrackOrderTab
+                        heading="Delivered Order"
+                        status={handleTrackOrderTab(5)}
+                        time={handleTrackOrderTabTime(5)}
+                        stepNo={5}
+                      />
+                    </>
+                  )}
                 </div>
 
                 <div className="w-full">
@@ -95,18 +137,32 @@ const Timeline = () => {
                       {data?.data?.order?.supplier?.supplierName}
                     </h4>
                     <p>Frequency: {data?.data?.order?.frequency}</p>
-                    <p>Note: {data?.data?.order?.note}</p>
+                    <p
+                      className={`${
+                        data?.data?.order?.note ? "block" : "hidden"
+                      }`}
+                    >
+                      Note: {data?.data?.order?.note}
+                    </p>
                     {/* <p>Order placed: 29th, April 2025 5:02 pm</p> */}
                     <p>
                       Tracking number:{" "}
-                      {data?.data?.order?.trackingNumber || "--"}
+                      {data?.data?.order?.trackingNumber || "Pending"}
                     </p>
                     <p>Order ID: {data?.data?.order?.id}</p>
                     <p>
                       Delivered to:{" "}
-                      {data?.data?.order?.address?.addressLineOne ||
-                        data?.data?.order?.address?.addressLineTwo}
-                      , {data?.data?.order?.address?.country}{" "}
+                      {[
+                        data?.data?.order?.address?.companyaddress,
+                        // data?.data?.order?.address?.addressLineOne,
+                        // data?.data?.order?.address?.addressLineTwo,
+                        data?.data?.order?.address?.town,
+                        data?.data?.order?.address?.state,
+                        data?.data?.order?.address?.country,
+                        data?.data?.order?.address?.zipCode,
+                      ]
+                        .filter(Boolean)
+                        .join(", ")}
                     </p>
                   </div>
 
@@ -115,10 +171,12 @@ const Timeline = () => {
                     View Restaurant Info
                   </button> */}
                     <p className="p-2 border rounded-lg uppercase text-center">
-                      {data?.data?.order?.paymentMethod}
+                      {data?.data?.order?.paymentMethod === "cod" ? "Cash on Delivery":data?.data?.order?.paymentMethod}
                     </p>
                     <p className="p-2 border rounded-lg uppercase text-center">
-                      {data?.data?.order?.paymentStatus}
+                      {data?.data?.order?.paymentStatus === "done"
+                        ? "Paid"
+                        : "Unpaid"}
                     </p>
                   </div>
                 </div>
@@ -127,22 +185,28 @@ const Timeline = () => {
                 {data?.data?.order?.items?.map((item, idx) => {
                   return (
                     <div className="flex justify-between items-center text-gray-300">
-                      <p>{item?.product}</p>
+                      <p>
+                        <span>{item?.qty} x </span>{" "}
+                        <span>
+                          {item?.product}
+                          {/* (${item?.price}) */}
+                        </span>
+                      </p>
                       <div className="flex items-center gap-x-5">
-                        <p>
+                        {/* <p>
                           ${item?.price} x {item?.qty} =
-                        </p>
-                        <p> ${item?.price * item?.qty}.00</p>
+                        </p> */}
+                        <p> ${(item?.price * item?.qty).toFixed(2)}</p>
                       </div>
                     </div>
                   );
                 })}
-                <div className="flex justify-between items-center">
+                {/* <div className="flex justify-between items-center">
                   <p className="text-gray-300">total weight</p>
                   <p className="text-gray-300">
                     {data?.data?.order?.totalWeight}
                   </p>
-                </div>
+                </div> */}
 
                 <div className="flex justify-between items-center">
                   <h4 className="text-2xl font-bold">Subtotal</h4>

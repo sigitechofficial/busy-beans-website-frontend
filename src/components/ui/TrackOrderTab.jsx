@@ -6,7 +6,7 @@ export default function TrackOrderTab(props) {
   const { heading, status, time, stepNo } = props;
   console.log("🚀 ~ TrackOrderTab ~ time:", time)
   return (
-    <div className="flex items-center gap-x-4 p-4 rounded-lg border w-full max-w-[400px] mt-4 cursor-pointer">
+    <div className={`flex items-center gap-x-4 rounded-lg ${status ? "border p-4":"px-4 py-2"}  w-full max-w-[400px] cursor-pointer`}>
       <div
         className={`${
           status ? "bg-themeGreen" : "bg-themeGray3"

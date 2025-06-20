@@ -117,7 +117,6 @@ const page = () => {
     return a + b?.weight;
   }, 0);
 
-
   let getProfile = [];
   const [paymentModal, setPaymentModal] = useState(false);
   const [stripeModal, setStripeModal] = useState(false);
@@ -206,9 +205,11 @@ const page = () => {
       info_toaster("Total Price cannot be empty");
     } else if (totalWeight === "") {
       info_toaster("Total Weight cannot be empty");
-    } else if (order?.note.trim() === "") {
-      info_toaster("Note cannot be empty");
-    } else if (order.paymentMethod.trim() === "") {
+    }
+    //  else if (order?.note.trim() === "") {
+    //   info_toaster("Note cannot be empty");
+    // }
+     else if (order.paymentMethod.trim() === "") {
       info_toaster("Select payment Method");
     } else {
       if (order?.paymentMethod?.includes("card")) {
@@ -234,12 +235,12 @@ const page = () => {
             },
             items: cartItems,
           });
-          console.log("🚀 ~ createOrder ~ res:", res?.data?.data?.id)
+          console.log("🚀 ~ createOrder ~ res:", res?.data?.data?.id);
           if (res?.data?.status === "success") {
             setCartItems([]);
             setLoader(false);
-            localStorage.setItem("orderId", res?.data?.data?.id)
             localStorage.setItem("cartItems", JSON.stringify([]));
+            localStorage.setItem("orderId", res?.data?.data?.id);
             router.push("/timeline");
             success_toaster("Order Created Successfully");
           } else {
@@ -400,7 +401,7 @@ const page = () => {
     const fetchClientSecret = async () => {
       try {
         const res = await PostAPI("api/v1/users/create-payment-intent", {
-          amount: totalPrice * 100,
+          amount: totalPrice,
         });
         if (res?.data?.status === "success") {
           setClientSecret(res?.data?.data?.clientSecret);
@@ -545,7 +546,7 @@ const page = () => {
                               >
                                 {order?.note
                                   ? "Note for the supplier"
-                                  : "Add note for the supplier"}
+                                  : "Add note for the supplier (optional)"}
                               </label>
                             </div>
                           </div>
@@ -860,7 +861,7 @@ const page = () => {
 
       <Dialog.Root
         placement="center"
-        size={stripeModal ? "md":"lg"}
+        size={stripeModal ? "md" : "lg"}
         open={
           paymentModal ||
           stripeModal ||
