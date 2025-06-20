@@ -209,7 +209,7 @@ const page = () => {
     //  else if (order?.note.trim() === "") {
     //   info_toaster("Note cannot be empty");
     // }
-     else if (order.paymentMethod.trim() === "") {
+    else if (order.paymentMethod.trim() === "") {
       info_toaster("Select payment Method");
     } else {
       if (order?.paymentMethod?.includes("card")) {

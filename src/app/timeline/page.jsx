@@ -196,7 +196,7 @@ const Timeline = () => {
                         {/* <p>
                           ${item?.price} x {item?.qty} =
                         </p> */}
-                        <p> ${(item?.price * item?.qty).toFixed(2)}</p>
+                        <p> ${Number(item?.price).toFixed(2)}</p>
                       </div>
                     </div>
                   );
