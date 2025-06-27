@@ -1,4 +1,4 @@
-// export const BASE_URL = "http://192.168.1.119:8011/";
+// export const BASE_URL = "http://192.168.1.6:8011/";
 
 export const BASE_URL_SOCKET = "http://bb.allfourcar.com:8011";
 

@@ -23,6 +23,8 @@ export default {
         productDetail: "url('/images/prod-detail.png')",
         homeGradient:
           "linear-gradient(90deg, rgb(114, 84, 63) 0%, rgb(243, 215, 198) 75.52%)",
+        contactUsGradient:
+          "radial-gradient(142.09% 142.09% at 48.59% 0%, #3E342C 23.3%, #A48A74 100%)",
       },
       backgroundColor: {
         theme: "#86644C",
@@ -55,6 +57,7 @@ export default {
         theme: "#86644C",
         themeLight: "#3e342c",
         themeDark: "#322a23",
+        themeExtraDark: "#3D332B",
         labelColor: "#212B36",
         inputBorder: "#00000033",
         themeLightGray: "#8F95B2",
@@ -85,7 +88,8 @@ export default {
         customYellow: "0 0px 6px rgba(248, 228, 190, 0.5)",
         checkoutBoxShadow:
           "0px 8px 28px 0px #0000001f, 0px 2px 6px 0px #0000001f, 0px 0px 1px 0px #0000001f",
-        smButtonShadow: " 0px 4px 12px 0px #0000001f ",
+        smButtonShadow: "0px 4px 12px 0px #0000001f",
+        contactUsShadow:"0px 8px 13px -3px #00000012"
       },
     },
   },

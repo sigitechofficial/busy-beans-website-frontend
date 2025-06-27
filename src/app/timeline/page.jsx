@@ -3,6 +3,7 @@ import BackButton from "@/components/ui/BackButton";
 import MiniLoader from "@/components/ui/MiniLoader";
 import TrackOrderTab from "@/components/ui/TrackOrderTab";
 import GetAPI from "@/utilities/GetAPI";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { BsChatLeftTextFill } from "react-icons/bs";
@@ -11,7 +12,9 @@ import { FaArrowLeft, FaCheck } from "react-icons/fa";
 const Timeline = () => {
   const [tab, setTab] = useState(1);
   let orderId = "";
+  let userID = "";
   if (typeof window !== "undefined") {
+    userID = localStorage.getItem("userID");
     orderId = localStorage.getItem("orderId");
   }
   const { data } = GetAPI(`api/v1/users/order-details/${orderId}`);
@@ -117,7 +120,7 @@ const Timeline = () => {
                 <div className="w-full">
                   <p className="text-xl mt-16">Need help with your order?</p>
 
-                  <div className="flex items-center gap-x-4 p-4 rounded-lg border w-full max-w-[400px] mt-4 cursor-pointer">
+                  <Link href={`/contact-us/${userID}`} className="flex items-center gap-x-4 p-4 rounded-lg border w-full max-w-[400px] mt-4 cursor-pointer">
                     <div className="border size-10 flex justify-center items-center shrink-0 rounded-full bg-white text-black">
                       <BsChatLeftTextFill size={17} />
                     </div>
@@ -126,7 +129,7 @@ const Timeline = () => {
                       <h5>Contact support</h5>
                       <p>If you need help with your order</p>
                     </div>
-                  </div>
+                  </Link>
                 </div>
               </div>
             ) : (
@@ -230,7 +233,7 @@ const Timeline = () => {
                 <div>
                   <p className="text-xl mt-16">Need help with your order?</p>
 
-                  <div className="flex items-center gap-x-4 p-4 rounded-lg border w-max mt-4 cursor-pointer">
+                  <Link href={`/contact-us/${userID}`} className="flex items-center gap-x-4 p-4 rounded-lg border w-max mt-4 cursor-pointer">
                     <div className="border size-10 flex justify-center items-center rounded-full bg-white text-black">
                       <BsChatLeftTextFill size={17} />
                     </div>
@@ -239,7 +242,7 @@ const Timeline = () => {
                       <h5>Contact support</h5>
                       <p>If you need help with your order</p>
                     </div>
-                  </div>
+                  </Link>
                 </div>
               </div>
             )}

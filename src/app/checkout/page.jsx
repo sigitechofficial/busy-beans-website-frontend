@@ -820,7 +820,7 @@ const page = () => {
                       </h5>
                       <h6>0.00 %</h6>
                     </div>
-                    <div className="flex items-center justify-between gap-x-2">
+                    {/* <div className="flex items-center justify-between gap-x-2">
                       <h5 className="text-base md:text-md text-checkoutTextColor">
                         Total Weight
                       </h5>
@@ -828,7 +828,7 @@ const page = () => {
                       <h6 className="flex gap-x-2">
                         {totalWeight?.toFixed(2)} kg
                       </h6>
-                    </div>
+                    </div> */}
                   </>
                 )}
 

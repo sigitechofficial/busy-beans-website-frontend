@@ -83,11 +83,11 @@ const inter = Inter({
   display: "swap",
 });
 
-const nunito = Nunito({
-  subsets: ["latin"],
-  variable: "--font-nunito",
-  display: "swap",
-});
+// const nunito = Nunito({
+//   subsets: ["latin"],
+//   variable: "--font-nunito",
+//   display: "swap",
+// });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -128,7 +128,7 @@ export default function RootLayout({ children }) {
       <link rel="icon" type="image/x-icon" href="/images/logocoffee.png" />
 
       <body
-        className={`${switzer.variable} ${satoshi.variable} ${inter.variable} ${nunito.variable} ${geistSans.variable} ${geistMono.variable} ${robotoSerif.variable} ${playfairDisplay.variable} antialiased`}
+        className={`${switzer.variable} ${satoshi.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable} ${robotoSerif.variable} ${playfairDisplay.variable} antialiased`}
       >
         <Provider>
           <ToastContainer />

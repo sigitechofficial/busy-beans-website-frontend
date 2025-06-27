@@ -183,13 +183,13 @@ function History() {
               })}
             </div> */}
 
-            {pastOrder?.length > 0 && (
+            {/* {pastOrder?.length > 0 && (
               <h4 className="mx-6 pt-6 md:mx-14 text-xl font-semibold">
                 Past Orders
               </h4>
-            )}
+            )} */}
 
-            <div className="gap-5 px-6 md:px-14 cursor-pointer">
+            {/* <div className="gap-5 px-6 md:px-14 cursor-pointer">
               {pastOrder?.map((item, idx) => {
                 return (
                   <div
@@ -220,14 +220,13 @@ function History() {
                       ))}
                     </div>
 
-                    {/* Order total section */}
                     <div className="text-right mt-2 pr-4 font-semibold text-base">
                       Order Total: ${item?.itemsPrice}
                     </div>
                   </div>
                 );
               })}
-            </div>
+            </div> */}
           </div>
         )}
       </div>

@@ -20,8 +20,42 @@ export default function VerifyEmail() {
   const [loader, setLoader] = useState(false);
   const inputRefs = useRef([]);
 
-  const handleResendOtp = () => {
+  const handleResendOtp = async () => {
     setTimer(60);
+    if (otpStatus === "forgotPassword") {
+      // router.push("/forgot-password");
+      try {
+        const res = await PostAPI("api/v1/users/resend-otp/reset-password", {
+          email: email,
+        });
+        if (res?.data?.status === "success") {
+          success_toaster("OTP send successfully");
+          setLoader(false);
+        } else {
+          throw new Error(
+            res?.data?.message || "An unexpected error occurred."
+          );
+        }
+      } catch (error) {
+        ErrorHandler(error);
+      }
+    } else if (otpStatus === "signUp") {
+      try {
+        const res = await PostAPI("api/v1/users/resend-otp/signup", {
+          email: email,
+        });
+        if (res?.data?.status === "success") {
+          success_toaster("OTP send successfully");
+          setLoader(false);
+        } else {
+          throw new Error(
+            res?.data?.message || "An unexpected error occurred."
+          );
+        }
+      } catch (error) {
+        ErrorHandler(error);
+      }
+    }
   };
 
   const handleEdit = () => {
@@ -189,7 +223,7 @@ export default function VerifyEmail() {
                       onInput={(e) => handleInput(e, index)}
                       onKeyDown={(e) => handleKeyDown(e, index)}
                       ref={(el) => (inputRefs.current[index] = el)}
-                      className="input-code text-6xl flex justify-center px-3.5"
+                      className="input-code text-6xl text-center flex items-center justify-center pe-1.5"
                     />
                   ))}
                 </div>
