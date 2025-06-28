@@ -6,6 +6,7 @@ import SwiperSider from "@/components/ui/SwiperSlider";
 import socket from "@/utilities/Socket";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Head from "next/head";
 
 export default function Home() {
   const router = useRouter();
@@ -43,6 +44,80 @@ export default function Home() {
     "/images/gourmethub.png",
   ];
 
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "Busy Bean Coffee",
+      url: "https://www.busybeancoffee.com/",
+      logo: "https://www.busybeancoffee.com/images/logowhite.png",
+      sameAs: [
+        "https://www.facebook.com/busybeancoffee",
+        "https://www.instagram.com/busybean_coffee",
+        "https://x.com/busybean_coffee",
+        "https://www.youtube.com/channel/UC4b4PYax5H3jRSyw4r0MCjQ",
+        "https://www.linkedin.com/company/busy-bean-coffee",
+      ],
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "Customer Support",
+        telephone: "+1-833-843-2326",
+        email: "info@busybeancoffee.com",
+      },
+      foundingDate: "2014",
+      address: {
+        "@type": "PostalAddress",
+        addressCountry: "USA",
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      url: "https://www.busybeancoffee.com/",
+      name: "Busy Bean Coffee",
+      description:
+        "Wholesale specialty coffee beans, creamers, syrups and support for cafés, hotels, stores & bakeries. High-margin products delivered fresh.",
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "Do you offer free coffee samples?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes! You can request a free sample of any coffee blend to try before you buy.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What types of businesses do you serve?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "We serve restaurants, cafés, hotels, bakeries, grocery stores, cafeterias, and more.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Can I set up recurring orders?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes, our online portal allows you to schedule repeat deliveries with ease.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What sizes do your coffee beans come in?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "We offer 5 lb and 25 lb bulk packaging for commercial use.",
+          },
+        },
+      ],
+    },
+  ];
+
   useEffect(() => {
     socket.on("connect", () => {
       console.log("✅ Connected to socket server");
@@ -52,6 +127,17 @@ export default function Home() {
 
   return (
     <>
+      <Head>
+        <title>Premium Coffee Beans & Add-Ons for Businesses</title>
+        <meta
+          name="description"
+          content="Wholesale specialty coffee beans, creamers & syrups with expert support for cafés, hotels, bakeries & stores. Fresh taste, high margins, fast delivery."
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </Head>
       <div className="w-full ">
         <div className="h-[550px] sm:h-[768px] 2xl:h-[950px] bg-theme bg-gradient-to-b from-themeDark to-[#5C4F4A] pt-[220px] sm:pt-[310px] relative">
           <h4 className="text-center bg-gradient-to-r from-[#F8E4BE] to-[#F9C06A38] w-max bg-clip-text text-transparent text-3xl sm:text-5xl lg:text-7xl 2xl:text-[120px] font-robotoSerif font-bold mx-auto lg:leading-[85px] 2xl:leading-[125px]">

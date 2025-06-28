@@ -23,6 +23,8 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import PhoneInput from "react-phone-input-2";
 import Select from "react-select";
+import Head from "next/head";
+
 
 export default function SignUpStep1() {
   const router = useRouter();
@@ -251,7 +253,88 @@ export default function SignUpStep1() {
     }
   };
 
+
+  const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Busy Bean Coffee",
+    url: "https://www.busybeancoffee.com/",
+    logo: "https://www.busybeancoffee.com/images/logowhite.png",
+    sameAs: [
+      "https://www.facebook.com/busybeancoffee",
+      "https://www.instagram.com/busybean_coffee",
+      "https://x.com/busybean_coffee",
+      "https://www.youtube.com/channel/UC4b4PYax5H3jRSyw4r0MCjQ",
+      "https://www.linkedin.com/company/busy-bean-coffee"
+    ],
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "Customer Support",
+      telephone: "+1-833-843-2326",
+      email: "info@busybeancoffee.com"
+    },
+    foundingDate: "2014",
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "USA"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    url: "https://www.busybeancoffee.com/",
+    name: "Busy Bean Coffee",
+    description: "Wholesale specialty coffee beans, creamers, syrups and support for cafés, hotels, stores & bakeries. High-margin products delivered fresh."
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "How do I create an account on Busy Bean Coffee?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "To register, provide your business address, company details, and user credentials. You’ll then verify your email before signing in."
+        }
+      },
+      {
+        "@type": "Question",
+        name: "What information is needed to sign up?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "You’ll need to provide company address, contact number, tax ID (if applicable), and your email with a secure password."
+        }
+      },
+      {
+        "@type": "Question",
+        name: "Do I need to verify my email after registration?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, after signing up, you’ll receive an OTP to verify your email address and activate your account."
+        }
+      }
+    ]
+  }
+];
+
   return (
+
+    <>
+    <Head>
+  <title>Sign Up | Busy Bean Coffee</title>
+  <meta
+    name="description"
+    content="Create a Busy Bean Coffee account by entering your business and personal details to access wholesale ordering and premium services."
+  />
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+  />
+</Head>
+
+   
     <div className="min-h-screen bg-themeLight py-5">
       {/* main section start */}
 
@@ -706,5 +789,6 @@ export default function SignUpStep1() {
         )}
       </div>
     </div>
+     </>
   );
 }

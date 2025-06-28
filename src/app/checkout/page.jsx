@@ -51,6 +51,8 @@ import { drawerSelectStyles } from "@/utilities/SelectStyle";
 import axios from "axios";
 import { RxCross2 } from "react-icons/rx";
 import BackButton from "@/components/ui/BackButton";
+import Head from "next/head";
+
 
 const stripePromise = loadStripe(
   "pk_test_51RPXZNCxTuXimvwHkvKO6MrVTckQ45X3JC2AkCVyV9fxLCK442YPbG8yM2NOexEqnD3wNAXdKfrOyEH2dTSzYKpt00WTyK7kzl"
@@ -417,8 +419,64 @@ const page = () => {
     fetchClientSecret();
   }, []);
 
+
+
+  const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Secure Checkout",
+    url: "https://www.busybeancoffee.com/checkout", // Change if different
+    description:
+      "Complete your order for premium coffee beans, creamers, and syrups. Fast shipping and easy checkout with Busy Bean Coffee.",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Busy Bean Coffee",
+      url: "https://www.busybeancoffee.com"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://www.busybeancoffee.com"
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Products",
+        item: "https://www.busybeancoffee.com/products"
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Checkout",
+        item: "https://www.busybeancoffee.com/checkout"
+      }
+    ]
+  }
+];
+
+
   return (
     <>
+
+    <Head>
+  <title>Secure Checkout | Busy Bean Coffee</title>
+  <meta
+    name="description"
+    content="Securely complete your Busy Bean Coffee order with premium wholesale products for cafés, restaurants, and stores."
+  />
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+  />
+</Head>
+
       <div className="bg-theme font-satoshi">
         <section className="bg-theme-green font-satoshi">
           <div className="h-96 relative text-black hover:text-opacity-50">

@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { BsChatLeftTextFill } from "react-icons/bs";
 import { FaArrowLeft, FaCheck } from "react-icons/fa";
+import Head from "next/head";
+
 
 const Timeline = () => {
   const [tab, setTab] = useState(1);
@@ -35,7 +37,35 @@ const Timeline = () => {
     return result?.on ?? "";
   };
 
+  const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Order Tracking",
+  url: "https://www.busybeancoffee.com/timeline",
+  description:
+    "Track your Busy Bean Coffee order in real-time. View every stage from order confirmation to delivery.",
+  isPartOf: {
+    "@type": "WebSite",
+    name: "Busy Bean Coffee",
+    url: "https://www.busybeancoffee.com",
+  },
+};
+
   return (
+
+    <>
+    <Head>
+        <title>Track Order | Busy Bean Coffee</title>
+        <meta
+          name="description"
+          content="Track your Busy Bean Coffee order in real-time with updates on preparation, shipping, and delivery."
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </Head>
+  
     <div className="w-full ">
       <div className=" bg-theme pt-36 sm:pt-[180px] pb-10 relative">
         {/* overlay */}
@@ -254,6 +284,8 @@ const Timeline = () => {
         )}
       </div>
     </div>
+
+      </>
   );
 };
 

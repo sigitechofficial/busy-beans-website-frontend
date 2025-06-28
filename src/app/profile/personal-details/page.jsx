@@ -5,6 +5,7 @@ import { PutAPI } from "@/utilities/PutAPI";
 import { info_toaster, success_toaster } from "@/utilities/Toaster";
 import React, { useState } from "react";
 import { FaCircleUser } from "react-icons/fa6";
+import Head from "next/head";
 
 const personalDetails = () => {
   const [model, setModel] = useState({
@@ -164,7 +165,34 @@ const personalDetails = () => {
     }
   };
 
+  const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Personal Details",
+  url: "https://www.busybeancoffee.com/personal-details",
+  description:
+    "Manage your profile information like name, company details, billing email, address, phone number, and tax information on Busy Bean Coffee.",
+  isPartOf: {
+    "@type": "WebSite",
+    name: "Busy Bean Coffee",
+    url: "https://www.busybeancoffee.com",
+  },
+};
+
   return (
+<>
+
+       <Head>
+        <title>Personal Details | Busy Bean Coffee</title>
+        <meta
+          name="description"
+          content="Update and manage your personal details like name, email, phone number, company name, and tax ID."
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </Head>
     <div className="w-full ">
       <div className=" bg-theme pt-32 sm:pt-[180px] pb-10 relative">
         {/* overlay */}
@@ -561,6 +589,8 @@ const personalDetails = () => {
         )}
       </div>
     </div>
+
+    </>
   );
 };
 

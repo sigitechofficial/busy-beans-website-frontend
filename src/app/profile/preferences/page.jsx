@@ -1,8 +1,37 @@
 import React from "react";
+import Head from "next/head";
 import { FaCircleUser } from "react-icons/fa6";
 
 const preference = () => {
+
+  const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Preferences",
+  url: "https://www.busybeancoffee.com/preferences",
+  description:
+    "Customize your preferences at Busy Bean Coffee. Change your language, currency, and accessibility settings for a better shopping experience.",
+  isPartOf: {
+    "@type": "WebSite",
+    name: "Busy Bean Coffee",
+    url: "https://www.busybeancoffee.com",
+  },
+};
   return (
+
+    <>
+     <Head>
+        <title>Preferences | Busy Bean Coffee</title>
+        <meta
+          name="description"
+          content="Customize your language, currency, and accessibility preferences for a personalized experience with Busy Bean Coffee."
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </Head>
+   
     <div className="w-full ">
       <div className=" bg-theme pt-36 sm:pt-[180px] pb-10 relative">
         {/* overlay */}
@@ -40,6 +69,7 @@ const preference = () => {
         </div>
       </div>
     </div>
+     </>
   );
 };
 
