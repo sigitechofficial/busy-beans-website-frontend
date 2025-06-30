@@ -17,7 +17,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(customParseFormat);
 import { IoIosArrowRoundBack, IoMdHome } from "react-icons/io";
-import { MdInsertComment } from "react-icons/md";
+import { MdInsertComment, MdOutlineConfirmationNumber } from "react-icons/md";
 import { AiOutlinePlus } from "react-icons/ai";
 import { IoCard } from "react-icons/io5";
 import FloatingLabelInput from "@/components/ui/FloatingLabelInput";
@@ -76,7 +76,7 @@ const page = () => {
     totalWeight: "",
     note: "",
     paymentMethod: "",
-    poNumber: "PO12345678",
+    poNumber:"",
     orderFrequency: "just-onces", //  'just-onces','weekly','every-two-weeks','every-four-weeks',
     addressId: "",
     userId: "",
@@ -227,8 +227,8 @@ const page = () => {
               vat: 0,
               totalWeight: totalWeight,
               note: order?.note,
-              paymentMethod: order.paymentMethod,
-              poNumber: order?.poNumber,
+              paymentMethod: order?.paymentMethod,
+              poNumber:order?.poNumber,
               frequency: order?.orderFrequency, // 'just-onces', 'weekly', 'every-two-weeks', 'every-four-weeks'
               addressId: addressId,
               userId: userId,
@@ -522,7 +522,7 @@ const page = () => {
                             </div>
                           </div>
 
-                          <div className="font-sf font-normal text-base text-theme-black-2 flex items-center gap-3 px-5 py-[5px] duration-300 border-2 border-white hover:border-goldenLight focus-within:border-goldenLight rounded-b-lg">
+                          <div className="font-sf font-normal text-base text-theme-black-2 flex items-center gap-3 px-5 py-[5px] duration-300 border-2 border-white hover:border-goldenLight focus-within:border-goldenLight">
                             <MdInsertComment size={24} />
                             <div className="relative w-full">
                               <input
@@ -547,6 +547,34 @@ const page = () => {
                                 {order?.note
                                   ? "Note for the supplier"
                                   : "Add note for the supplier (optional)"}
+                              </label>
+                            </div>
+                          </div>
+                          <div className="font-sf font-normal text-base text-theme-black-2 flex items-center gap-3 px-5 py-[5px] duration-300 border-2 border-white hover:border-goldenLight focus-within:border-goldenLight rounded-b-lg">
+                            <MdOutlineConfirmationNumber size={24} />
+                            <div className="relative w-full">
+                              <input
+                                type="text"
+                                id="poNumber"
+                                className={`w-full h-full py-5 pt-7 pb-2 focus:outline-none bg-transparent peer ${
+                                  order?.poNumber ? "placeholder-transparent" : ""
+                                }`}
+                                value={order?.poNumber}
+                                onChange={(e) =>
+                                  setOrder({ ...order, poNumber: e.target.value })
+                                }
+                              />
+                              <label
+                                htmlFor="poNumber"
+                                className={`absolute left-0 top-4 text-gray-400 transition-all ${
+                                  order?.poNumber
+                                    ? "top-[5px] text-[13px] peer-focus:text-goldenLight"
+                                    : "peer-placeholder-shown:top-5 peer-placeholder-shown:text-goldenLight peer-focus:top-[7px] peer-focus:text-[13px] peer-focus:text-goldenLight"
+                                }`}
+                              >
+                                {order?.poNumber
+                                  ? "Place Order Number"
+                                  : "Add Place Order Number (optional)"}
                               </label>
                             </div>
                           </div>
@@ -742,7 +770,7 @@ const page = () => {
                         setOrder({ ...order, orderFrequency: "just-onces" })
                       }
                     >
-                      Just once
+                      Once
                     </button>
                     <button
                       className={`${
@@ -972,7 +1000,7 @@ const page = () => {
                                 className="w-9 h-9 object-contain"
                               />
                               <span className="text-base font-sf font-medium text-theme-black-2">
-                                {itm?.name}
+                                {itm?.name.includes("Cheque") ? "Bank Cheque":itm?.name}
                               </span>
                             </div>
 

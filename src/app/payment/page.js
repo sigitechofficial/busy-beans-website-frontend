@@ -309,7 +309,7 @@ export default function page() {
                               className="w-9 h-9 object-contain"
                             />
                             <span className="text-base font-sf font-medium text-theme-black-2">
-                              {itm?.name}
+                              {itm?.name?.includes("Cheque") ? "Bank Cheque":itm?.name}
                             </span>
                           </div>
 
