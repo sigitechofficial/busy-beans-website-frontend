@@ -57,7 +57,7 @@ const StripeCardForm = ({
           totalWeight: totalWeight,
           note: order?.note,
           paymentMethod: order.paymentMethod,
-          poNumber: order?.spoNumber,
+          poNumber: order?.poNumber,
           frequency: order?.orderFrequency, // 'just-onces', 'weekly', 'every-two-weeks', 'every-four-weeks'
           addressId: addressId,
           userId: userId,

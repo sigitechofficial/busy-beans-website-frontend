@@ -25,7 +25,6 @@ import PhoneInput from "react-phone-input-2";
 import Select from "react-select";
 import Head from "next/head";
 
-
 export default function SignUpStep1() {
   const router = useRouter();
   const [step, setStep] = useState(1);
@@ -49,6 +48,7 @@ export default function SignUpStep1() {
       emailToSendInvoices: "",
       companyName: "",
       companyInfo: "",
+      billingAddress: "",
     },
     address: {
       companyaddress: "",
@@ -220,6 +220,7 @@ export default function SignUpStep1() {
             emailToSendInvoices: userData?.info?.emailToSendInvoices,
             companyName: userData?.info?.companyName,
             companyInfo: userData?.info?.companyInfo,
+            billingAddress: userData?.info?.billingAddress,
           },
           address: {
             companyaddress: userData?.address?.companyaddress,
@@ -253,167 +254,165 @@ export default function SignUpStep1() {
     }
   };
 
-
   const jsonLd = [
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "Busy Bean Coffee",
-    url: "https://www.busybeancoffee.com/",
-    logo: "https://www.busybeancoffee.com/images/logowhite.png",
-    sameAs: [
-      "https://www.facebook.com/busybeancoffee",
-      "https://www.instagram.com/busybean_coffee",
-      "https://x.com/busybean_coffee",
-      "https://www.youtube.com/channel/UC4b4PYax5H3jRSyw4r0MCjQ",
-      "https://www.linkedin.com/company/busy-bean-coffee"
-    ],
-    contactPoint: {
-      "@type": "ContactPoint",
-      contactType: "Customer Support",
-      telephone: "+1-833-843-2326",
-      email: "info@busybeancoffee.com"
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "Busy Bean Coffee",
+      url: "https://www.busybeancoffee.com/",
+      logo: "https://www.busybeancoffee.com/images/logowhite.png",
+      sameAs: [
+        "https://www.facebook.com/busybeancoffee",
+        "https://www.instagram.com/busybean_coffee",
+        "https://x.com/busybean_coffee",
+        "https://www.youtube.com/channel/UC4b4PYax5H3jRSyw4r0MCjQ",
+        "https://www.linkedin.com/company/busy-bean-coffee",
+      ],
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "Customer Support",
+        telephone: "+1-833-843-2326",
+        email: "info@busybeancoffee.com",
+      },
+      foundingDate: "2014",
+      address: {
+        "@type": "PostalAddress",
+        addressCountry: "USA",
+      },
     },
-    foundingDate: "2014",
-    address: {
-      "@type": "PostalAddress",
-      addressCountry: "USA"
-    }
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    url: "https://www.busybeancoffee.com/",
-    name: "Busy Bean Coffee",
-    description: "Wholesale specialty coffee beans, creamers, syrups and support for cafés, hotels, stores & bakeries. High-margin products delivered fresh."
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "How do I create an account on Busy Bean Coffee?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "To register, provide your business address, company details, and user credentials. You’ll then verify your email before signing in."
-        }
-      },
-      {
-        "@type": "Question",
-        name: "What information is needed to sign up?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "You’ll need to provide company address, contact number, tax ID (if applicable), and your email with a secure password."
-        }
-      },
-      {
-        "@type": "Question",
-        name: "Do I need to verify my email after registration?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Yes, after signing up, you’ll receive an OTP to verify your email address and activate your account."
-        }
-      }
-    ]
-  }
-];
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      url: "https://www.busybeancoffee.com/",
+      name: "Busy Bean Coffee",
+      description:
+        "Wholesale specialty coffee beans, creamers, syrups and support for cafés, hotels, stores & bakeries. High-margin products delivered fresh.",
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "How do I create an account on Busy Bean Coffee?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "To register, provide your business address, company details, and user credentials. You’ll then verify your email before signing in.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What information is needed to sign up?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "You’ll need to provide company address, contact number, tax ID (if applicable), and your email with a secure password.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Do I need to verify my email after registration?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes, after signing up, you’ll receive an OTP to verify your email address and activate your account.",
+          },
+        },
+      ],
+    },
+  ];
 
   return (
-
     <>
-    <Head>
-  <title>Sign Up | Busy Bean Coffee</title>
-  <meta
-    name="description"
-    content="Create a Busy Bean Coffee account by entering your business and personal details to access wholesale ordering and premium services."
-  />
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-  />
-</Head>
+      <Head>
+        <title>Sign Up | Busy Bean Coffee</title>
+        <meta
+          name="description"
+          content="Create a Busy Bean Coffee account by entering your business and personal details to access wholesale ordering and premium services."
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </Head>
 
-   
-    <div className="min-h-screen bg-themeLight py-5">
-      {/* main section start */}
+      <div className="min-h-screen bg-themeLight py-5">
+        {/* main section start */}
 
-      <div className="relative border border-theme rounded-xl bg-themeDark  w-11/12 sm:w-4/6 md:w-[70%] lg:w-3/5 xl:w-2/4 py-6 mx-auto flex flex-col items-center gap-y-4">
-        {(step === 2 || step === 3) && !loader && (
-          <button
-            onClick={() => setStep(step - 1)}
-            className="absolute left-2 sm:left-4 md:left-10 top-12 md:top-14 xl:top-16 flex justify-center items-center w-8 h-8 text-white rounded-full hover:bg-white hover:text-theme duration-200"
-          >
-            <FaLongArrowAltLeft size={30} />
-          </button>
-        )}
-        <div className="w-60 md:w-72 lg:w-80">
-          <img
-            src="/images/logocoffee.png"
-            alt="logo"
-            className="h-full w-full object-contain"
-          />
-        </div>
+        <div className="relative border border-theme rounded-xl bg-themeDark  w-11/12 sm:w-4/6 md:w-[70%] lg:w-3/5 xl:w-2/4 py-6 mx-auto flex flex-col items-center gap-y-4">
+          {(step === 2 || step === 3) && !loader && (
+            <button
+              onClick={() => setStep(step - 1)}
+              className="absolute left-2 sm:left-4 md:left-10 top-12 md:top-14 xl:top-16 flex justify-center items-center w-8 h-8 text-white rounded-full hover:bg-white hover:text-theme duration-200"
+            >
+              <FaLongArrowAltLeft size={30} />
+            </button>
+          )}
+          <div className="w-60 md:w-72 lg:w-80">
+            <img
+              src="/images/logocoffee.png"
+              alt="logo"
+              className="h-full w-full object-contain"
+            />
+          </div>
 
-        {loader ? (
-          <MiniLoader />
-        ) : (
-          <div className="space-y-6 w-11/12 xl:w-3/5">
-            <p className="font-satoshi text-white font-black text-2xl lg:text-3xl text-center">
-              Welcome to Busy Bean Coffee
-            </p>
-            {step === 1 && (
-              <div className="font-satoshi space-y-4">
-                <p className="font-black text-xl lg:text-2xl text-white">
-                  1. Company Address
-                </p>
-                <div className="space-y-6">
-                  <div className="space-y-4">
-                    <div className="flex flex-col gap-y-2">
-                      <label className="text-white font-medium">
-                        Company Address
-                      </label>
-                      <input
-                        type="text"
-                        name="companyaddress"
-                        onChange={handleAddress}
-                        value={userData?.address?.companyaddress}
-                        placeholder="Enter company address"
-                        className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-y-2">
-                      <label className="text-white font-medium">
-                        Address Line 1
-                      </label>
-                      <input
-                        type="text"
-                        name="addressLineOne"
-                        onChange={handleAddress}
-                        value={userData?.address?.addressLineOne}
-                        placeholder="Enter address line 1"
-                        className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-y-2">
-                      <label className="text-white font-medium">
-                        Address Line 2
-                      </label>
-                      <input
-                        type="text"
-                        name="addressLineTwo"
-                        onChange={handleAddress}
-                        value={userData?.address?.addressLineTwo}
-                        placeholder="Enter address line 2"
-                        className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                      />
-                    </div>
-                    <div className="md:grid md:grid-cols-2 gap-x-4 max-md:space-y-4">
+          {loader ? (
+            <MiniLoader />
+          ) : (
+            <div className="space-y-6 w-11/12 xl:w-3/5">
+              <p className="font-satoshi text-white font-black text-2xl lg:text-3xl text-center">
+                Welcome to Busy Bean Coffee
+              </p>
+              {step === 1 && (
+                <div className="font-satoshi space-y-4">
+                  <p className="font-black text-xl lg:text-2xl text-white">
+                    1. Company Address
+                  </p>
+                  <div className="space-y-6">
+                    <div className="space-y-4">
                       <div className="flex flex-col gap-y-2">
                         <label className="text-white font-medium">
-                          Country
+                          Company Address
                         </label>
-                        {/* <input
+                        <input
+                          type="text"
+                          name="companyaddress"
+                          onChange={handleAddress}
+                          value={userData?.address?.companyaddress}
+                          placeholder="Enter company address"
+                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-y-2">
+                        <label className="text-white font-medium">
+                          Address Line 1
+                        </label>
+                        <input
+                          type="text"
+                          name="addressLineOne"
+                          onChange={handleAddress}
+                          value={userData?.address?.addressLineOne}
+                          placeholder="Enter address line 1"
+                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-y-2">
+                        <label className="text-white font-medium">
+                          Address Line 2
+                        </label>
+                        <input
+                          type="text"
+                          name="addressLineTwo"
+                          onChange={handleAddress}
+                          value={userData?.address?.addressLineTwo}
+                          placeholder="Enter address line 2"
+                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                        />
+                      </div>
+                      <div className="md:grid md:grid-cols-2 gap-x-4 max-md:space-y-4">
+                        <div className="flex flex-col gap-y-2">
+                          <label className="text-white font-medium">
+                            Country
+                          </label>
+                          {/* <input
                           type="text"
                           name="country"
                           onChange={handleAddress}
@@ -421,26 +420,28 @@ export default function SignUpStep1() {
                           placeholder="Enter Country"
                           className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                         /> */}
-                        <Select
-                          placeholder="Select Country"
-                          className="w-full"
-                          styles={drawerSelectStyles2}
-                          options={allCountriesData}
-                          onChange={(e) => {
-                            setUserData({
-                              ...userData,
-                              address: {
-                                ...userData?.address,
-                                country: e.label,
-                              },
-                            });
-                            handleSelectedCountryStates(e.label);
-                          }}
-                        />
-                      </div>
-                      <div className="flex flex-col gap-y-2">
-                        <label className="text-white font-medium">State</label>
-                        {/* <input
+                          <Select
+                            placeholder="Select Country"
+                            className="w-full"
+                            styles={drawerSelectStyles2}
+                            options={allCountriesData}
+                            onChange={(e) => {
+                              setUserData({
+                                ...userData,
+                                address: {
+                                  ...userData?.address,
+                                  country: e.label,
+                                },
+                              });
+                              handleSelectedCountryStates(e.label);
+                            }}
+                          />
+                        </div>
+                        <div className="flex flex-col gap-y-2">
+                          <label className="text-white font-medium">
+                            State
+                          </label>
+                          {/* <input
                           type="text"
                           name="state"
                           onChange={handleAddress}
@@ -448,34 +449,34 @@ export default function SignUpStep1() {
                           placeholder="Enter State"
                           className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                         /> */}
-                        <Select
-                          placeholder="Select State"
-                          className="w-full"
-                          styles={drawerSelectStyles2}
-                          value={{
-                            value: userData?.address?.state ?? null,
-                            label: userData?.address?.state ?? null,
-                          }}
-                          options={allStates}
-                          onChange={(e) => {
-                            setUserData({
-                              ...userData,
-                              address: {
-                                ...userData?.address,
-                                state: e.label,
-                              },
-                            });
-                            handleSelectedCountryStatesCities(e.value);
-                          }}
-                        />
+                          <Select
+                            placeholder="Select State"
+                            className="w-full"
+                            styles={drawerSelectStyles2}
+                            value={{
+                              value: userData?.address?.state ?? null,
+                              label: userData?.address?.state ?? null,
+                            }}
+                            options={allStates}
+                            onChange={(e) => {
+                              setUserData({
+                                ...userData,
+                                address: {
+                                  ...userData?.address,
+                                  state: e.label,
+                                },
+                              });
+                              handleSelectedCountryStatesCities(e.value);
+                            }}
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div className="md:grid md:grid-cols-2 gap-x-4 max-md:space-y-4">
-                      <div className="flex flex-col gap-y-2">
-                        <label className="text-white font-medium">
-                          Town / City
-                        </label>
-                        {/* <input
+                      <div className="md:grid md:grid-cols-2 gap-x-4 max-md:space-y-4">
+                        <div className="flex flex-col gap-y-2">
+                          <label className="text-white font-medium">
+                            Town / City
+                          </label>
+                          {/* <input
                           type="text"
                           name="town"
                           onChange={handleAddress}
@@ -483,136 +484,152 @@ export default function SignUpStep1() {
                           placeholder="Enter Town / City"
                           className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                         /> */}
-                        <Select
-                          placeholder="Select City"
-                          className="w-full"
-                          styles={drawerSelectStyles2}
-                          value={{
-                            value: userData?.address?.town ?? null,
-                            label: userData?.address?.town ?? null,
-                          }}
-                          options={allCities ?? null}
-                          onChange={(e) => {
-                            setUserData({
-                              ...userData,
-                              address: {
-                                ...userData?.address,
-                                town: e.label,
-                              },
-                            });
-                          }}
-                        />
+                          <Select
+                            placeholder="Select City"
+                            className="w-full"
+                            styles={drawerSelectStyles2}
+                            value={{
+                              value: userData?.address?.town ?? null,
+                              label: userData?.address?.town ?? null,
+                            }}
+                            options={allCities ?? null}
+                            onChange={(e) => {
+                              setUserData({
+                                ...userData,
+                                address: {
+                                  ...userData?.address,
+                                  town: e.label,
+                                },
+                              });
+                            }}
+                          />
+                        </div>
+                        <div className="flex flex-col gap-y-2">
+                          <label className="text-white font-medium">
+                            Zip Code
+                          </label>
+                          <input
+                            type="text"
+                            name="zipCode"
+                            onChange={handleAddress}
+                            value={userData?.address?.zipCode}
+                            placeholder="Enter Zip Code"
+                            className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                          />
+                        </div>
                       </div>
                       <div className="flex flex-col gap-y-2">
                         <label className="text-white font-medium">
-                          Zip Code
+                          Blling Address
                         </label>
                         <input
                           type="text"
-                          name="zipCode"
-                          onChange={handleAddress}
-                          value={userData?.address?.zipCode}
-                          placeholder="Enter Zip Code"
+                          name="billingAddress"
+                          onChange={handleInfo}
+                          value={userData?.info?.billingAddress}
+                          placeholder="Enter Bliing Address"
                           className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                         />
                       </div>
                     </div>
-                  </div>
-                  <div>
-                    <button
-                      onClick={handleStep1}
-                      className="font-medium rounded-xl bg-theme text-white w-full py-3"
-                    >
-                      Next
-                    </button>
+                    <div>
+                      <button
+                        onClick={handleStep1}
+                        className="font-medium rounded-xl bg-theme text-white w-full py-3"
+                      >
+                        Next
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-            {step === 2 && (
-              <div className="font-satoshi space-y-4">
-                <p className="font-black text-xl lg:text-2xl text-white flex items-center justify-between gap-x-2">
-                  2. Company Details
-                </p>
-                <div className="space-y-6">
-                  <div className="space-y-4">
-                    <div className="flex flex-col gap-y-2">
-                      <label className="text-white font-medium">
-                        Company Name
-                      </label>
-                      <input
-                        type="text"
-                        name="companyName"
-                        onChange={handleInfo}
-                        value={userData?.info?.companyName}
-                        placeholder="Enter Company Name"
-                        className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-y-2">
-                      <label className="text-white font-medium">
-                        Company Info
-                      </label>
-                      <input
-                        type="text"
-                        name="companyInfo"
-                        onChange={handleInfo}
-                        value={userData?.info?.companyInfo}
-                        placeholder="Enter Company Info"
-                        className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-y-2">
-                      <label htmlFor="phone" className="text-white font-medium">
-                        Phone Number
-                      </label>
-                      <div className="grid grid-cols-10 gap-x-2">
-                        <PhoneInput
-                          focusBorderColor="none"
-                          borderWidth="none"
-                          className="chakra_input col-span-2"
-                          inputStyle={{
-                            width: "90px",
-                            height: "45px",
-                            borderRadius: "12px",
-                            border: "1px solid #00000033",
-                            backgroundColor: "#3B3B3B",
-                            color: "#ffffff",
-                            opacity: "20",
-                          }}
-                          buttonStyle={{
-                            backgroundColor: "#3B3B3B",
-                            border: "1px solid #86644C",
-                          }}
-                          containerStyle={{
-                            borderRadius: "12px",
-                            backgroundColor: "#6f4e37",
-                          }}
-                          dropdownStyle={{
-                            backgroundColor: "#6f4e37",
-                            borderRadius: "8px",
-                          }}
-                          country={"pk"}
-                          onChange={(phone) =>
-                            setUserData({
-                              ...userData,
-                              info: {
-                                ...userData?.info,
-                                countryCode: phone,
-                              },
-                            })
-                          }
-                        />
+              )}
+              {step === 2 && (
+                <div className="font-satoshi space-y-4">
+                  <p className="font-black text-xl lg:text-2xl text-white flex items-center justify-between gap-x-2">
+                    2. Company Details
+                  </p>
+                  <div className="space-y-6">
+                    <div className="space-y-4">
+                      <div className="flex flex-col gap-y-2">
+                        <label className="text-white font-medium">
+                          Company Name
+                        </label>
                         <input
-                          type="number"
-                          name="phoneNumber"
+                          type="text"
+                          name="companyName"
                           onChange={handleInfo}
-                          value={userData?.info?.phoneNumber}
-                          placeholder="Enter Phone Number"
-                          className="border border-inputBorder rounded-xl outline-none px-3 py-2 w-full col-span-8"
+                          value={userData?.info?.companyName}
+                          placeholder="Enter Company Name"
+                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                         />
                       </div>
-                      {/* <input
+                      <div className="flex flex-col gap-y-2">
+                        <label className="text-white font-medium">
+                          Company Info
+                        </label>
+                        <input
+                          type="text"
+                          name="companyInfo"
+                          onChange={handleInfo}
+                          value={userData?.info?.companyInfo}
+                          placeholder="Enter Company Info"
+                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-y-2">
+                        <label
+                          htmlFor="phone"
+                          className="text-white font-medium"
+                        >
+                          Phone Number
+                        </label>
+                        <div className="grid grid-cols-10 gap-x-2">
+                          <PhoneInput
+                            focusBorderColor="none"
+                            borderWidth="none"
+                            className="chakra_input col-span-2"
+                            inputStyle={{
+                              width: "90px",
+                              height: "45px",
+                              borderRadius: "12px",
+                              border: "1px solid #00000033",
+                              backgroundColor: "#3B3B3B",
+                              color: "#ffffff",
+                              opacity: "20",
+                            }}
+                            buttonStyle={{
+                              backgroundColor: "#3B3B3B",
+                              border: "1px solid #86644C",
+                            }}
+                            containerStyle={{
+                              borderRadius: "12px",
+                              backgroundColor: "#6f4e37",
+                            }}
+                            dropdownStyle={{
+                              backgroundColor: "#6f4e37",
+                              borderRadius: "8px",
+                            }}
+                            country={"pk"}
+                            onChange={(phone) =>
+                              setUserData({
+                                ...userData,
+                                info: {
+                                  ...userData?.info,
+                                  countryCode: phone,
+                                },
+                              })
+                            }
+                          />
+                          <input
+                            type="number"
+                            name="phoneNumber"
+                            onChange={handleInfo}
+                            value={userData?.info?.phoneNumber}
+                            placeholder="Enter Phone Number"
+                            className="border border-inputBorder rounded-xl outline-none px-3 py-2 w-full col-span-8"
+                          />
+                        </div>
+                        {/* <input
                         type="number"
                         name="phoneNumber"
                         onChange={handleInfo}
@@ -620,175 +637,180 @@ export default function SignUpStep1() {
                         placeholder="Enter Phone Number"
                         className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                       /> */}
+                      </div>
+                      <div className="flex flex-col gap-y-2">
+                        <label className="text-white font-medium">
+                          Sale Tax Number <span>(if applicable)</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="saleTaxNumber"
+                          onChange={handleInfo}
+                          value={userData?.info?.saleTaxNumber}
+                          placeholder="Enter sale tax number"
+                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-y-2">
+                        <label className="text-white font-medium">
+                          Email to send invoices
+                        </label>
+                        <input
+                          type="email"
+                          name="emailToSendInvoices"
+                          onChange={handleInfo}
+                          value={userData?.info?.emailToSendInvoices}
+                          placeholder="Enter Email"
+                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                        />
+                      </div>
                     </div>
-                    <div className="flex flex-col gap-y-2">
-                      <label className="text-white font-medium">
-                        Sale Tax Number <span>(if applicable)</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="saleTaxNumber"
-                        onChange={handleInfo}
-                        value={userData?.info?.saleTaxNumber}
-                        placeholder="Enter sale tax number"
-                        className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-y-2">
-                      <label className="text-white font-medium">
-                        Email to send invoices
-                      </label>
-                      <input
-                        type="email"
-                        name="emailToSendInvoices"
-                        onChange={handleInfo}
-                        value={userData?.info?.emailToSendInvoices}
-                        placeholder="Enter Email"
-                        className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <button
-                      onClick={handleStep2}
-                      className="font-medium rounded-xl bg-theme text-white w-full py-3"
-                    >
-                      Next
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-            {step === 3 && (
-              <form onSubmit={handleSubmit} className="font-satoshi space-y-4">
-                <p className="font-black text-xl lg:text-2xl text-white">
-                  3. User Details
-                </p>
-                <div className="space-y-6">
-                  <div className="space-y-4">
-                    <div className="flex flex-col gap-y-2">
-                      <label className="text-white font-medium">
-                        Your Name
-                      </label>
-                      <input
-                        type="text"
-                        name="name"
-                        onChange={handleInfo}
-                        value={userData?.info?.name}
-                        placeholder="Enter Name"
-                        className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-y-2">
-                      <label className="text-white font-medium">
-                        Email Address
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        onChange={handleInfo}
-                        value={userData?.info?.email}
-                        placeholder="Enter email"
-                        className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-y-2 relative">
-                      <label className="text-white font-medium">Password</label>
-                      <input
-                        type={visibility?.pass ? "text" : "password"}
-                        name="password"
-                        onChange={handleInfo}
-                        value={userData?.info?.password}
-                        placeholder="Enter Password"
-                        className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                      />
-                      {userData?.info?.password.length > 0 && (
-                        <p className="text-red-700 text font-semibold text-sm">
-                          {!passwordStrength?.weak?.test(
-                            userData?.info?.password.trim()
-                          )
-                            ? "Password is too weak, contain atleat 6 characters consider adding more complexity"
-                            : !passwordStrength?.medium?.test(
-                                userData?.info?.password.trim()
-                              )
-                            ? "Password should include both uppercase and lowercase letters"
-                            : !passwordStrength?.strong.test(
-                                userData?.info?.password.trim()
-                              )
-                            ? "Password is strong! It should include at least one uppercase letter, one lowercase letter, one number, and one special character"
-                            : ""}
-                        </p>
-                      )}
+                    <div>
                       <button
-                        onClick={() =>
-                          setVisibility({
-                            ...visibility,
-                            pass: !visibility?.pass,
-                          })
-                        }
-                        type="button"
-                        className="text-labelColor absolute right-4 top-10"
+                        onClick={handleStep2}
+                        className="font-medium rounded-xl bg-theme text-white w-full py-3"
                       >
-                        {visibility?.pass ? (
-                          <AiOutlineEye size={24} color="#ffffff" />
-                        ) : (
-                          <AiOutlineEyeInvisible size={24} color="#ffffff" />
-                        )}
-                      </button>
-                    </div>
-                    <div className="flex flex-col gap-y-2 relative">
-                      <label className="text-white font-medium">
-                        Confirm Password
-                      </label>
-                      <input
-                        type={visibility?.confirmPass ? "text" : "password"}
-                        name="confirmPassword"
-                        onChange={handleInfo}
-                        value={userData?.info?.confirmPassword}
-                        placeholder="Enter password again"
-                        className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                      />
-                      <button
-                        onClick={() =>
-                          setVisibility({
-                            ...visibility,
-                            confirmPass: !visibility?.confirmPass,
-                          })
-                        }
-                        type="button"
-                        className="text-labelColor absolute right-4 top-10"
-                      >
-                        {visibility?.confirmPass ? (
-                          <AiOutlineEye size={24} color="#ffffff" />
-                        ) : (
-                          <AiOutlineEyeInvisible size={24} color="#ffffff" />
-                        )}
+                        Next
                       </button>
                     </div>
                   </div>
-                  <div>
-                    <button
-                      type="submit"
-                      className="font-medium rounded-xl bg-theme text-white w-full py-3"
-                    >
-                      Submit
-                    </button>
-                  </div>
                 </div>
-              </form>
-            )}
-            <p className="font-switzer text-center">
-              <span className="text-opacity-70 text-white">
-                I have an account?
-              </span>{" "}
-              <Link href={"/sign-in"}>
-                <u className="text-white">Sign in</u>
-              </Link>
-            </p>
-          </div>
-        )}
+              )}
+              {step === 3 && (
+                <form
+                  onSubmit={handleSubmit}
+                  className="font-satoshi space-y-4"
+                >
+                  <p className="font-black text-xl lg:text-2xl text-white">
+                    3. User Details
+                  </p>
+                  <div className="space-y-6">
+                    <div className="space-y-4">
+                      <div className="flex flex-col gap-y-2">
+                        <label className="text-white font-medium">
+                          Your Name
+                        </label>
+                        <input
+                          type="text"
+                          name="name"
+                          onChange={handleInfo}
+                          value={userData?.info?.name}
+                          placeholder="Enter Name"
+                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-y-2">
+                        <label className="text-white font-medium">
+                          Email Address
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          onChange={handleInfo}
+                          value={userData?.info?.email}
+                          placeholder="Enter email"
+                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-y-2 relative">
+                        <label className="text-white font-medium">
+                          Password
+                        </label>
+                        <input
+                          type={visibility?.pass ? "text" : "password"}
+                          name="password"
+                          onChange={handleInfo}
+                          value={userData?.info?.password}
+                          placeholder="Enter Password"
+                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                        />
+                        {userData?.info?.password.length > 0 && (
+                          <p className="text-red-700 text font-semibold text-sm">
+                            {!passwordStrength?.weak?.test(
+                              userData?.info?.password.trim()
+                            )
+                              ? "Password is too weak, contain atleat 6 characters consider adding more complexity"
+                              : !passwordStrength?.medium?.test(
+                                  userData?.info?.password.trim()
+                                )
+                              ? "Password should include both uppercase and lowercase letters"
+                              : !passwordStrength?.strong.test(
+                                  userData?.info?.password.trim()
+                                )
+                              ? "Password is strong! It should include at least one uppercase letter, one lowercase letter, one number, and one special character"
+                              : ""}
+                          </p>
+                        )}
+                        <button
+                          onClick={() =>
+                            setVisibility({
+                              ...visibility,
+                              pass: !visibility?.pass,
+                            })
+                          }
+                          type="button"
+                          className="text-labelColor absolute right-4 top-10"
+                        >
+                          {visibility?.pass ? (
+                            <AiOutlineEye size={24} color="#ffffff" />
+                          ) : (
+                            <AiOutlineEyeInvisible size={24} color="#ffffff" />
+                          )}
+                        </button>
+                      </div>
+                      <div className="flex flex-col gap-y-2 relative">
+                        <label className="text-white font-medium">
+                          Confirm Password
+                        </label>
+                        <input
+                          type={visibility?.confirmPass ? "text" : "password"}
+                          name="confirmPassword"
+                          onChange={handleInfo}
+                          value={userData?.info?.confirmPassword}
+                          placeholder="Enter password again"
+                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                        />
+                        <button
+                          onClick={() =>
+                            setVisibility({
+                              ...visibility,
+                              confirmPass: !visibility?.confirmPass,
+                            })
+                          }
+                          type="button"
+                          className="text-labelColor absolute right-4 top-10"
+                        >
+                          {visibility?.confirmPass ? (
+                            <AiOutlineEye size={24} color="#ffffff" />
+                          ) : (
+                            <AiOutlineEyeInvisible size={24} color="#ffffff" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        type="submit"
+                        className="font-medium rounded-xl bg-theme text-white w-full py-3"
+                      >
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              )}
+              <p className="font-switzer text-center">
+                <span className="text-opacity-70 text-white">
+                  I have an account?
+                </span>{" "}
+                <Link href={"/sign-in"}>
+                  <u className="text-white">Sign in</u>
+                </Link>
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-     </>
+    </>
   );
 }

@@ -157,6 +157,9 @@ function History() {
                       </p>
                       <p className="text-gray-400">Order Date: {item?.on}</p>
                       <p className="text-gray-400">
+                        Shipping Charges: ${item?.shippingCharges ?? 0}
+                      </p>
+                      <p className="text-gray-400">
                         Amount: ${item?.totalBill ?? 0}
                       </p>
                     </div>

@@ -252,6 +252,10 @@ const Timeline = () => {
                   <p className="text-gray-300">VAT</p>
                   <p className="text-gray-300">${data?.data?.order?.vat}</p>
                 </div>
+                <div className="flex justify-between items-center">
+                  <p className="text-gray-300">Shipping Charges</p>
+                  <p className="text-gray-300">${data?.data?.order?.shippingCharges}</p>
+                </div>
 
                 <div className="flex justify-between items-center">
                   <h4 className="text-2xl font-bold">Total</h4>
