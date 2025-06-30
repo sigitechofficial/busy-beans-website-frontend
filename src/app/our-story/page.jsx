@@ -1,5 +1,6 @@
 "use client";
 import SwiperSider from "@/components/ui/SwiperSlider";
+import Head from "next/head";
 
 export default function story() {
   const brandImages = [
@@ -36,8 +37,55 @@ export default function story() {
     "/images/gourmethub.png",
   ];
 
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "Busy Bean Coffee",
+      url: "https://www.busybeancoffee.com/",
+      logo: "https://www.busybeancoffee.com/images/logowhite.png",
+      sameAs: [
+        "https://www.facebook.com/busybeancoffee",
+        "https://www.instagram.com/busybean_coffee",
+        "https://x.com/busybean_coffee",
+        "https://www.youtube.com/channel/UC4b4PYax5H3jRSyw4r0MCjQ/featured",
+        "https://www.linkedin.com/company/busy-bean-coffee",
+      ],
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "Customer Support",
+        telephone: "+1-833-843-2326",
+        email: "info@busybeancoffee.com",
+      },
+      foundingDate: "2014",
+      address: {
+        "@type": "PostalAddress",
+        addressCountry: "USA",
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      name: "Our Story",
+      url: "https://www.busybeancoffee.com/our-story",
+      description:
+        "Busy Bean Coffee’s mission, vision, and the team behind the beans. See how our founders are reshaping specialty coffee for businesses nationwide.",
+    },
+  ];
+
   return (
     <>
+      <Head>
+        <title>Our Story | Busy Bean Coffee</title>
+        <meta
+          name="description"
+          content="Discover the mission and team behind Busy Bean Coffee. Learn how we help cafés, hotels, and bakeries grow with premium coffee and expert support."
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </Head>
       <div className="w-full ">
         <div className=" bg-themeLight pt-[140px] relative">
           <h2 className="font-playfairDisplay text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-center text-white mb-10">
@@ -61,7 +109,7 @@ export default function story() {
             <div className="text-center">
               <img className="mx-auto" src="/images/image 31.png" alt="" />
               <h3 className="text-sm sm:text-xl font-semibold text-white text-center mt-3 font-playfairDisplay">
-                Travis Esters
+                Travis Estes
               </h3>
               <p className="my-2 text-sm">Owner, Co-Founder</p>
               <button className="bg-goldenLight rounded-full px-4 py-2 text-black mt-6">

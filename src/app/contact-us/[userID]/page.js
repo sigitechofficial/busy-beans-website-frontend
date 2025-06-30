@@ -3,11 +3,45 @@ import ContactUsCard from "@/components/ui/ContactUsCard";
 import PhoneInput from "react-phone-input-2";
 import SwiperSider from "@/components/ui/SwiperSlider";
 import { useParams } from "next/navigation";
+import Head from "next/head";
+
 
 export default function ContactUs() {
   const { userID } = useParams()
-  console.log("🚀 ~ ContactUs ~ userID:", userID)
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  name: "Contact Us - Busy Bean Coffee",
+  description:
+    "Reach out to Busy Bean Coffee for customer support, sales inquiries, or feedback. We're here to help you with anything related to coffee equipment and service.",
+  url: "https://www.busybeancoffee.com/contact-us",
+  mainEntity: {
+    "@type": "Organization",
+    name: "Busy Bean Coffee",
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+1-800-555-1234",
+      contactType: "Customer Service",
+      areaServed: "US",
+      availableLanguage: ["English", "Urdu"]
+    }
+  }
+};
   return (
+
+    <>
+       <Head>
+        <title>Contact Us | Busy Bean Coffee</title>
+        <meta
+          name="description"
+          content="Have a question or need help? Contact Busy Bean Coffee for support, product inquiries, or feedback. We’re happy to help!"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </Head>
+ 
     <div className="w-full">
       <div className=" bg-contactUsGradient pt-[140px] relative">
         <h2 className="font-playfairDisplay text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-center text-white mb-10">
@@ -173,5 +207,7 @@ export default function ContactUs() {
         </div>
       </div>
     </div>
+
+       </>
   );
 }

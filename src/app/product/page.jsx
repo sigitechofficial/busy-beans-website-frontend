@@ -14,6 +14,7 @@ import ProdBanner from "@/components/ui/ProdBanner";
 import ProdModal from "@/components/ui/ProdModal";
 import { useState } from "react";
 import Loader from "@/components/ui/Loader";
+import Head from "next/head";
 
 export default function Product() {
   if (typeof window !== "undefined") {
@@ -65,10 +66,48 @@ export default function Product() {
     }
   };
 
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "Busy Bean Coffee",
+      url: "https://www.busybeancoffee.com/",
+      logo: "https://www.busybeancoffee.com/images/logowhite.png",
+      sameAs: [
+        "https://www.facebook.com/busybeancoffee",
+        "https://www.instagram.com/busybean_coffee",
+        "https://x.com/busybean_coffee",
+        "https://www.youtube.com/channel/UC4b4PYax5H3jRSyw4r0MCjQ/featured",
+        "https://www.linkedin.com/company/busy-bean-coffee",
+      ],
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: "Product Listing",
+      url: "https://www.busybeancoffee.com/product", // Update actual URL
+      description:
+        "Browse Busy Bean Coffee’s premium wholesale coffee beans, creamers, syrups, and café supplies tailored for foodservice businesses.",
+    },
+    // Optional: Add individual products if needed
+  ];
+
   return data.length === 0 ? (
     <Loader />
   ) : (
     <>
+      <Head>
+        <title>Shop Coffee Beans, Syrups & More | Busy Bean Coffee</title>
+        <meta
+          name="description"
+          content="Explore high-margin, premium products like specialty coffee beans, syrups, and creamers for cafés, hotels & bakeries. Delivered fresh by Busy Bean Coffee."
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </Head>
+
       <div className="w-full ">
         <div className=" bg-themeLight pt-[140px] relative">
           <h2 className="font-playfairDisplay text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-center text-white mb-10">

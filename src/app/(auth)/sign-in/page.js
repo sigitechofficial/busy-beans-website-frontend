@@ -13,6 +13,8 @@ import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FaApple, FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
+import Head from "next/head";
+
 
 export default function SignIn() {
   const router = useRouter();
@@ -95,7 +97,86 @@ export default function SignIn() {
       },
     });
 
+
+
+    const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Busy Bean Coffee",
+    url: "https://www.busybeancoffee.com/",
+    logo: "https://www.busybeancoffee.com/images/logowhite.png",
+    sameAs: [
+      "https://www.facebook.com/busybeancoffee",
+      "https://www.instagram.com/busybean_coffee",
+      "https://x.com/busybean_coffee",
+      "https://www.youtube.com/channel/UC4b4PYax5H3jRSyw4r0MCjQ",
+      "https://www.linkedin.com/company/busy-bean-coffee"
+    ],
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "Customer Support",
+      telephone: "+1-833-843-2326",
+      email: "info@busybeancoffee.com"
+    },
+    foundingDate: "2014",
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "USA"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    url: "https://www.busybeancoffee.com/",
+    name: "Busy Bean Coffee",
+    description: "Wholesale specialty coffee beans, creamers, syrups and support for cafés, hotels, stores & bakeries. High-margin products delivered fresh."
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "How do I sign in to my Busy Bean Coffee account?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Visit the Busy Bean Coffee Sign In page and enter your registered email and password to access your account."
+        }
+      },
+      {
+        "@type": "Question",
+        name: "What if I forgot my password?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Click on the 'Forgot Password?' link on the Sign In page to receive an OTP and reset your password securely."
+        }
+      },
+      {
+        "@type": "Question",
+        name: "Can I use my Google account to sign in?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, Busy Bean Coffee supports Google Sign-In. Just click on the 'Continue with Google' button if available."
+        }
+      }
+    ]
+  }
+];
   return (
+<>
+    <Head>
+  <title>Sign In | Busy Bean Coffee</title>
+  <meta
+    name="description"
+    content="Sign in to your Busy Bean Coffee account to manage your orders, subscriptions, and preferences."
+  />
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+  />
+</Head>
+
     <div className="bg-themeLight min-h-screen flex items-center justify-center">
       <div className="md:grid md:grid-cols-2 w-11/12 sm:w-4/6 md:w-4/5 xl:w-3/5 bg-themeDark rounded-lg border border-theme [&>div]:px-4 md:[&>div]:px-6 xl:[&>div]:px-14">
         {/* left side */}
@@ -225,5 +306,6 @@ export default function SignIn() {
         </div>
       </div>
     </div>
+    </>
   );
 }

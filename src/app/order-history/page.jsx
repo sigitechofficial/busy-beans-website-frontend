@@ -4,6 +4,7 @@ import GetAPI from "@/utilities/GetAPI";
 import { BASE_URL } from "@/utilities/URL";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import Head from "next/head"
 
 function History() {
   const router = useRouter();
@@ -33,7 +34,62 @@ function History() {
     router.push("/timeline");
   };
 
+  const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Order History",
+    url: "https://www.busybeancoffee.com/order-history", // adjust if needed
+    description:
+      "View your past orders of specialty coffee, syrups, and creamers at Busy Bean Coffee. Easy reorder and order tracking available.",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Busy Bean Coffee",
+      url: "https://www.busybeancoffee.com"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://www.busybeancoffee.com"
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "My Account",
+        item: "https://www.busybeancoffee.com/account"
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Order History",
+        item: "https://www.busybeancoffee.com/order-history"
+      }
+    ]
+  }
+];
+
+
   return (
+    <>
+    <Head>
+  <title>Order History | Busy Bean Coffee</title>
+  <meta
+    name="description"
+    content="Easily view and manage your past orders with Busy Bean Coffee. Reorder your favorite coffee beans and syrups with a single click."
+  />
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+  />
+</Head>
+
+  
     <div className="w-full ">
       <div className=" bg-theme pt-36 sm:pt-[180px] pb-10 relative">
         {/* overlay */}
@@ -231,6 +287,8 @@ function History() {
         )}
       </div>
     </div>
+
+      </>
   );
 }
 

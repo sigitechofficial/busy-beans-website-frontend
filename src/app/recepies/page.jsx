@@ -5,8 +5,15 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination, Mousewheel, Keyboard } from "swiper/modules";
+import { useState } from "react";
+import Head from "next/head";
+
 
 export default function page() {
+const [activeSlide, setActiveSlide] = useState(0);
+    const handleSlideChange = (swiper) => {
+    setActiveSlide(swiper.activeIndex);
+  };
   const brandImages = [
     "/images/cafePrime.png",
     "/images/BistroElite.png",
@@ -41,8 +48,58 @@ export default function page() {
     "/images/gourmethub.png",
   ];
 
+  const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Busy Bean Coffee",
+    url: "https://www.busybeancoffee.com/",
+    logo: "https://www.busybeancoffee.com/images/logowhite.png",
+    sameAs: [
+      "https://www.facebook.com/busybeancoffee",
+      "https://www.instagram.com/busybean_coffee",
+      "https://x.com/busybean_coffee",
+      "https://www.youtube.com/channel/UC4b4PYax5H3jRSyw4r0MCjQ/featured",
+      "https://www.linkedin.com/company/busy-bean-coffee"
+    ],
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "Customer Support",
+      telephone: "+1-833-843-2326",
+      email: "info@busybeancoffee.com"
+    },
+    foundingDate: "2014",
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "USA"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Chef Recipes",
+    url: "https://www.busybeancoffee.com/recipes", // update to actual path
+    description:
+      "Explore specialty recipes crafted by Executive Chef Leslie at Busy Bean Coffee. Featuring Coffee Dry Rub, French Vanilla Crème Brûlée, and Hot Chocolate Lava Cake using Busy Bean products."
+  }
+];
+
+
   return (
     <>
+
+    <Head>
+  <title>Chef Leslie’s Coffee Recipes | Busy Bean Coffee</title>
+  <meta
+    name="description"
+    content="Explore gourmet recipes from Busy Bean Coffee's Executive Chef Leslie, including coffee dry rub, French vanilla crème brûlée, and hot chocolate lava cake."
+  />
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+  />
+</Head>
+
       <div className="w-full ">
         <div className=" bg-themeLight pt-[140px] relative">
           <h2 className="font-playfairDisplay text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-center text-white mb-10">
@@ -66,13 +123,14 @@ export default function page() {
         {/* ==Carousel== */}
         <div className="w-full bg-themeLight py-5 sm:py-10">
           <h4 className="text-xl sm:text-4xl lg:text-6xl  2xl:text-7xl text-white text-center font-robotoSerif font-bold mx-auto pt-4">
-            Coffee Dry Rub
+           {activeSlide===0?"Coffee Dry Rub":activeSlide===1?"French Vanilla Creme Brule":activeSlide===2?"Hot Chocolate Lava Cake":""}
           </h4>
 
           <Swiper
             navigation={true}
             modules={[Navigation, Pagination, Mousewheel, Keyboard]}
             className="mySwiper"
+                 onSlideChange={handleSlideChange}
           >
             <SwiperSlide>
               {" "}
