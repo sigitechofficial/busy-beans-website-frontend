@@ -285,14 +285,17 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                         <div className="bg-white text-black text-sm  py-[1px] px-[7px] rounded-full">
                           {String(cartItems?.length).padStart(2)}
                         </div>
-                        <p> Go to checkout </p>
+                        <p>Go to checkout</p>
                       </div>
                       ${totalPrice.toFixed(2)} {activeResData?.currencyUnit}
                     </button>
                   </div>
                 ) : (
                   <div className="w-full text-center mt-4 mx-4">
-                    <button className="bg-black  font-bold text-white rounded-full px-5 min-h-14 w-full    `` ">
+                    <button
+                      onClick={() => router.push("/product")}
+                      className="bg-black  font-bold text-white rounded-full px-5 min-h-14 w-full    `` "
+                    >
                       Add items
                     </button>
                   </div>

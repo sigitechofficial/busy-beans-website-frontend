@@ -53,7 +53,6 @@ import { RxCross2 } from "react-icons/rx";
 import BackButton from "@/components/ui/BackButton";
 import Head from "next/head";
 
-
 const stripePromise = loadStripe(
   "pk_test_51RPXZNCxTuXimvwHkvKO6MrVTckQ45X3JC2AkCVyV9fxLCK442YPbG8yM2NOexEqnD3wNAXdKfrOyEH2dTSzYKpt00WTyK7kzl"
 );
@@ -78,10 +77,11 @@ const page = () => {
     totalWeight: "",
     note: "",
     paymentMethod: "",
-    poNumber:"",
+    poNumber: "",
     orderFrequency: "just-onces", //  'just-onces','weekly','every-two-weeks','every-four-weeks',
     addressId: "",
     userId: "",
+    shippingCharges: "",
   });
   console.log("🚀 ~ page ~ order:", order);
 
@@ -230,10 +230,11 @@ const page = () => {
               totalWeight: totalWeight,
               note: order?.note,
               paymentMethod: order?.paymentMethod,
-              poNumber:order?.poNumber,
+              poNumber: order?.poNumber,
               frequency: order?.orderFrequency, // 'just-onces', 'weekly', 'every-two-weeks', 'every-four-weeks'
               addressId: addressId,
               userId: userId,
+              shippingCharges: order?.shippingCharges,
             },
             items: cartItems,
           });
@@ -399,6 +400,23 @@ const page = () => {
     }
   };
 
+  const fetchCharges = async () => {
+    try {
+      const res = await PostAPI("api/v1/admin/shipping-charges-on-weight", {
+        weight: totalWeight,
+      });
+      console.log("🚀 ~ fetchCharges ~ res:", res?.data?.data?.charges);
+      if (res?.data?.status === "success") {
+        success_toaster("Charges Added Successfully");
+        setOrder({ ...order, shippingCharges: res?.data?.data?.charges });
+      } else {
+        throw new Error(res?.data?.message || "An unexpected error occurred.");
+      }
+    } catch (error) {
+      ErrorHandler(error);
+    }
+  };
+
   useEffect(() => {
     const fetchClientSecret = async () => {
       try {
@@ -417,65 +435,62 @@ const page = () => {
       }
     };
     fetchClientSecret();
+    fetchCharges();
   }, []);
 
-
-
   const jsonLd = [
-  {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    name: "Secure Checkout",
-    url: "https://www.busybeancoffee.com/checkout", // Change if different
-    description:
-      "Complete your order for premium coffee beans, creamers, and syrups. Fast shipping and easy checkout with Busy Bean Coffee.",
-    isPartOf: {
-      "@type": "WebSite",
-      name: "Busy Bean Coffee",
-      url: "https://www.busybeancoffee.com"
-    }
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://www.busybeancoffee.com"
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: "Secure Checkout",
+      url: "https://www.busybeancoffee.com/checkout", // Change if different
+      description:
+        "Complete your order for premium coffee beans, creamers, and syrups. Fast shipping and easy checkout with Busy Bean Coffee.",
+      isPartOf: {
+        "@type": "WebSite",
+        name: "Busy Bean Coffee",
+        url: "https://www.busybeancoffee.com",
       },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Products",
-        item: "https://www.busybeancoffee.com/products"
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "Checkout",
-        item: "https://www.busybeancoffee.com/checkout"
-      }
-    ]
-  }
-];
-
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: "https://www.busybeancoffee.com",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Products",
+          item: "https://www.busybeancoffee.com/products",
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: "Checkout",
+          item: "https://www.busybeancoffee.com/checkout",
+        },
+      ],
+    },
+  ];
 
   return (
     <>
-
-    <Head>
-  <title>Secure Checkout | Busy Bean Coffee</title>
-  <meta
-    name="description"
-    content="Securely complete your Busy Bean Coffee order with premium wholesale products for cafés, restaurants, and stores."
-  />
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-  />
-</Head>
+      <Head>
+        <title>Secure Checkout | Busy Bean Coffee</title>
+        <meta
+          name="description"
+          content="Securely complete your Busy Bean Coffee order with premium wholesale products for cafés, restaurants, and stores."
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </Head>
 
       <div className="bg-theme font-satoshi">
         <section className="bg-theme-green font-satoshi">
@@ -615,11 +630,16 @@ const page = () => {
                                 type="text"
                                 id="poNumber"
                                 className={`w-full h-full py-5 pt-7 pb-2 focus:outline-none bg-transparent peer ${
-                                  order?.poNumber ? "placeholder-transparent" : ""
+                                  order?.poNumber
+                                    ? "placeholder-transparent"
+                                    : ""
                                 }`}
                                 value={order?.poNumber}
                                 onChange={(e) =>
-                                  setOrder({ ...order, poNumber: e.target.value })
+                                  setOrder({
+                                    ...order,
+                                    poNumber: e.target.value,
+                                  })
                                 }
                               />
                               <label
@@ -631,8 +651,8 @@ const page = () => {
                                 }`}
                               >
                                 {order?.poNumber
-                                  ? "Place Order Number"
-                                  : "Add Place Order Number (optional)"}
+                                  ? "Purchase Order Number"
+                                  : "Add Purchase Order Number (optional)"}
                               </label>
                             </div>
                           </div>
@@ -898,6 +918,12 @@ const page = () => {
                   <h5 className="text-base text-checkoutTextColor">Subtotal</h5>
                   <h6>$ {totalPrice?.toFixed(2)}</h6>
                 </div>
+                <div className="flex items-center justify-between gap-x-2">
+                  <h5 className="text-base text-checkoutTextColor">
+                    Shipping Charges
+                  </h5>
+                  <h6>$ {order?.shippingCharges}</h6>
+                </div>
                 {deliveryData.how === 1 && (
                   <>
                     <div className="flex items-center justify-between gap-x-2">
@@ -923,7 +949,10 @@ const page = () => {
                     Total
                   </h5>
                   <h6 className="font-semibold text-checkoutTextColor text-base">
-                    $ {totalPrice?.toFixed(2)}
+                    ${" "}
+                    {(
+                      Number(totalPrice) + Number(order?.shippingCharges)
+                    )?.toFixed(2)}
                   </h6>
                 </div>
                 <div className="border-dashed border" />
@@ -1058,7 +1087,9 @@ const page = () => {
                                 className="w-9 h-9 object-contain"
                               />
                               <span className="text-base font-sf font-medium text-theme-black-2">
-                                {itm?.name.includes("Cheque") ? "Bank Cheque":itm?.name}
+                                {itm?.name.includes("Cheque")
+                                  ? "Bank Cheque"
+                                  : itm?.name}
                               </span>
                             </div>
 
