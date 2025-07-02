@@ -64,6 +64,7 @@ const StripeCardForm = ({
           paymentMethodId: payment_method,
           paymentIntentId: id,
           paymentStatus: "done",
+          shippingCharges: order?.shippingCharges,
         },
         items: cartItems,
       });

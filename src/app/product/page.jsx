@@ -12,7 +12,7 @@ import { Navigation, Pagination, Mousewheel, Keyboard } from "swiper/modules";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import ProdBanner from "@/components/ui/ProdBanner";
 import ProdModal from "@/components/ui/ProdModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Loader from "@/components/ui/Loader";
 import Head from "next/head";
 
@@ -24,6 +24,8 @@ export default function Product() {
   }
 
   const router = useRouter();
+  const [categoryID, setCategoryID] = useState("");
+  console.log("🚀 ~ Product ~ categoryID:", categoryID);
   const [productModal, setProductModal] = useState(false);
   const [productModalData, setProductModalData] = useState({
     productId: "",
@@ -38,8 +40,9 @@ export default function Product() {
   });
 
   const { data } = GetAPI("api/v1/admin/product");
-  console.log("🚀 ~ Product ~ data:", data);
+  console.log("🚀 ~ Product ~ data:", data?.data);
   const { data: categoryData } = GetAPI("api/v1/admin/category");
+  console.log("🚀 ~ Product ~ categoryData:", categoryData?.data?.data);
 
   const handleOrderNowButton = (id) => {
     if (existingCartItems) {
@@ -65,6 +68,10 @@ export default function Product() {
       return 1;
     }
   };
+
+  useEffect(() => {
+    setCategoryID(categoryData?.data?.data[0]?.id);
+  }, [categoryData]);
 
   const jsonLd = [
     {
@@ -124,44 +131,39 @@ export default function Product() {
           <button>Coffee Bean</button>
         </div> */}
 
-          <div className="relative pt-16 sm:px-5 w-[95%] md:w-[90%] 2xl:w-[75%] mx-auto">
+          <div className="relative pt-16 sm:px-5 overflow-visible flex flex-wrap w-[95%] md:w-[90%] 2xl:w-[75%] mx-auto">
             <Swiper
-              spaceBetween={0}
+              spaceBetween={10}
               navigation={{
                 nextEl: ".cat-custom-swiper-button-next",
                 prevEl: ".cat-custom-swiper-button-prev",
               }}
               breakpoints={{
-                1440: {
-                  slidesPerView: 8,
-                },
-                1280: {
-                  slidesPerView: 8,
-                },
-
-                768: {
-                  slidesPerView: 5,
-                },
-                640: {
-                  slidesPerView: 4,
-                },
-                0: {
-                  slidesPerView: 3,
-                },
+                1440: { slidesPerView: 5 },
+                1280: { slidesPerView: 5 },
+                768: { slidesPerView: 5 },
+                640: { slidesPerView: 4 },
+                0: { slidesPerView: 3 },
               }}
               modules={[Navigation]}
               className="catgeory-swipper"
             >
-              <div className="flex items-center justify-center">
-                {categoryData?.data?.data?.map((cat, index) => (
-                  <SwiperSlide key={index}>
-                    <button className="text-xs sm:text-base text-white px-2 sm:px-4 py-1.5">
-                      {cat?.name}
-                    </button>
-                  </SwiperSlide>
-                ))}
-              </div>
+              {categoryData?.data?.data?.map((cat, index) => (
+                <SwiperSlide key={index} className="!w-auto">
+                  <button
+                    onClick={() => setCategoryID(cat?.id)}
+                    className={`text-xs sm:text-base ${
+                      cat?.id === categoryID
+                        ? "bg-themeDark text-theme"
+                        : "text-white"
+                    } px-2 sm:px-4 py-1.5 border border-white rounded-2xl`}
+                  >
+                    {cat?.name}
+                  </button>
+                </SwiperSlide>
+              ))}
             </Swiper>
+
             <div className="swiper-btns">
               <div className="cat-custom-swiper-button-prev">
                 <FaArrowLeftLong
@@ -182,33 +184,36 @@ export default function Product() {
 
           <div className="relative overflow-hidden">
             <div className="relative z-10 px-0 sm:px-5 w-[95%] md:w-[90%] 2xl:w-[75%] mx-auto pt-10 sm:pt-14 pb-10 sm:pb-28 justify-items-center grid grid-cols-2 xl:grid-cols-3 gap-x-2 sm:gap-x-5 gap-y-2 sm:gap-y-10 md:gap-y-16 text-white">
-              {data?.data?.data?.map((item, i) => (
-                <div className="w-full h-full" div key={i}>
-                  <ProductCard
-                    // onClick={() => router.push("/product/detail/1")}
-                    name={item?.name}
-                    imageURL={item?.image}
-                    unit={item?.unit}
-                    price={item?.price}
-                    desc={item?.desc}
-                    buttonText={handleOrderNowButton(item?.id)}
-                    onClick={() => {
-                      setProductModalData({
-                        productId: item?.id,
-                        image: item?.image,
-                        name: item?.name,
-                        description: item?.desc,
-                        discount: 0,
-                        qty: handleOrderNowButtonQty(item?.id),
-                        price: item?.price,
-                        unit: item?.unit,
-                        wholesalePrice: item?.wholesalePrice,
-                      });
-                      setProductModal(true);
-                    }}
-                  />
-                </div>
-              ))}
+              {data?.data?.data?.map(
+                (item, i) =>
+                  item?.categoryId === categoryID && (
+                    <div className="w-full h-full" div key={i}>
+                      <ProductCard
+                        // onClick={() => router.push("/product/detail/1")}
+                        name={item?.name}
+                        imageURL={item?.image}
+                        unit={item?.unit}
+                        price={item?.price}
+                        desc={item?.desc}
+                        buttonText={handleOrderNowButton(item?.id)}
+                        onClick={() => {
+                          setProductModalData({
+                            productId: item?.id,
+                            image: item?.image,
+                            name: item?.name,
+                            description: item?.desc,
+                            discount: 0,
+                            qty: handleOrderNowButtonQty(item?.id),
+                            price: item?.price,
+                            unit: item?.unit,
+                            wholesalePrice: item?.wholesalePrice,
+                          });
+                          setProductModal(true);
+                        }}
+                      />
+                    </div>
+                  )
+              )}
               {/* <ProductCard onClick={() => setProductModal(true)} />
               <ProductCard onClick={() => setProductModal(true)} />
               <ProductCard onClick={() => setProductModal(true)} />

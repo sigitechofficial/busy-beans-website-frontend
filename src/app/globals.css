@@ -71,17 +71,14 @@
 
 .catgeory-swipper .swiper-slide {
   width: auto !important;
-  white-space: auto;
-  border: 1px solid white;
+  white-space: nowrap; /* <-- Force no line-break */
   text-align: center;
-  border-radius: 20px;
 }
 
 .catgeory-swipper .swiper-wrapper {
-  display: flex !important;
-  margin: auto !important;
-  justify-content: center !important;
+  justify-content: flex-start !important; /* from center to left */
   column-gap: 10px !important;
+  overflow: visible !important;
 }
 
 @media screen and (max-width: 640px) {
@@ -102,20 +99,17 @@
   z-index: 1600 !important;
 }
 
-
 /* Chrome, Safari, Edge, Opera */
-input[type=number]::-webkit-outer-spin-button,
-input[type=number]::-webkit-inner-spin-button {
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
-
-
 
 /* Target the dropdown menu list */
 .react-tel-input .country-list {
