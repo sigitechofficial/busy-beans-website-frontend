@@ -191,6 +191,7 @@ export default function Product() {
                       <ProductCard
                         // onClick={() => router.push("/product/detail/1")}
                         name={item?.name}
+                        weight={item?.weight}
                         imageURL={item?.image}
                         unit={item?.unit}
                         price={item?.price}
@@ -207,6 +208,7 @@ export default function Product() {
                             price: item?.price,
                             unit: item?.unit,
                             wholesalePrice: item?.wholesalePrice,
+                            weight:item?.weight
                           });
                           setProductModal(true);
                         }}

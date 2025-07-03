@@ -73,7 +73,6 @@ export default function SignUpStep1() {
   const { data: countriesData } = GetAPI(
     "api/v1/admin/address-management/country"
   );
-  console.log("🚀 ~ SignUpStep1 ~ countriesData:", countriesData?.data);
 
   const allCountriesData = [];
   countriesData?.data?.data?.map((country) =>
@@ -164,7 +163,6 @@ export default function SignUpStep1() {
 
   const handleBillingShippingAddress = (e) => {
     const isChecked = e.target.checked;
-    console.log("Checkbox checked:", isChecked);
     if (isChecked) {
       setUserData({
         ...userData,

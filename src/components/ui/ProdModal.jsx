@@ -7,9 +7,9 @@ import { BASE_URL } from "@/utilities/URL";
 import { useCart } from "@/utilities/cartContext";
 
 const ProdModal = ({ productModalData, productModal, setProductModal }) => {
-  const { productId, image, name, description, qty, discount, price, unit, wholesalePrice } =
+  console.log("🚀 ~ ProdModal ~ productModalData:", productModalData)
+  const { productId, image, name, description, qty, discount, price, unit, wholesalePrice,weight } =
     productModalData;
-  console.log("🚀 ~ ProdModal ~ qty:", qty);
   const { cartItems, addOrUpdateCartItem } = useCart();
 
   const [modalScroll, setModalScroll] = useState(0);
@@ -48,6 +48,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
       unit,
       image,
       wholesalePrice,
+      weight,
     };
 
     addOrUpdateCartItem(newItem);
@@ -69,6 +70,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
       discount: discount,
       price: price,
       unit: unit,
+      weight
     });
   }, [productModalData]);
 

@@ -3,7 +3,7 @@ import React from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
 
 const ProductCard = (props) => {
-  const { name, unit, imageURL, price, desc, buttonText } = props;
+  const { name, unit, imageURL, price, desc, buttonText ,weight} = props;
   return (
     <div
       onClick={props.onClick}
@@ -23,7 +23,12 @@ const ProductCard = (props) => {
           <h3 className="text-sm sm:text-2xl font-switzer font-bold sm:pt-2">
             {name}
           </h3>
+          <div className="flex justify-between items-center">
+
           <p className="text-sm py-[1px] sm:py-2">${price}</p>
+
+          <span>{weight +" "+unit}</span>
+          </div>
           <p className="text-xs sm:text-sm pb-3 font-light overflow-hidden max-sm:line-clamp-2 h-[35px] sm:h-auto">
             {desc ?? "descriotion"}
           </p>
