@@ -71,6 +71,7 @@ const page = () => {
   }
   const router = useRouter();
   const [loader, setLoader] = useState(false);
+ 
   const [order, setOrder] = useState({
     totalBill: "",
     subTotal: "",
