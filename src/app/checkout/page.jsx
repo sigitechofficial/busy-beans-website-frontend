@@ -763,7 +763,9 @@ const page = () => {
 
                         <div>
                           <p className="text-theme-green-2 text-base">
-                            {order?.paymentMethod}
+                            {order?.paymentMethod?.includes("cheque")
+                              ? "Bank Check"
+                              : order?.paymentMethod}
                           </p>
                           <p className="text-sm text-checkoutTextColor/65">
                             The choosen payment method will be charged
@@ -1047,7 +1049,7 @@ const page = () => {
                             <div className="flex items-center gap-x-4">
                               <img
                                 src={`${
-                                  itm?.name.includes("Cheque")
+                                  itm?.name.includes("Check")
                                     ? "/images/cheque1.png"
                                     : itm?.name.includes("Apple")
                                     ? "/images/epay.webp"

@@ -227,12 +227,16 @@ export default function SignUpStep1() {
         info_toaster("Country name cannot be empty");
       } else if (userData?.address?.state.trim() === "") {
         info_toaster("State name cannot be empty");
+      } else if (userData?.billingAddress?.companyaddress.trim() === "") {
+        info_toaster("Billing address cannot be empty");
       } else if (userData?.billingAddress?.town.trim() === "") {
         info_toaster("Billing Address Town cannot be empty");
       } else if (userData?.billingAddress?.zipCode.trim() === "") {
         info_toaster("Billing Address Zip code cannot be empty");
       } else if (userData?.billingAddress?.country.trim() === "") {
         info_toaster("Billing Address Country name cannot be empty");
+      } else if (userData?.billingAddress?.state.trim() === "") {
+        info_toaster("Billing state cannot be empty");
       } else {
         success_toaster("Step 1 completed successfully");
         setStep(2);
@@ -604,7 +608,7 @@ export default function SignUpStep1() {
                           <input
                             type="text"
                             placeholder="Enter custom city"
-                            className="w-full px-3 py-3 border border-gray-300 rounded"
+                            className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                             value={userData?.address?.town}
                             onChange={(e) =>
                               setUserData({
@@ -740,7 +744,7 @@ export default function SignUpStep1() {
                               <input
                                 type="text"
                                 placeholder="Enter custom city"
-                                className="w-full px-3 py-3 border border-gray-300 rounded"
+                                className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                                 value={userData?.billingAddress?.town}
                                 onChange={(e) =>
                                   setUserData({
