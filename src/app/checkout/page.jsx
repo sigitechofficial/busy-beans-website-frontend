@@ -56,6 +56,7 @@ import Head from "next/head";
 const stripePromise = loadStripe(
   "pk_live_51HGqhQECVLSM4sc2wb1g4dx3lUe61VcK3BMjnUPk28Y5qaRC9sDQ6X6Ar5OZHmVoAIVe2rXncVOxHUax10qb4d8L00KCAdXpd5"
 );
+
 // const stripePromise = loadStripe(
 //   "pk_test_51RPXZNCxTuXimvwHkvKO6MrVTckQ45X3JC2AkCVyV9fxLCK442YPbG8yM2NOexEqnD3wNAXdKfrOyEH2dTSzYKpt00WTyK7kzl"
 // );
@@ -162,8 +163,8 @@ const page = () => {
 
   const PayM = [];
   const paymentMethods = [
-    { name: "COD", type: "cod" }, // New COD payment method
-    { name: "Cheque", type: "cheque" }, // New Cheque payment method
+    // { name: "COD", type: "cod" }, // New COD payment method
+    { name: "Bank Check", type: "cheque" }, // New Cheque payment method
     { name: "Card", type: "card" }, // New Cheque payment method
   ];
 
@@ -502,8 +503,8 @@ const page = () => {
               <GoogleMap
                 zoom={14}
                 center={{
-                  lat: 31.4711,
-                  lng: 74.24192,
+                  lat: 38.889805,
+                  lng: -77.009056,
                 }}
                 mapContainerStyle={{
                   width: "100%",
@@ -699,7 +700,7 @@ const page = () => {
                               </h5>
                             </div>
                             <div className="capitalize text-sm font-normal text-white text-opacity-60">
-                              {cart?.qty * cart?.price} {cart?.unit}
+                              ${(cart?.qty * cart?.price).toFixed(2)}
                             </div>
                           </div>
                         </div>
@@ -840,61 +841,33 @@ const page = () => {
                       Order Frequency
                     </h3>
                   </div>
-                  <div className="flex gap-x-2 [&>button]:text-xs sm:[&>button]:text-base [&>button]:rounded-lg [&>button]:px-1 sm:[&>button]:px-4 [&>button]:py-2 [&>button]:bg-themeLight">
-                    <button
-                      className={`${
-                        order?.orderFrequency === "just-onces"
-                          ? "text-white"
-                          : "text-theme"
-                      }`}
-                      onClick={() =>
-                        setOrder({ ...order, orderFrequency: "just-onces" })
-                      }
-                    >
-                      Once
-                    </button>
-                    <button
-                      className={`${
-                        order?.orderFrequency === "weekly"
-                          ? "text-white"
-                          : "text-theme"
-                      }`}
-                      onClick={() =>
-                        setOrder({ ...order, orderFrequency: "weekly" })
-                      }
-                    >
-                      Weekly
-                    </button>
-                    <button
-                      className={`${
-                        order?.orderFrequency === "every-two-weeks"
-                          ? "text-white"
-                          : "text-theme"
-                      }`}
-                      onClick={() =>
-                        setOrder({
-                          ...order,
-                          orderFrequency: "every-two-weeks",
-                        })
-                      }
-                    >
-                      Every two weeks
-                    </button>
-                    <button
-                      className={`${
-                        order?.orderFrequency === "every-four-weeks"
-                          ? "text-white"
-                          : "text-theme"
-                      }`}
-                      onClick={() =>
-                        setOrder({
-                          ...order,
-                          orderFrequency: "every-four-weeks",
-                        })
-                      }
-                    >
-                      Every four weeks
-                    </button>
+                  <div className="flex gap-x-2 [&>button]:text-xs sm:[&>button]:text-base [&>button]:rounded-lg [&>button]:px-1 sm:[&>button]:px-4 [&>button]:py-2 [&>button]:bg-themeLight [&>button]:transition-all [&>button]:duration-150 [&>button]:ease-in-out [&>button]:active:scale-95 [&>button]:hover:bg-opacity-90">
+                    {[
+                      { label: "Once", value: "just-onces" },
+                      { label: "Weekly", value: "weekly" },
+                      { label: "Every two weeks", value: "every-two-weeks" },
+                      { label: "Every four weeks", value: "every-four-weeks" },
+                    ].map(({ label, value }) => {
+                      const isSelected = order?.orderFrequency === value;
+                      return (
+                        <button
+                          key={value}
+                          onClick={() =>
+                            setOrder({ ...order, orderFrequency: value })
+                          }
+                          className={`
+          ${
+            isSelected
+              ? "text-white border border-goldenLight"
+              : "text-theme border border-transparent"
+          }
+          focus:outline-none focus:ring-1 focus:ring-goldenLight
+        `}
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
                   </div>
                 </>
               )}
@@ -907,14 +880,14 @@ const page = () => {
                 <p className="text-sm font-light text-checkoutTextColor/65 pb-6">
                   incl. taxes (if applicable)
                 </p>
-                <p
+                {/* <p
                   onClick={() => {
                     setPaymentModal(true);
                   }}
                   className="text-base font-normal text-theme-red-2 cursor-pointer"
                 >
                   How fees work
-                </p>
+                </p> */}
               </div>
               <div className="space-y-2.5 my-4">
                 <div className="flex items-center justify-between gap-x-2">

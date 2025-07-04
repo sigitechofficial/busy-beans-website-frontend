@@ -152,7 +152,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
                     <h4 className="!text-[32px] max-w-[400px]  text-theme-black-2 font-omnes font-bold capitalize  leading-10">
                       {name}
                     </h4>
-                    <p className="font-sf text-lg my-5 text-red-600">
+                    <p className="font-sf text-lg my-5 text-white">
                       ${price}
                     </p>
                     <p className="capitalize text-sm font-sf text-theme-black-2  font-normal mt-3">

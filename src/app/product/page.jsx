@@ -22,10 +22,9 @@ export default function Product() {
       ? JSON.parse(localStorage.getItem("cartItems"))
       : [];
   }
-
   const router = useRouter();
   const [categoryID, setCategoryID] = useState("");
-  console.log("🚀 ~ Product ~ categoryID:", categoryID);
+  const [categoryList, setCategoryList] = useState([]);
   const [productModal, setProductModal] = useState(false);
   const [productModalData, setProductModalData] = useState({
     productId: "",
@@ -40,10 +39,7 @@ export default function Product() {
   });
 
   const { data } = GetAPI("api/v1/admin/product");
-  console.log("🚀 ~ Product ~ data:", data?.data);
   const { data: categoryData } = GetAPI("api/v1/admin/category");
-  console.log("🚀 ~ Product ~ categoryData:", categoryData?.data?.data);
-
   const handleOrderNowButton = (id) => {
     if (existingCartItems) {
       const item = existingCartItems.find((item) => item?.productId === id);
@@ -55,14 +51,9 @@ export default function Product() {
 
   const handleOrderNowButtonQty = (id) => {
     if (existingCartItems) {
-      console.log(
-        "🚀 ~ handleOrderNowButtonQty ~ existingCartItems:",
-        existingCartItems
-      );
       const item = existingCartItems.find((item) => {
         return item?.productId === id;
       });
-      console.log("🚀 ~ handleOrderNowButtonQty ~ item:", item?.qty);
       return item ? item?.qty : 1;
     } else {
       return 1;
@@ -70,7 +61,10 @@ export default function Product() {
   };
 
   useEffect(() => {
-    setCategoryID(categoryData?.data?.data[0]?.id);
+    const catList = [{ id: 0, name: "All" }];
+    categoryData?.data?.data?.map((cat) => catList.push(cat));
+    setCategoryList([...catList]);
+    setCategoryID(0);
   }, [categoryData]);
 
   const jsonLd = [
@@ -148,17 +142,17 @@ export default function Product() {
               modules={[Navigation]}
               className="catgeory-swipper"
             >
-              {categoryData?.data?.data?.map((cat, index) => (
+              {categoryList?.map((cat, index) => (
                 <SwiperSlide key={index} className="!w-auto">
                   <button
-                    onClick={() => setCategoryID(cat?.id)}
-                    className={`text-xs sm:text-base ${
-                      cat?.id === categoryID
-                        ? "bg-themeDark text-theme"
+                    onClick={() => setCategoryID(cat.id)}
+                    className={`transition-colors duration-200 ease-in-out px-4 py-1.5 ${
+                      cat.id === categoryID
+                        ? "text-themeDark bg-white"
                         : "text-white"
-                    } px-2 sm:px-4 py-1.5 border border-white rounded-2xl`}
+                    }  border border-white rounded-md `}
                   >
-                    {cat?.name}
+                    {cat.name}
                   </button>
                 </SwiperSlide>
               ))}
@@ -184,8 +178,36 @@ export default function Product() {
 
           <div className="relative overflow-hidden">
             <div className="relative z-10 px-0 sm:px-5 w-[95%] md:w-[90%] 2xl:w-[75%] mx-auto pt-10 sm:pt-14 pb-10 sm:pb-28 justify-items-center grid grid-cols-2 xl:grid-cols-3 gap-x-2 sm:gap-x-5 gap-y-2 sm:gap-y-10 md:gap-y-16 text-white">
-              {data?.data?.data?.map(
-                (item, i) =>
+              {data?.data?.data?.map((item, i) =>
+                categoryID === 0 ? (
+                  <div className="w-full h-full" div key={i}>
+                    <ProductCard
+                      // onClick={() => router.push("/product/detail/1")}
+                      name={item?.name}
+                      weight={item?.weight}
+                      imageURL={item?.image}
+                      unit={item?.unit}
+                      price={item?.price}
+                      desc={item?.desc}
+                      buttonText={handleOrderNowButton(item?.id)}
+                      onClick={() => {
+                        setProductModalData({
+                          productId: item?.id,
+                          image: item?.image,
+                          name: item?.name,
+                          description: item?.desc,
+                          discount: 0,
+                          qty: handleOrderNowButtonQty(item?.id),
+                          price: item?.price,
+                          unit: item?.unit,
+                          wholesalePrice: item?.wholesalePrice,
+                          weight: item?.weight,
+                        });
+                        setProductModal(true);
+                      }}
+                    />
+                  </div>
+                ) : (
                   item?.categoryId === categoryID && (
                     <div className="w-full h-full" div key={i}>
                       <ProductCard
@@ -208,13 +230,14 @@ export default function Product() {
                             price: item?.price,
                             unit: item?.unit,
                             wholesalePrice: item?.wholesalePrice,
-                            weight:item?.weight
+                            weight: item?.weight,
                           });
                           setProductModal(true);
                         }}
                       />
                     </div>
                   )
+                )
               )}
               {/* <ProductCard onClick={() => setProductModal(true)} />
               <ProductCard onClick={() => setProductModal(true)} />

@@ -70,10 +70,10 @@ const Footer = () => {
               </div>
             </div>
           </div>
-          <p className="font-light underline underline-offset-4">
+          {/* <p className="font-light underline underline-offset-4">
             Join Our Team
           </p>
-          <p className="font-light underline underline-offset-4 mt-2">Blog</p>
+          <p className="font-light underline underline-offset-4 mt-2">Blog</p> */}
         </div>
       </div>
       <p className="font-extralight sm:font-normal text-xs md:text-xl text-center text-white mt-8 sm:mt-16 md:mt-28 pb-5 sm:pb-10 font-robotoSerif">

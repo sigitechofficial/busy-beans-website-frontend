@@ -143,68 +143,27 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                           key={index}
                           className="font-sf relative flex sm:flex-row items-start rounded-2xl h-full mb-3"
                         >
-                          <div className="flex justify-center sm:w-[150px] w-[72px] sm:h-[72px] h-[72px] rounded-2xl">
+                          {/* Product Image */}
+                          <div className="flex justify-center sm:min-w-[100px] min-w-[72px] sm:h-[72px] h-[72px] rounded-2xl">
                             <img
                               src={BASE_URL + cartI?.image}
                               alt="cutlery"
                               className="w-full h-full rounded-md object-cover"
                             />
                           </div>
-                          <div className="px-5 w-full font-sf">
-                            <h3 className="capitalize font-semibold text-base">
+
+                          {/* Product Info (with conditional padding to avoid overlap) */}
+                          <div
+                            className={`px-5 w-full font-sf ${
+                              counter === index ? "pr-32" : ""
+                            }`}
+                          >
+                            <h3 className="capitalize font-semibold text-base break-words">
                               {cartI?.name}
                             </h3>
-                            <div className="capitalize text-sm font-light text-white">
-                              <ul>
-                                {cartI?.addOnsCat &&
-                                cartI?.addOnsCat?.length > 0
-                                  ? cartI?.addOnsCat
-                                      ?.filter(
-                                        (ele) =>
-                                          ele?.id ===
-                                          cartI?.addOns?.find(
-                                            (fil) =>
-                                              fil?.collectionId === ele?.id
-                                          )?.collectionId
-                                      )
-                                      ?.map((cat, key) => (
-                                        <li key={key}>
-                                          <span>{cat?.name}: </span>
-                                          <br />
-                                          {cartI?.addOns
-                                            ?.filter(
-                                              (fil) =>
-                                                fil?.collectionId === cat?.id
-                                            )
-                                            ?.map((add, addKey) => (
-                                              <div
-                                                key={addKey}
-                                                className="ml-2 mt-1"
-                                              >
-                                                {`${add?.qty}x ${add?.name} ${
-                                                  add?.total > 0
-                                                    ? `(${add?.total?.toFixed(
-                                                        2
-                                                      )})`
-                                                    : ""
-                                                }`}
-                                              </div>
-                                            ))}
-                                        </li>
-                                      ))
-                                  : cartI?.addOns?.map((add, addKey) => (
-                                      <li key={addKey}>
-                                        <div className="ml-2 mt-1">
-                                          {`${add?.qty}x ${add?.name} ${
-                                            add?.total > 0
-                                              ? `(${add?.total?.toFixed(2)})`
-                                              : ""
-                                          }`}
-                                        </div>
-                                      </li>
-                                    ))}
-                              </ul>
-                            </div>
+
+                            <div className="capitalize texsales-representative/quotationt-sm font-light text-white"></div>
+
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-x-3">
                                 <span className="font-semibold text-sm text-white mt-1">
@@ -212,18 +171,20 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                                   {activeResData?.currencyUnit || "$"}
                                   {parseFloat(
                                     Number(cartI?.price) * cartI?.qty
-                                  )?.toFixed(2)}{" "}
+                                  )?.toFixed(2)}
                                 </span>
                               </div>
                             </div>
                           </div>
+
+                          {/* Quantity Controls (conditionally rendered) */}
                           <div className="cursor-pointer mt-2 mr-1 rounded-full flex items-center justify-around text-white p-1 absolute bg-black right-0">
                             {counter === index ? (
                               <>
                                 <button
-                                  onClick={() => {
-                                    handleItemClick("minus", cartI?.productId);
-                                  }}
+                                  onClick={() =>
+                                    handleItemClick("minus", cartI?.productId)
+                                  }
                                   className="w-8 h-8 flex justify-center items-center rounded-full hover:bg-white hover:text-black duration-300"
                                 >
                                   <RiSubtractFill />
@@ -234,18 +195,18 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                                 </span>
 
                                 <button
-                                  onClick={() => {
-                                    handleItemClick("plus", cartI?.productId);
-                                  }}
+                                  onClick={() =>
+                                    handleItemClick("plus", cartI?.productId)
+                                  }
                                   className="w-8 h-8 flex justify-center items-center rounded-full hover:bg-white hover:text-black duration-300"
                                 >
                                   <BiPlus />
                                 </button>
 
                                 <button
-                                  onClick={() => {
-                                    handleItemClick("delete", cartI?.productId);
-                                  }}
+                                  onClick={() =>
+                                    handleItemClick("delete", cartI?.productId)
+                                  }
                                   className="w-8 h-8 flex justify-center items-center rounded-full hover:bg-red-600 hover:text-white duration-300"
                                 >
                                   <BiTrash />

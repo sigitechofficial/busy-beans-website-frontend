@@ -35,6 +35,8 @@ export default function SignUpStep1() {
   });
   const [allStates, setAllStates] = useState([]);
   const [allCities, setAllCities] = useState([]);
+  const [customCityMode, setCustomCityMode] = useState(false);
+  const [billingAddressStatus, setBillingAddressStatus] = useState(true);
   const [userData, setUserData] = useState({
     info: {
       name: "",
@@ -155,7 +157,7 @@ export default function SignUpStep1() {
     setUserData({
       ...userData,
       billingAddress: {
-        ...userData?.info,
+        ...userData?.billingAddress,
         [e.target.name]: e.target.value,
       },
     });
@@ -163,23 +165,12 @@ export default function SignUpStep1() {
 
   const handleBillingShippingAddress = (e) => {
     const isChecked = e.target.checked;
-    if (isChecked) {
+    setBillingAddressStatus(!billingAddressStatus);
+    if (!isChecked) {
       setUserData({
         ...userData,
         billingAddress: {
-          ...userData?.info,
-          companyaddress: userData?.address?.companyaddress,
-          country: userData?.address?.country,
-          state: userData?.address?.state,
-          town: userData?.address?.town,
-          zipCode: userData?.address?.zipCode,
-        },
-      });
-    } else {
-      setUserData({
-        ...userData,
-        billingAddress: {
-          ...userData?.info,
+          ...userData?.billingAddress,
           companyaddress: "",
           country: "",
           state: "",
@@ -191,29 +182,61 @@ export default function SignUpStep1() {
   };
 
   const handleStep1 = () => {
-    if (userData?.address?.companyaddress.trim() === "") {
-      info_toaster("Company address cannot be empty");
-    } else if (userData?.address?.addressLineOne.trim() === "") {
-      info_toaster("address Line 1 cannot be empty");
-    } else if (userData?.address?.addressLineTwo.trim() === "") {
-      info_toaster("address Line 2 cannot be empty");
-    } else if (userData?.address?.town.trim() === "") {
-      info_toaster("Town cannot be empty");
-    } else if (userData?.address?.zipCode.trim() === "") {
-      info_toaster("Zip code cannot be empty");
-    } else if (userData?.address?.country.trim() === "") {
-      info_toaster("Country name cannot be empty");
-    } else if (userData?.address?.state.trim() === "") {
-      info_toaster("State name cannot be empty");
-    } else if (userData?.billingAddress?.town.trim() === "") {
-      info_toaster("Billing Address Town cannot be empty");
-    } else if (userData?.billingAddress?.zipCode.trim() === "") {
-      info_toaster("Billing Address Zip code cannot be empty");
-    } else if (userData?.billingAddress?.country.trim() === "") {
-      info_toaster("Billing Address Country name cannot be empty");
+    if (billingAddressStatus) {
+      setUserData({
+        ...userData,
+        billingAddress: {
+          ...userData?.billingAddress,
+          companyaddress: userData?.address?.companyaddress,
+          country: userData?.address?.country,
+          state: userData?.address?.state,
+          town: userData?.address?.town,
+          zipCode: userData?.address?.zipCode,
+        },
+      });
+      if (userData?.address?.companyaddress.trim() === "") {
+        info_toaster("Company address cannot be empty");
+      } else if (userData?.address?.addressLineOne.trim() === "") {
+        info_toaster("address Line 1 cannot be empty");
+      } else if (userData?.address?.addressLineTwo.trim() === "") {
+        info_toaster("address Line 2 cannot be empty");
+      } else if (userData?.address?.town.trim() === "") {
+        info_toaster("Town cannot be empty");
+      } else if (userData?.address?.zipCode.trim() === "") {
+        info_toaster("Zip code cannot be empty");
+      } else if (userData?.address?.country.trim() === "") {
+        info_toaster("Country name cannot be empty");
+      } else if (userData?.address?.state.trim() === "") {
+        info_toaster("State name cannot be empty");
+      } else {
+        success_toaster("Step 1 completed successfully");
+        setStep(2);
+      }
     } else {
-      success_toaster("Step 1 completed successfully");
-      setStep(2);
+      if (userData?.address?.companyaddress.trim() === "") {
+        info_toaster("Company address cannot be empty");
+      } else if (userData?.address?.addressLineOne.trim() === "") {
+        info_toaster("address Line 1 cannot be empty");
+      } else if (userData?.address?.addressLineTwo.trim() === "") {
+        info_toaster("address Line 2 cannot be empty");
+      } else if (userData?.address?.town.trim() === "") {
+        info_toaster("Town cannot be empty");
+      } else if (userData?.address?.zipCode.trim() === "") {
+        info_toaster("Zip code cannot be empty");
+      } else if (userData?.address?.country.trim() === "") {
+        info_toaster("Country name cannot be empty");
+      } else if (userData?.address?.state.trim() === "") {
+        info_toaster("State name cannot be empty");
+      } else if (userData?.billingAddress?.town.trim() === "") {
+        info_toaster("Billing Address Town cannot be empty");
+      } else if (userData?.billingAddress?.zipCode.trim() === "") {
+        info_toaster("Billing Address Zip code cannot be empty");
+      } else if (userData?.billingAddress?.country.trim() === "") {
+        info_toaster("Billing Address Country name cannot be empty");
+      } else {
+        success_toaster("Step 1 completed successfully");
+        setStep(2);
+      }
     }
   };
 
@@ -397,9 +420,8 @@ export default function SignUpStep1() {
         {/* main section start */}
 
         <div
-          className={`relative border border-theme rounded-xl bg-themeDark  w-11/12 sm:w-4/6 md:w-[70%] lg:w-3/5 xl:${
-            step === 1 ? "w-8/12" : "w-2/4"
-          } py-6 mx-auto flex flex-col items-center gap-y-4`}
+          className={`relative border border-theme rounded-xl bg-themeDark  w-11/12 sm:w-4/6 md:w-[70%] lg:w-3/5 xl:w-2/4
+          py-6 mx-auto flex flex-col items-center gap-y-4`}
         >
           {(step === 2 || step === 3) && !loader && (
             <button
@@ -420,16 +442,12 @@ export default function SignUpStep1() {
           {loader ? (
             <MiniLoader />
           ) : (
-            <div
-              className={`space-y-6 w-11/12 xl:${
-                step === 1 ? "w-10/12" : "w-3/5"
-              }`}
-            >
+            <div className={`space-y-6 w-11/12 xl:w-3/5`}>
               <p className="font-satoshi text-white font-black text-2xl lg:text-3xl text-center">
                 Welcome to Busy Bean Coffee
               </p>
               {step === 1 && (
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-10">
+                <div className=" gap-10">
                   <div className="font-satoshi space-y-4">
                     <p className="font-black text-xl lg:text-2xl text-white">
                       1. Company Address
@@ -539,29 +557,83 @@ export default function SignUpStep1() {
                           <label className="text-white font-medium">
                             Town / City
                           </label>
-                          <Select
-                            placeholder="Select City"
-                            className="w-full"
-                            styles={drawerSelectStyles2}
-                            value={
-                              userData?.address?.town
-                                ? {
-                                    value: userData.address.town,
-                                    label: userData.address.town,
-                                  }
-                                : null
-                            }
-                            options={allCities ?? []}
-                            onChange={(e) => {
+                          {/* {!customCityMode ? (
+                            <>
+                              <Select
+                                placeholder="Select City"
+                                className="w-full"
+                                styles={drawerSelectStyles2}
+                                value={
+                                  userData?.address?.town
+                                    ? {
+                                        value: userData.address.town,
+                                        label: userData.address.town,
+                                      }
+                                    : null
+                                }
+                                options={allCities ?? []}
+                                onChange={(e) => {
+                                  setUserData({
+                                    ...userData,
+                                    address: {
+                                      ...userData?.address,
+                                      town: e.label,
+                                    },
+                                  });
+                                }}
+                              />
+                              <button
+                                type="button"
+                                className="text-sm bg-theme text-white hover:text-theme hover:bg-white duration-150 rounded-sm border border-theme mt-1 px-2 self-end"
+                                onClick={() => {
+                                  setUserData({
+                                    ...userData,
+                                    address: {
+                                      ...userData?.address,
+                                      town: "",
+                                    },
+                                  });
+                                  setCustomCityMode(true);
+                                }}
+                              >
+                                Enter Custom City Name
+                              </button>
+                            </>
+                          ) : (
+                            <> */}
+                          <input
+                            type="text"
+                            placeholder="Enter custom city"
+                            className="w-full px-3 py-3 border border-gray-300 rounded"
+                            value={userData?.address?.town}
+                            onChange={(e) =>
                               setUserData({
                                 ...userData,
                                 address: {
                                   ...userData?.address,
-                                  town: e.label,
+                                  town: e.target.value,
                                 },
-                              });
-                            }}
+                              })
+                            }
                           />
+                          {/* <button
+                                type="button"
+                                className="text-sm bg-theme text-white hover:text-theme hover:bg-white duration-150 rounded-sm border border-theme mt-1 px-2 self-end"
+                                onClick={() => {
+                                  setUserData({
+                                    ...userData,
+                                    address: {
+                                      ...userData?.address,
+                                      town: "",
+                                    },
+                                  });
+                                  setCustomCityMode(false);
+                                }}
+                              >
+                                Back to Select
+                              </button>
+                            </>
+                          )} */}
                         </div>
                         <div className="flex flex-col gap-y-2">
                           <label className="text-white font-medium">
@@ -578,143 +650,163 @@ export default function SignUpStep1() {
                         </div>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="font-satoshi space-y-4">
-                    <p className="font-black text-xl lg:text-2xl text-white">
-                      Billing Address
-                    </p>
-                    <div className="space-y-4">
-                      <div className="flex flex-col gap-y-2">
-                        <label className="text-white font-medium">
+                    {!billingAddressStatus && (
+                      <div className="font-satoshi space-y-4">
+                        <p className="font-black text-xl lg:text-2xl text-white">
                           Billing Address
-                        </label>
-                        <input
-                          type="text"
-                          name="companyaddress"
-                          onChange={handleBillingAddress}
-                          value={userData?.billingAddress?.companyaddress}
-                          placeholder="Enter company address"
-                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                        />
-                      </div>
+                        </p>
+                        <div className="space-y-4">
+                          <div className="flex flex-col gap-y-2">
+                            <label className="text-white font-medium">
+                              Billing Address
+                            </label>
+                            <input
+                              type="text"
+                              name="companyaddress"
+                              onChange={handleBillingAddress}
+                              value={userData?.billingAddress?.companyaddress}
+                              placeholder="Enter company address"
+                              className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                            />
+                          </div>
 
-                      <div className="md:grid md:grid-cols-2 gap-x-4 max-md:space-y-4">
-                        <div className="flex flex-col gap-y-2">
-                          <label className="text-white font-medium">
-                            Country
-                          </label>
-                          <Select
-                            placeholder="Select Country"
-                            className="w-full"
-                            styles={drawerSelectStyles2}
-                            value={
-                              userData?.billingAddress?.country
-                                ? {
-                                    value: userData?.billingAddress?.country,
-                                    label: userData?.billingAddress?.country,
-                                  }
-                                : null
-                            }
-                            options={allCountriesData ?? []}
-                            onChange={(e) => {
-                              setUserData({
-                                ...userData,
-                                billingAddress: {
-                                  ...userData?.billingAddress,
-                                  country: e.label,
-                                },
-                              });
-                              handleSelectedCountryStates(e.label);
-                            }}
-                          />
-                        </div>
-                        <div className="flex flex-col gap-y-2">
-                          <label className="text-white font-medium">
-                            State
-                          </label>
-                          <Select
-                            placeholder="Select State"
-                            className="w-full"
-                            styles={drawerSelectStyles2}
-                            value={
-                              userData?.billingAddress?.state
-                                ? {
-                                    value: userData.billingAddress.state,
-                                    label: userData.billingAddress.state,
-                                  }
-                                : null
-                            }
-                            options={allStates ?? []}
-                            onChange={(e) => {
-                              setUserData({
-                                ...userData,
-                                billingAddress: {
-                                  ...userData?.billingAddress,
-                                  state: e.label,
-                                },
-                              });
-                              handleSelectedCountryStatesCities(e.value);
-                            }}
-                          />
+                          <div className="md:grid md:grid-cols-2 gap-x-4 max-md:space-y-4">
+                            <div className="flex flex-col gap-y-2">
+                              <label className="text-white font-medium">
+                                Country
+                              </label>
+                              <Select
+                                placeholder="Select Country"
+                                className="w-full"
+                                styles={drawerSelectStyles2}
+                                value={
+                                  userData?.billingAddress?.country
+                                    ? {
+                                        value:
+                                          userData?.billingAddress?.country,
+                                        label:
+                                          userData?.billingAddress?.country,
+                                      }
+                                    : null
+                                }
+                                options={allCountriesData ?? []}
+                                onChange={(e) => {
+                                  setUserData({
+                                    ...userData,
+                                    billingAddress: {
+                                      ...userData?.billingAddress,
+                                      country: e.label,
+                                    },
+                                  });
+                                  handleSelectedCountryStates(e.label);
+                                }}
+                              />
+                            </div>
+                            <div className="flex flex-col gap-y-2">
+                              <label className="text-white font-medium">
+                                State
+                              </label>
+                              <Select
+                                placeholder="Select State"
+                                className="w-full"
+                                styles={drawerSelectStyles2}
+                                value={
+                                  userData?.billingAddress?.state
+                                    ? {
+                                        value: userData.billingAddress.state,
+                                        label: userData.billingAddress.state,
+                                      }
+                                    : null
+                                }
+                                options={allStates ?? []}
+                                onChange={(e) => {
+                                  setUserData({
+                                    ...userData,
+                                    billingAddress: {
+                                      ...userData?.billingAddress,
+                                      state: e.label,
+                                    },
+                                  });
+                                  handleSelectedCountryStatesCities(e.value);
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <div className="md:grid md:grid-cols-2 gap-x-4 max-md:space-y-4">
+                            <div className="flex flex-col gap-y-2">
+                              <label className="text-white font-medium">
+                                Town / City
+                              </label>
+                              <input
+                                type="text"
+                                placeholder="Enter custom city"
+                                className="w-full px-3 py-3 border border-gray-300 rounded"
+                                value={userData?.billingAddress?.town}
+                                onChange={(e) =>
+                                  setUserData({
+                                    ...userData,
+                                    billingAddress: {
+                                      ...userData?.billingAddress,
+                                      town: e.target.value,
+                                    },
+                                  })
+                                }
+                              />
+                              {/* <Select
+                                placeholder="Select City"
+                                className="w-full"
+                                styles={drawerSelectStyles2}
+                                value={
+                                  userData?.billingAddress?.town
+                                    ? {
+                                        value: userData?.billingAddress?.town,
+                                        label: userData?.billingAddress?.town,
+                                      }
+                                    : null
+                                }
+                                options={allCities ?? []}
+                                onChange={(e) => {
+                                  setUserData({
+                                    ...userData,
+                                    billingAddress: {
+                                      ...userData?.billingAddress,
+                                      town: e.label,
+                                    },
+                                  });
+                                }}
+                              /> */}
+                            </div>
+                            <div className="flex flex-col gap-y-2">
+                              <label className="text-white font-medium">
+                                Zip Code
+                              </label>
+                              <input
+                                type="text"
+                                name="zipCode"
+                                onChange={handleBillingAddress}
+                                value={userData?.billingAddress?.zipCode}
+                                placeholder="Enter Zip Code"
+                                className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <div className="md:grid md:grid-cols-2 gap-x-4 max-md:space-y-4">
-                        <div className="flex flex-col gap-y-2">
-                          <label className="text-white font-medium">
-                            Town / City
-                          </label>
-                          <Select
-                            placeholder="Select City"
-                            className="w-full"
-                            styles={drawerSelectStyles2}
-                            value={
-                              userData?.billingAddress?.town
-                                ? {
-                                    value: userData?.billingAddress?.town,
-                                    label: userData?.billingAddress?.town,
-                                  }
-                                : null
-                            }
-                            options={allCities ?? []}
-                            onChange={(e) => {
-                              setUserData({
-                                ...userData,
-                                billingAddress: {
-                                  ...userData?.billingAddress,
-                                  town: e.label,
-                                },
-                              });
-                            }}
-                          />
-                        </div>
-                        <div className="flex flex-col gap-y-2">
-                          <label className="text-white font-medium">
-                            Zip Code
-                          </label>
-                          <input
-                            type="text"
-                            name="zipCode"
-                            onChange={handleBillingAddress}
-                            value={userData?.billingAddress?.zipCode}
-                            placeholder="Enter Zip Code"
-                            className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                          />
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-end gap-x-2">
-                        <label className="text-white font-medium font-satoshi">
-                          Billing Address same as Shipping Address
-                        </label>
-                        <input
-                          type="checkbox"
-                          name="billingStatus"
-                          onChange={handleBillingShippingAddress}
-                          className="size-4 border border-borderColor text-black focus:border-black placeholder:text-secondary rounded-[4px] outline-none"
-                        />
-                      </div>
+                    )}
+                    <div className="flex items-center justify-start gap-x-2 pb-4">
+                      <label className="text-white font-medium font-satoshi">
+                        Billing Address same as Shipping Address
+                      </label>
+                      <input
+                        checked={billingAddressStatus}
+                        type="checkbox"
+                        name="billingStatus"
+                        onChange={handleBillingShippingAddress}
+                        className="size-4 border border-borderColor text-black focus:border-black placeholder:text-secondary rounded-[4px] outline-none"
+                      />
                     </div>
                   </div>
+
                   <div>
                     <button
                       onClick={handleStep1}
