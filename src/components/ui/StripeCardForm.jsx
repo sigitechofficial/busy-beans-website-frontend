@@ -36,6 +36,9 @@ const StripeCardForm = ({
   setCartItems,
   setLoader,
   router,
+  adminReceivableAmount,
+  adminReceivableStatus,
+  localPatnerCommission,
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -46,7 +49,7 @@ const StripeCardForm = ({
   const handleCreateOrder = async (id, payment_method) => {
     setLoader(true);
     try {
-      const res = await PostAPI("api/v1/users/book-order", {
+      const res = await PostAPI(`api/v1/users/book-order/${userId}`, {
         order: {
           totalBill: totalPrice,
           subTotal: totalPrice,
@@ -65,6 +68,9 @@ const StripeCardForm = ({
           paymentIntentId: id,
           paymentStatus: "done",
           shippingCharges: order?.shippingCharges,
+          adminReceivableAmount: adminReceivableAmount,
+          adminReceivableStatus: adminReceivableStatus,
+          localPatnerCommission: localPatnerCommission,
         },
         items: cartItems,
       });

@@ -700,6 +700,8 @@ export default function SignUpStep1() {
                                     billingAddress: {
                                       ...userData?.billingAddress,
                                       country: e.label,
+                                      state: "",
+                                      town: "",
                                     },
                                   });
                                   handleSelectedCountryStates(e.label);
