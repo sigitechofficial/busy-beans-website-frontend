@@ -36,6 +36,7 @@ import {
   error_toaster,
   info_toaster,
   success_toaster,
+  warning_toaster,
 } from "@/utilities/Toaster";
 import { useRouter } from "next/navigation";
 import { PostAPI } from "@/utilities/PostAPI";
@@ -122,7 +123,6 @@ const page = () => {
   const totalPrice = cartItems?.reduce((a, b) => {
     return a + b?.price * b?.qty;
   }, 0);
-  console.log("🚀 ~ totalPrice ~ totalPrice:", totalPrice);
 
   const totalWeight = cartItems?.reduce((a, b) => {
     return a + b?.weight;
@@ -308,7 +308,6 @@ const page = () => {
             },
             items: cartItems,
           });
-          console.log("🚀 ~ createOrder ~ res:", res?.data?.data?.id);
           if (res?.data?.status === "success") {
             setCartItems([]);
             setLoader(false);
@@ -430,7 +429,6 @@ const page = () => {
             status: true,
           },
         });
-        console.log("🚀 ~ handleAddAddress ~ res:", res);
         if (res?.data?.status === "success") {
           success_toaster("Address added successfully");
           setAddressModal("");
@@ -495,10 +493,12 @@ const page = () => {
       const res = await PostAPI("api/v1/admin/shipping-charges-on-weight", {
         weight: totalWeight,
       });
-      console.log("🚀 ~ fetchCharges ~ res:", res?.data?.data?.charges);
       if (res?.data?.status === "success") {
         success_toaster("Charges Added Successfully");
-        setOrder({ ...order, shippingCharges: res?.data?.data?.charges });
+        setOrder((prevOrder) => ({
+          ...prevOrder,
+          shippingCharges: res?.data?.data?.charges,
+        }));
       } else {
         throw new Error(res?.data?.message || "An unexpected error occurred.");
       }
@@ -506,46 +506,44 @@ const page = () => {
       ErrorHandler(error);
     }
   };
+  const fetchClientSecret = async () => {
+    try {
+      // const res = await PostAPI("api/v1/users/create-payment-intent", {
+      //   amount: totalPrice,
+      // });
+      const res = await PostAPI("api/v1/users/create-payment-intent", {
+        order: {
+          totalBill: totalPrice,
+          subTotal: totalPrice,
+          discountPrice: 0,
+          discountPercentage: 0,
+          itemsPrice: totalPrice,
+          vat: 0,
+          userId: userId,
+          shippingCharges: order?.shippingCharges,
+        },
+        items: cartItems,
+      });
+      console.log("🚀 ~ fetchClientSecret ~ res:", res);
+      if (res?.data?.status === "success") {
+        setClientSecret(res?.data?.data?.clientSecret);
+        setOrder((prevOrder) => ({
+          ...prevOrder,
+          adminReceivableAmount: res?.data?.data?.adminReceivableAmount,
+          adminReceivableStatus: res?.data?.data?.adminReceivableStatus,
+          localPatnerCommission: res?.data?.data?.localPatnerCommission,
+        }));
+      } else {
+        throw new Error(res?.data?.message || "An unexpected error occurred.");
+      }
+    } catch (err) {
+      error_toaster("Failed to fetch client secret", err);
+    }
+  };
 
   useEffect(() => {
-    const fetchClientSecret = async () => {
-      try {
-        // const res = await PostAPI("api/v1/users/create-payment-intent", {
-        //   amount: totalPrice,
-        // });
-        const res = await PostAPI("api/v1/users/create-payment-intent", {
-          order: {
-            totalBill: totalPrice,
-            subTotal: totalPrice,
-            discountPrice: 0,
-            discountPercentage: 0,
-            itemsPrice: totalPrice,
-            vat: 0,
-            userId: userId,
-            shippingCharges: order?.shippingCharges,
-          },
-          items: cartItems,
-        });
-        console.log("🚀 ~ fetchClientSecret ~ res:", res?.data?.data);
-        if (res?.data?.status === "success") {
-          setClientSecret(res?.data?.data?.clientSecret);
-          setOrder({
-            ...order,
-            adminReceivableAmount: res?.data?.data?.adminReceivableAmount,
-            adminReceivableStatus: res?.data?.data?.adminReceivableStatus,
-            localPatnerCommission: res?.data?.data?.localPatnerCommission,
-          });
-        } else {
-          throw new Error(
-            res?.data?.message || "An unexpected error occurred."
-          );
-        }
-      } catch (err) {
-        error_toaster("Failed to fetch client secret", err);
-      }
-    };
-    fetchClientSecret();
     fetchCharges();
+    fetchClientSecret();
   }, []);
 
   const jsonLd = [
@@ -939,29 +937,28 @@ const page = () => {
                 </div>
               )}
 
-              {deliveryData.how === 1 && (
-                <>
-                  {/* order frequency */}
-                  <div className="flex items-center gap-x-2 mt-10 pb-5">
-                    <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white">
-                      Order Frequency
-                    </h3>
-                  </div>
-                  <div className="flex gap-x-2 [&>button]:text-xs sm:[&>button]:text-base [&>button]:rounded-lg [&>button]:px-1 sm:[&>button]:px-4 [&>button]:py-2 [&>button]:transition-all [&>button]:duration-150 [&>button]:ease-in-out [&>button]:active:scale-95 [&>button]:hover:bg-opacity-90">
-                    {[
-                      { label: "Once", value: "just-onces" },
-                      { label: "Weekly", value: "weekly" },
-                      { label: "Every two weeks", value: "every-two-weeks" },
-                      { label: "Every four weeks", value: "every-four-weeks" },
-                    ].map(({ label, value }) => {
-                      const isSelected = order?.orderFrequency === value;
-                      return (
-                        <button
-                          key={value}
-                          onClick={() =>
-                            setOrder({ ...order, orderFrequency: value })
-                          }
-                          className={`
+              <>
+                {/* order frequency */}
+                <div className="flex items-center gap-x-2 mt-10 pb-5">
+                  <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white">
+                    Order Frequency
+                  </h3>
+                </div>
+                <div className="flex gap-x-2 [&>button]:text-xs sm:[&>button]:text-base [&>button]:rounded-lg [&>button]:px-1 sm:[&>button]:px-4 [&>button]:py-2 [&>button]:transition-all [&>button]:duration-150 [&>button]:ease-in-out [&>button]:active:scale-95 [&>button]:hover:bg-opacity-90">
+                  {[
+                    { label: "Once", value: "just-onces" },
+                    { label: "Weekly", value: "weekly" },
+                    { label: "Every two weeks", value: "every-two-weeks" },
+                    { label: "Every four weeks", value: "every-four-weeks" },
+                  ].map(({ label, value }) => {
+                    const isSelected = order?.orderFrequency === value;
+                    return (
+                      <button
+                        key={value}
+                        onClick={() =>
+                          setOrder({ ...order, orderFrequency: value })
+                        }
+                        className={`
           ${
             isSelected
               ? "text-white border border-goldenLight bg-themeDark"
@@ -969,14 +966,13 @@ const page = () => {
           }
           focus:outline-none focus:ring-1 focus:ring-goldenLight
         `}
-                        >
-                          {label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
             </div>
             <div
               className={`lg:bg-themeLight rounded-2xl text-white  relative xl:min-w-[399px] w-full lg:shadow-checkoutBoxShadow lg:p-6 lg:col-span-2 h-max space-y-6 lg:sticky lg:top-40 lg:right-7 lg:-mt-32`}
