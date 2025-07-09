@@ -126,7 +126,7 @@ const page = () => {
   }, 0);
 
   totalWeight = cartItems?.reduce((a, b) => {
-    return a + b?.weight;
+    return a + b?.weight * b?.qty;
   }, 0);
 
   let getProfile = [];

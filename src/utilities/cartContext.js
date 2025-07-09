@@ -22,22 +22,20 @@ export const CartProvider = ({ children }) => {
     let updatedCart;
 
     if (existingIndex !== -1) {
-         const perUnitWeight = item.weight||1;
-
+      // const perUnitWeight = item.weight || 1;
 
       updatedCart = [...cartItems];
       updatedCart[existingIndex] = {
         ...updatedCart[existingIndex],
         qty: item.qty,
-        weight: item.qty * perUnitWeight,
+        // weight: item.qty * perUnitWeight,
       };
     } else {
-
       updatedCart = [
         ...cartItems,
         {
           ...item,
-          weight: item.qty * (item.weight || 1),
+          // weight: item.qty * (item.weight || 1),
         },
       ];
     }
