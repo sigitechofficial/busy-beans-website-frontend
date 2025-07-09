@@ -123,7 +123,14 @@ export default function RootLayout({ children }) {
     pathname.startsWith("/payment") ||
     pathname.startsWith("/invoice");
 
-  const isProtectedRoutes = pathname.startsWith("/checkout");
+  const isProtectedRoutes =
+    pathname.startsWith("/checkout") ||
+    pathname.startsWith("/order-history") ||
+    pathname.startsWith("/timeline") ||
+    pathname.startsWith("/contact-us") ||
+    pathname.startsWith("/profile/personal-details") ||
+    pathname.startsWith("/profile/preferences") ||
+    pathname.startsWith("/profile/security");
 
   return (
     <html lang="en">
@@ -141,7 +148,7 @@ export default function RootLayout({ children }) {
             {isProtectedRoutes ? (
               <ProtectedRoute>{children}</ProtectedRoute>
             ) : (
-              <section> {children}</section>
+              <section>{children}</section>
             )}
 
             {!isAuth && <Footer />}

@@ -9,16 +9,19 @@ import { useRouter } from "next/navigation";
 import { BASE_URL } from "@/utilities/URL";
 import { useCart } from "@/utilities/cartContext";
 import { info_toaster } from "@/utilities/Toaster";
+import Link from "next/link";
 
 const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
   const router = useRouter();
   const { handleItemClick } = useCart();
   const [counter, setCounter] = useState(null);
   const [drawerScroll, setDrawerScroll] = useState(0);
+
   if (typeof window !== "undefined") {
     var cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
     var activeResData = JSON.parse(localStorage.getItem("activeResData"));
   }
+
   const totalPrice = cartItems?.reduce((a, b) => {
     return Number(a) + Number(b?.price) * Number(b?.qty);
   }, 0);
@@ -263,12 +266,14 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                   </div>
                 ) : (
                   <div className="w-full text-center mt-4 mx-4">
-                    <button
-                      onClick={() => router.push("/product")}
-                      className="bg-black  font-bold text-white rounded-full px-5 min-h-14 w-full    `` "
-                    >
-                      Add items
-                    </button>
+                    <Link href={"/product"}>
+                      <button
+                        // onClick={() => router.push("/product")}
+                        className="bg-black  font-bold text-white rounded-full px-5 min-h-14 w-full"
+                      >
+                        Add items
+                      </button>
+                    </Link>
                   </div>
                 )}
               </>

@@ -205,8 +205,15 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                           Icon={RxCounterClockwiseClock}
                           text={"Order history"}
                           onClick={() => {
-                            router.push("/order-history");
-                            setProfileDrawer(false);
+                            if (
+                              !localStorage.getItem("loginStatus") ||
+                              !localStorage.getItem("accessToken")
+                            ) {
+                              info_toaster("Please Login First");
+                            } else {
+                              router.push("/order-history");
+                              setProfileDrawer(false);
+                            }
                           }}
                         />
 
@@ -270,24 +277,45 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                             Icon={LiaUserFriendsSolid}
                             text={"Personal details"}
                             onClick={() => {
-                              router.push("/profile/personal-details");
-                              setProfileDrawer(false);
+                              if (
+                                !localStorage.getItem("loginStatus") ||
+                                !localStorage.getItem("accessToken")
+                              ) {
+                                info_toaster("Please Login First");
+                              } else {
+                                router.push("/profile/personal-details");
+                                setProfileDrawer(false);
+                              }
                             }}
                           />
                           <DrawerItem
                             Icon={LiaUserFriendsSolid}
                             text={"Preferences"}
                             onClick={() => {
-                              router.push("/profile/preferences");
-                              setProfileDrawer(false);
+                              if (
+                                !localStorage.getItem("loginStatus") ||
+                                !localStorage.getItem("accessToken")
+                              ) {
+                                info_toaster("Please Login First");
+                              } else {
+                                router.push("/profile/preferences");
+                                setProfileDrawer(false);
+                              }
                             }}
                           />
                           <DrawerItem
                             Icon={LiaUserFriendsSolid}
                             text={"Security"}
                             onClick={() => {
-                              router.push("/profile/security");
-                              setProfileDrawer(false);
+                              if (
+                                !localStorage.getItem("loginStatus") ||
+                                !localStorage.getItem("accessToken")
+                              ) {
+                                info_toaster("Please Login First");
+                              } else {
+                                router.push("/profile/security");
+                                setProfileDrawer(false);
+                              }
                             }}
                           />
                         </div>
