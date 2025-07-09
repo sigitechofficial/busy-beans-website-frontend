@@ -70,6 +70,7 @@ const page = () => {
     var userId = localStorage.getItem("userID") || "";
     var cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
   }
+  let totalWeight = 0;
   const router = useRouter();
   const [loader, setLoader] = useState(false);
 
@@ -124,8 +125,8 @@ const page = () => {
     return a + b?.price * b?.qty;
   }, 0);
 
-  const totalWeight = cartItems?.reduce((a, b) => {
-    return a +  b?.qty * b?.weight;
+  totalWeight = cartItems?.reduce((a, b) => {
+    return a + b?.qty * b?.weight;
   }, 0);
 
   let getProfile = [];
