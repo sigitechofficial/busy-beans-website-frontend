@@ -8,6 +8,7 @@ import { IoMdClose } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import { BASE_URL } from "@/utilities/URL";
 import { useCart } from "@/utilities/cartContext";
+import { info_toaster } from "@/utilities/Toaster";
 
 const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
   const router = useRouter();
@@ -30,6 +31,18 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
   const handleDrawerScroll = (event) => {
     const scrollTop = event.target.scrollTop;
     setDrawerScroll(scrollTop);
+  };
+
+  const handleCheckout = () => {
+    if (
+      !localStorage.getItem("loginStatus") ||
+      !localStorage.getItem("accessToken")
+    ) {
+      info_toaster("Please Login First");
+    } else {
+      router.push("/checkout");
+      setOpen(false);
+    }
   };
 
   // const handleItemClick = (type, id) => {
@@ -233,10 +246,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                 {cartItems?.length > 0 ? (
                   <div
                     className="w-full text-center mt-4 px-4"
-                    onClick={() => {
-                      router.push("/checkout");
-                      setOpen(false);
-                    }}
+                    onClick={handleCheckout}
                   >
                     <button
                       className="bg-themeLight font-bold text-white rounded-full px-5 min-h-14 w-full flex items-center justify-between"

@@ -542,8 +542,15 @@ const page = () => {
   };
 
   useEffect(() => {
-    fetchCharges();
-    fetchClientSecret();
+    if (
+      !localStorage.getItem("loginStatus") ||
+      !localStorage.getItem("accessToken")
+    ) {
+      info_toaster("Please Login First");
+    } else {
+      fetchCharges();
+      fetchClientSecret();
+    }
   }, []);
 
   const jsonLd = [

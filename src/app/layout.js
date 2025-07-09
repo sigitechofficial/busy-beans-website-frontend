@@ -15,6 +15,7 @@ import { usePathname } from "next/navigation";
 import Footer from "@/components/ui/Footer";
 import { Provider } from "@/components/ui/provider";
 import { CartProvider } from "@/utilities/cartContext";
+import ProtectedRoute from "@/utilities/ProtectedRoute";
 
 const satoshi = localFont({
   src: [
@@ -120,7 +121,9 @@ export default function RootLayout({ children }) {
     pathname.startsWith("/verify-email") ||
     pathname.startsWith("/reset") ||
     pathname.startsWith("/payment") ||
-    pathname.startsWith("/invoice")
+    pathname.startsWith("/invoice");
+
+  const isProtectedRoutes = pathname.startsWith("/checkout");
 
   return (
     <html lang="en">
@@ -135,7 +138,11 @@ export default function RootLayout({ children }) {
           <CartProvider>
             {!isAuth && <Header />}
 
-            <section>{children}</section>
+            {isProtectedRoutes ? (
+              <ProtectedRoute>{children}</ProtectedRoute>
+            ) : (
+              <section> {children}</section>
+            )}
 
             {!isAuth && <Footer />}
           </CartProvider>
