@@ -1012,13 +1012,13 @@ const page = () => {
                 </div>
                 {deliveryData.how === 1 && (
                   <>
-                    <div className="flex items-center justify-between gap-x-2">
+                    {/* <div className="flex items-center justify-between gap-x-2">
                       <h5 className="text-base md:text-md text-checkoutTextColor">
                         VAT
                       </h5>
                       <h6>0.00 %</h6>
                     </div>
-                    {/* <div className="flex items-center justify-between gap-x-2">
+                    <div className="flex items-center justify-between gap-x-2">
                       <h5 className="text-base md:text-md text-checkoutTextColor">
                         Total Weight
                       </h5>

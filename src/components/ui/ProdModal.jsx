@@ -7,9 +7,19 @@ import { BASE_URL } from "@/utilities/URL";
 import { useCart } from "@/utilities/cartContext";
 
 const ProdModal = ({ productModalData, productModal, setProductModal }) => {
-  console.log("🚀 ~ ProdModal ~ productModalData:", productModalData)
-  const { productId, image, name, description, qty, discount, price, unit, wholesalePrice,weight } =
-    productModalData;
+  // console.log("🚀 ~ ProdModal ~ productModalData:", productModalData);
+  const {
+    productId,
+    image,
+    name,
+    description,
+    qty,
+    discount,
+    price,
+    unit,
+    wholesalePrice,
+    weight,
+  } = productModalData;
   const { cartItems, addOrUpdateCartItem } = useCart();
 
   const [modalScroll, setModalScroll] = useState(0);
@@ -70,7 +80,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
       discount: discount,
       price: price,
       unit: unit,
-      weight
+      weight,
     });
   }, [productModalData]);
 
@@ -152,9 +162,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
                     <h4 className="!text-[32px] max-w-[400px]  text-theme-black-2 font-omnes font-bold capitalize  leading-10">
                       {name}
                     </h4>
-                    <p className="font-sf text-lg my-5 text-white">
-                      ${price}
-                    </p>
+                    <p className="font-sf text-lg my-5 text-white">${price}</p>
                     <p className="capitalize text-sm font-sf text-theme-black-2  font-normal mt-3">
                       {description}
                     </p>
@@ -166,7 +174,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
                   <div className="px-5 py-5 flex justify-center items-center gap-3 w-full">
                     <div className="shadow-smButtonShadow  w-40 h-14 rounded-full flex items-center justify-around text-[#707175] bg-white">
                       <button
-                        disabled={orderStatus?.qty === 1}
+                        disabled={orderStatus?.qty === 0}
                         onClick={() =>
                           setOrderStatus({
                             ...orderStatus,
@@ -211,12 +219,14 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
                     >
                       <div className="text-md text-center font-sf font-bold w-full">
                         {qty > 0
-                          ? existingCartItems?.find(
-                              (ele) => ele?.productId === productId
-                            )
+                          ? orderStatus?.qty === 0
+                            ? "Remove from cart"
+                            : existingCartItems?.find(
+                                (ele) => ele?.productId === productId
+                              )
                             ? "Update Cart"
                             : "Add to Cart"
-                          : "Remove from cart"}
+                          : ""}
                       </div>
                       {/* {qty > 0 ? (
                         <div className="text-md font-sf font-semibold">

@@ -16,20 +16,25 @@ export const CartProvider = ({ children }) => {
   };
 
   const addOrUpdateCartItem = (item) => {
+    let updatedCart;
     const existingIndex = cartItems.findIndex(
       (i) => i.productId === item.productId
     );
-    let updatedCart;
 
     if (existingIndex !== -1) {
       // const perUnitWeight = item.weight || 1;
-
-      updatedCart = [...cartItems];
-      updatedCart[existingIndex] = {
-        ...updatedCart[existingIndex],
-        qty: item.qty,
-        // weight: item.qty * perUnitWeight,
-      };
+      if (item?.qty == 0) {
+        updatedCart = cartItems.filter(
+          (items) => Number(items.productId) !== Number(item?.productId)
+        );
+      } else {
+        updatedCart = [...cartItems];
+        updatedCart[existingIndex] = {
+          ...updatedCart[existingIndex],
+          qty: item.qty,
+          // weight: item.qty * perUnitWeight,
+        };
+      }
     } else {
       updatedCart = [
         ...cartItems,
