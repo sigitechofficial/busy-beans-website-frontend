@@ -1,14 +1,45 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { PostAPI } from "./PostAPI";
+import { success_toaster } from "./Toaster";
+import ErrorHandler from "./ErrorHandler";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
+  const [shippingChargesStatus, setShippingChargesStatus] = useState("");
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("cartItems")) || [];
     setCartItems(stored);
   }, []);
+
+  const fetchCharges = async (updatedCart) => {
+    let totalWeight = updatedCart?.reduce((a, b) => {
+      return a + b?.weight * b?.qty;
+    }, 0);
+    console.log("🚀 ~ totalWeight ~ totalWeight:", totalWeight);
+    try {
+      const res = await PostAPI("api/v1/admin/shipping-charges-on-weight", {
+        weight: totalWeight,
+      });
+      if (res?.data?.status === "success") {
+        success_toaster("Charges Added Successfully");
+        // setOrder((prevOrder) => ({
+        //   ...prevOrder,
+        //   shippingCharges: res?.data?.data?.charges,
+        // }));
+        setShippingChargesStatus(res?.data?.data?.charges)
+        // localStorage.setItem("shippingCharges", res?.data?.data?.charges);
+      } else {
+        throw new Error(res?.data?.message || "An unexpected error occurred.");
+      }
+    } catch (error) {
+      ErrorHandler(error);
+    } finally {
+      totalWeight = 0;
+    }
+  };
 
   const syncToStorage = (items) => {
     localStorage.setItem("cartItems", JSON.stringify(items));
@@ -44,12 +75,12 @@ export const CartProvider = ({ children }) => {
         },
       ];
     }
-
     syncToStorage(updatedCart);
   };
 
   const handleItemClick = (type, id) => {
     let updatedCart = [];
+    console.log(" i run");
 
     if (type === "plus") {
       updatedCart = cartItems.map((item) => {
@@ -76,13 +107,13 @@ export const CartProvider = ({ children }) => {
         (item) => Number(item.productId) !== Number(id)
       );
     }
-
+    fetchCharges(updatedCart);
     syncToStorage(updatedCart);
   };
 
   return (
     <CartContext.Provider
-      value={{ cartItems, setCartItems, addOrUpdateCartItem, handleItemClick }}
+      value={{ cartItems, setCartItems, addOrUpdateCartItem, handleItemClick, shippingChargesStatus, setShippingChargesStatus }}
     >
       {children}
     </CartContext.Provider>

@@ -32,6 +32,7 @@ const Timeline = () => {
     const result = data?.data?.order?.orderHistories?.find(
       (history) => history?.statusId === statusId
     );
+    console.log("result?.on", result)
     return result?.on ?? "";
   };
 

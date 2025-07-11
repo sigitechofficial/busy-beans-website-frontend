@@ -63,12 +63,14 @@ const stripePromise = loadStripe(
 // );
 
 const page = () => {
-  const { setCartItems } = useCart();
+  const { setCartItems, shippingChargesStatus, setShippingChargesStatus } = useCart();
+  
   if (typeof window !== "undefined") {
     var addressId = localStorage.getItem("addressId") || "";
     var address = localStorage.getItem("address") || "";
     var userId = localStorage.getItem("userID") || "";
     var cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    // var shippingCharges = localStorage.getItem("shippingCharges");
   }
   let totalWeight = 0;
   const router = useRouter();
@@ -93,8 +95,6 @@ const page = () => {
     adminReceivableStatus: "",
     localPatnerCommission: "",
   });
-  console.log("🚀 ~ page ~ order:", order);
-
   const [activeResData, setActiveResData] = useState([]);
   const [customCityMode, setCustomCityMode] = useState(false);
   const inputRef = useRef();
@@ -279,9 +279,10 @@ const page = () => {
     //  else if (order?.note.trim() === "") {
     //   info_toaster("Note cannot be empty");
     // }
-    else if (order.paymentMethod.trim() === "") {
-      info_toaster("Select payment Method");
-    } else {
+    // else if (order.paymentMethod.trim() === "") {
+    //   info_toaster("Select payment Method");
+    // }
+    else {
       if (order?.paymentMethod?.includes("card")) {
         setStripeModal(true);
       } else {
@@ -314,6 +315,7 @@ const page = () => {
             setLoader(false);
             localStorage.setItem("cartItems", JSON.stringify([]));
             localStorage.setItem("orderId", res?.data?.data?.id);
+            // localStorage.removeItem("shippingCharges");
             router.push("/timeline");
             success_toaster("Order Created Successfully");
           } else {
@@ -525,7 +527,6 @@ const page = () => {
         },
         items: cartItems,
       });
-      console.log("🚀 ~ fetchClientSecret ~ res:", res);
       if (res?.data?.status === "success") {
         setClientSecret(res?.data?.data?.clientSecret);
         setOrder((prevOrder) => ({
@@ -542,17 +543,38 @@ const page = () => {
     }
   };
 
+  // useEffect(() => {
+    // if (
+      // !localStorage.getItem("loginStatus") ||
+      // !localStorage.getItem("accessToken")
+    // ) {
+      // info_toaster("Please Login First");
+    // } else {
+      // if(!shippingChargesStatus){
+        // fetchCharges();
+      // }
+      // fetchClientSecret();
+    // }
+  // }, []);
+
   useEffect(() => {
-    if (
-      !localStorage.getItem("loginStatus") ||
-      !localStorage.getItem("accessToken")
-    ) {
-      info_toaster("Please Login First");
+  if (
+    !localStorage.getItem("loginStatus") ||
+    !localStorage.getItem("accessToken")
+  ) {
+    info_toaster("Please Login First");
+  } else {
+    if (shippingChargesStatus) {
+      setOrder((prevOrder) => ({
+        ...prevOrder,
+        shippingCharges: shippingChargesStatus,
+      }))
     } else {
-      fetchCharges();
-      fetchClientSecret();
+      fetchCharges()
     }
-  }, []);
+  }
+}, [shippingChargesStatus])
+
 
   const jsonLd = [
     {
@@ -834,8 +856,7 @@ const page = () => {
 
               {/* ============Payment Method start============= */}
 
-              <div className="flex items-center gap-x-2 mt-10 mb-8">
-                {/* <MdOutlinePayment size={24} className="text-2xl" /> */}
+              {/* <div className="flex items-center gap-x-2 mt-10 mb-8">
                 <h3 className="font-semibold text-xl sm:text-[1.75rem] text-white font-satoshi">
                   Payment Method
                 </h3>
@@ -919,31 +940,7 @@ const page = () => {
                     </div>
                   </div>
                 )}
-              </div>
-
-              {getProfile?.data?.data?.creditPoints > 0 && (
-                <div className=" pb-5">
-                  <div className="flex justify-between items-center border rounded-md px-4 py-3 cursor-pointer mt-5 hover:shadow-discoveryCardShadow">
-                    <div className="flex items-center gap-x-2">
-                      <img
-                        className="w-8"
-                        src="/images/restaurants/fominopoints.png"
-                        alt=""
-                      />
-                      <div className="">
-                        <p className="text-lg font-medium">
-                          Use Fomino credits
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {getProfile?.data?.data?.creditPoints +
-                            " " +
-                            activeResData?.currencyUnit}
-                        </p>
-                      </div>
-                    </div>{" "}
-                  </div>
-                </div>
-              )}
+              </div> */}
 
               <>
                 {/* order frequency */}
@@ -1050,9 +1047,10 @@ const page = () => {
                   onClick={createOrder}
                   className="bg-themeLight lg:bg-theme w-full text-base font-bold text-white rounded-md h-[54px] flex justify-center items-center gap-x-2"
                 >
-                  {order?.paymentMethod == ""
+                  Place Order
+                  {/* {order?.paymentMethod == ""
                     ? "Select Payment Method"
-                    : "Place Order"}
+                    : "Place Order"} */}
                 </button>
               </div>
             </div>

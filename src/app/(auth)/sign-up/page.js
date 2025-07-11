@@ -863,43 +863,42 @@ export default function SignUpStep1() {
                         >
                           Phone Number
                         </label>
-                        <div className="grid grid-cols-10 gap-x-2">
-                          <PhoneInput
-                            focusBorderColor="none"
-                            borderWidth="none"
-                            className="chakra_input col-span-2"
-                            inputStyle={{
-                              width: "90px",
-                              height: "45px",
-                              borderRadius: "12px",
-                              border: "1px solid #00000033",
-                              backgroundColor: "#3B3B3B",
-                              color: "#ffffff",
-                              opacity: "20",
-                            }}
-                            buttonStyle={{
-                              backgroundColor: "#3B3B3B",
-                              border: "1px solid #86644C",
-                            }}
-                            containerStyle={{
-                              borderRadius: "12px",
-                              backgroundColor: "#6f4e37",
-                            }}
-                            dropdownStyle={{
-                              backgroundColor: "#6f4e37",
-                              borderRadius: "8px",
-                            }}
-                            country={"pk"}
-                            onChange={(phone) =>
-                              setUserData({
-                                ...userData,
-                                info: {
-                                  ...userData?.info,
-                                  countryCode: phone,
-                                },
-                              })
-                            }
-                          />
+                        <div className="grid grid-cols-10 gap-x-2 items-center">
+                          <div className="col-span-2">
+                            <PhoneInput
+                              country={"pk"}
+                              inputStyle={{
+                                width: "100%",
+                                height: "45px",
+                                borderRadius: "12px",
+                                border: "1px solid #00000033",
+                                backgroundColor: "#3B3B3B",
+                                color: "#ffffff",
+                              }}
+                              buttonStyle={{
+                                backgroundColor: "#3B3B3B",
+                                border: "1px solid #86644C",
+                              }}
+                              containerStyle={{
+                                borderRadius: "12px",
+                                width: "100%",
+                                backgroundColor: "transparent",
+                              }}
+                              dropdownStyle={{
+                                backgroundColor: "#6f4e37",
+                                borderRadius: "8px",
+                              }}
+                              onChange={(phone) =>
+                                setUserData({
+                                  ...userData,
+                                  info: {
+                                    ...userData?.info,
+                                    countryCode: phone,
+                                  },
+                                })
+                              }
+                            />
+                          </div>
                           <input
                             type="number"
                             name="phoneNumber"
@@ -1032,9 +1031,9 @@ export default function SignUpStep1() {
                           className="text-labelColor absolute right-4 top-10"
                         >
                           {visibility?.pass ? (
-                            <AiOutlineEye size={24} color="#ffffff" />
+                            <AiOutlineEye size={24} color="#86644C" />
                           ) : (
-                            <AiOutlineEyeInvisible size={24} color="#ffffff" />
+                            <AiOutlineEyeInvisible size={24} color="#86644C" />
                           )}
                         </button>
                       </div>
@@ -1061,9 +1060,9 @@ export default function SignUpStep1() {
                           className="text-labelColor absolute right-4 top-10"
                         >
                           {visibility?.confirmPass ? (
-                            <AiOutlineEye size={24} color="#ffffff" />
+                            <AiOutlineEye size={24} color="#86644C" />
                           ) : (
-                            <AiOutlineEyeInvisible size={24} color="#ffffff" />
+                            <AiOutlineEyeInvisible size={24} color="#86644C" />
                           )}
                         </button>
                       </div>

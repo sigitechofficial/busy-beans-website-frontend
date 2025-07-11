@@ -9,6 +9,7 @@ import { PostAPI } from "@/utilities/PostAPI";
 import ErrorHandler from "@/utilities/ErrorHandler";
 import MiniLoader from "@/components/ui/MiniLoader";
 import Head from "next/head";
+import { passwordStrength } from "@/utilities/authValidation";
 
 export default function ResetPassword() {
   if (typeof window !== "undefined") {
@@ -26,6 +27,14 @@ export default function ResetPassword() {
     e.preventDefault();
     if (passwords?.newPassword.trim() === "") {
       info_toaster("Enter new password");
+    } else if (passwords?.newPassword.trim().length < 6) {
+      info_toaster("Password must be of minimum 6");
+    } else if (
+      !passwordStrength?.weak?.test(passwords?.newPassword.trim()) ||
+      !passwordStrength?.medium?.test(passwords?.newPassword.trim()) ||
+      !passwordStrength?.strong?.test(passwords?.newPassword.trim())
+    ) {
+      info_toaster("Password must be Strong");
     } else if (passwords?.confirmPassword.trim() === "") {
       info_toaster("Confirm new password");
     } else if (
@@ -193,6 +202,23 @@ export default function ResetPassword() {
                         placeholder="Enter Password"
                         className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                       />
+                      {passwords?.newPassword.length > 0 && (
+                        <p className="text-red-700 text font-semibold text-sm">
+                          {!passwordStrength?.weak?.test(
+                            passwords?.newPassword.trim()
+                          )
+                            ? "Password is too weak, contain atleat 6 characters consider adding more complexity"
+                            : !passwordStrength?.medium?.test(
+                                passwords?.newPassword.trim()
+                              )
+                            ? "Password should include both uppercase and lowercase letters"
+                            : !passwordStrength?.strong.test(
+                                passwords?.newPassword.trim()
+                              )
+                            ? "Password is strong! It should include at least one uppercase letter, one lowercase letter, one number, and one special character"
+                            : ""}
+                        </p>
+                      )}
                     </div>
                     <div className="flex flex-col gap-y-2">
                       <label className="text-white font-medium">
