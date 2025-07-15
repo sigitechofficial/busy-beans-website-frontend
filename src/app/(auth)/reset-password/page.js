@@ -51,27 +51,27 @@ export default function ResetPassword() {
         if (res?.data?.status === "success") {
           setModal(true);
           setLoader(false);
-          localStorage.setItem("accessToken", res?.data?.data?.token);
-          localStorage.setItem("loginStatus", true);
-          localStorage.setItem("userName", res?.data?.data?.user?.name);
-          localStorage.setItem(
-            "phoneNumber",
-            res?.data?.data?.user?.phoneNumber
-          );
-          localStorage.setItem("userEmail", res?.data?.data?.user?.email);
-          localStorage.setItem(
-            "phoneNumber",
-            res?.data?.data?.user?.phoneNumber
-          );
-          localStorage.setItem(
-            "saleTaxNumber",
-            res?.data?.data?.user?.saleTaxNumber
-          );
-          localStorage.setItem("registerBy", res?.data?.data?.user?.registerBy);
-          localStorage.setItem("userID", res?.data?.data?.user?.id);
-          localStorage.setItem("addressId", res?.data?.data?.user?.address?.id);
-          localStorage.removeItem("userID");
-          success_toaster("Password Reset Sucessfully");
+          // localStorage.setItem("accessToken", res?.data?.data?.token);
+          // localStorage.setItem("loginStatus", true);
+          // localStorage.setItem("userName", res?.data?.data?.user?.name);
+          // localStorage.setItem(
+          //   "phoneNumber",
+          //   res?.data?.data?.user?.phoneNumber
+          // );
+          // localStorage.setItem("userEmail", res?.data?.data?.user?.email);
+          // localStorage.setItem(
+          //   "phoneNumber",
+          //   res?.data?.data?.user?.phoneNumber
+          // );
+          // localStorage.setItem(
+          //   "saleTaxNumber",
+          //   res?.data?.data?.user?.saleTaxNumber
+          // );
+          // localStorage.setItem("registerBy", res?.data?.data?.user?.registerBy);
+          // localStorage.setItem("userID", res?.data?.data?.user?.id);
+          // localStorage.setItem("addressId", res?.data?.data?.user?.address?.id);
+          // localStorage.removeItem("userID");
+          // success_toaster("Password Reset Sucessfully");
         } else {
           throw new Error(
             res?.data?.message || "An unexpected error occurred."
@@ -270,16 +270,14 @@ export default function ResetPassword() {
           }
         >
           <div className="space-y-4 p-5 flex flex-col items-center">
-            {/* header */}
             <p className="font-inter font-bold text-xl text-center">
               Password Reset Successfully!
             </p>
 
-            {/* body */}
             <button
               onClick={() => {
-                success_toaster("Login Successfully");
-                router.push("/");
+                // success_toaster("Login Successfully");
+                router.push("/sign-in");
               }}
               className="py-3 max-w-[500px] rounded-lg border border-theme text-white bg-theme font-satoshi w-full"
             >
