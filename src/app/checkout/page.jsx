@@ -63,8 +63,9 @@ const stripePromise = loadStripe(
 // );
 
 const page = () => {
-  const { setCartItems, shippingChargesStatus, setShippingChargesStatus } = useCart();
-  
+  const { setCartItems, shippingChargesStatus, setShippingChargesStatus } =
+    useCart();
+
   if (typeof window !== "undefined") {
     var addressId = localStorage.getItem("addressId") || "";
     var address = localStorage.getItem("address") || "";
@@ -282,7 +283,9 @@ const page = () => {
     // else if (order.paymentMethod.trim() === "") {
     //   info_toaster("Select payment Method");
     // }
-    else {
+    else if (!order?.shippingCharges) {
+      info_toaster("No Shipping Charges are Added");
+    } else {
       if (order?.paymentMethod?.includes("card")) {
         setStripeModal(true);
       } else {
@@ -497,11 +500,14 @@ const page = () => {
         weight: totalWeight,
       });
       if (res?.data?.status === "success") {
-        success_toaster("Charges Added Successfully");
-        setOrder((prevOrder) => ({
-          ...prevOrder,
-          shippingCharges: res?.data?.data?.charges,
-        }));
+        if (shippingChargesStatus !== res?.data?.data?.charges) {
+          success_toaster("Charges Added Successfully");
+          setOrder((prevOrder) => ({
+            ...prevOrder,
+            shippingCharges: res?.data?.data?.charges,
+          }));
+          // setShippingChargesStatus(res?.data?.data?.charges);
+        }
       } else {
         throw new Error(res?.data?.message || "An unexpected error occurred.");
       }
@@ -544,37 +550,45 @@ const page = () => {
   };
 
   // useEffect(() => {
-    // if (
-      // !localStorage.getItem("loginStatus") ||
-      // !localStorage.getItem("accessToken")
-    // ) {
-      // info_toaster("Please Login First");
-    // } else {
-      // if(!shippingChargesStatus){
-        // fetchCharges();
-      // }
-      // fetchClientSecret();
-    // }
+  // if (
+  // !localStorage.getItem("loginStatus") ||
+  // !localStorage.getItem("accessToken")
+  // ) {
+  // info_toaster("Please Login First");
+  // } else {
+  // if(!shippingChargesStatus){
+  // fetchCharges();
+  // }
+  // fetchClientSecret();
+  // }
   // }, []);
 
   useEffect(() => {
-  if (
-    !localStorage.getItem("loginStatus") ||
-    !localStorage.getItem("accessToken")
-  ) {
-    info_toaster("Please Login First");
-  } else {
-    if (shippingChargesStatus) {
-      setOrder((prevOrder) => ({
-        ...prevOrder,
-        shippingCharges: shippingChargesStatus,
-      }))
+    if (
+      !localStorage.getItem("loginStatus") ||
+      !localStorage.getItem("accessToken")
+    ) {
+      info_toaster("Please Login First");
     } else {
-      fetchCharges()
+      if (shippingChargesStatus) {
+        setOrder((prevOrder) => ({
+          ...prevOrder,
+          shippingCharges: shippingChargesStatus,
+        }));
+      }
     }
-  }
-}, [shippingChargesStatus])
+  }, [shippingChargesStatus]);
 
+  useEffect(() => {
+    if (
+      !localStorage.getItem("loginStatus") ||
+      !localStorage.getItem("accessToken")
+    ) {
+      info_toaster("Please Login First");
+    } else {
+      fetchCharges();
+    }
+  }, []);
 
   const jsonLd = [
     {
