@@ -97,7 +97,8 @@ const Timeline = () => {
                   <div className="flex flex-col gap-y-4">
                     {data?.data?.order?.statusId === 5 ? (
                       <TrackOrderTab
-                        heading="Delivered Order"
+                        // heading="Delivered Order"
+                        heading="Dispatched Order"
                         status={handleTrackOrderTab(5)}
                         time={handleTrackOrderTabTime(5)}
                         stepNo={5}
@@ -130,13 +131,15 @@ const Timeline = () => {
                           stepNo={3}
                         />
                         <TrackOrderTab
-                          heading="Dispatched Orders"
+                          // heading="Dispatched Orders"
+                          heading="Shiped Orders"
                           status={handleTrackOrderTab(4)}
                           time={handleTrackOrderTabTime(4)}
                           stepNo={4}
                         />
                         <TrackOrderTab
-                          heading="Delivered Order"
+                          // heading="Delivered Order"
+                          heading="Dispatched Order"
                           status={handleTrackOrderTab(5)}
                           time={handleTrackOrderTabTime(5)}
                           stepNo={5}
