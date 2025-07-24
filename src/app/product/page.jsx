@@ -40,6 +40,7 @@ export default function Product() {
 
   const { data } = GetAPI("api/v1/admin/product");
   const { data: categoryData } = GetAPI("api/v1/admin/category");
+  
   const handleOrderNowButton = (id) => {
     if (existingCartItems) {
       const item = existingCartItems.find((item) => item?.productId === id);

@@ -315,6 +315,7 @@ const page = () => {
           });
           if (res?.data?.status === "success") {
             setCartItems([]);
+            totalWeight = 0;
             setLoader(false);
             localStorage.setItem("cartItems", JSON.stringify([]));
             localStorage.setItem("orderId", res?.data?.data?.id);
@@ -508,6 +509,12 @@ const page = () => {
           }));
           // setShippingChargesStatus(res?.data?.data?.charges);
         }
+      } else if (res?.data?.status === "fail") {
+        setOrder((prevOrder) => ({
+          ...prevOrder,
+          shippingCharges: "",
+        }));
+        error_toaster("Invalid Weight");
       } else {
         throw new Error(res?.data?.message || "An unexpected error occurred.");
       }
@@ -570,10 +577,16 @@ const page = () => {
     ) {
       info_toaster("Please Login First");
     } else {
+      console.log("shippingChargesStatus:- ", shippingChargesStatus);
       if (shippingChargesStatus) {
         setOrder((prevOrder) => ({
           ...prevOrder,
           shippingCharges: shippingChargesStatus,
+        }));
+      } else {
+        setOrder((prevOrder) => ({
+          ...prevOrder,
+          shippingCharges: "",
         }));
       }
     }

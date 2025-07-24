@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { PostAPI } from "./PostAPI";
-import { success_toaster } from "./Toaster";
+import { error_toaster, success_toaster } from "./Toaster";
 import ErrorHandler from "./ErrorHandler";
 
 const CartContext = createContext();
@@ -15,10 +15,10 @@ export const CartProvider = ({ children }) => {
   }, []);
 
   const fetchCharges = async (updatedCart) => {
-    let totalWeight = updatedCart?.reduce((a, b) => {
+    let totalWeight = 0;
+    totalWeight = updatedCart?.reduce((a, b) => {
       return a + b?.weight * b?.qty;
     }, 0);
-    console.log("🚀 ~ totalWeight ~ totalWeight:", totalWeight);
     try {
       const res = await PostAPI("api/v1/admin/shipping-charges-on-weight", {
         weight: totalWeight,
@@ -29,15 +29,16 @@ export const CartProvider = ({ children }) => {
         //   ...prevOrder,
         //   shippingCharges: res?.data?.data?.charges,
         // }));
-        setShippingChargesStatus(res?.data?.data?.charges)
+        setShippingChargesStatus(res?.data?.data?.charges);
         // localStorage.setItem("shippingCharges", res?.data?.data?.charges);
+      } else if (res?.data?.status === "fail") {
+        setShippingChargesStatus("");
+        error_toaster("Invalid Weight")
       } else {
         throw new Error(res?.data?.message || "An unexpected error occurred.");
       }
     } catch (error) {
       ErrorHandler(error);
-    } finally {
-      totalWeight = 0;
     }
   };
 
@@ -80,7 +81,6 @@ export const CartProvider = ({ children }) => {
 
   const handleItemClick = (type, id) => {
     let updatedCart = [];
-    console.log(" i run");
 
     if (type === "plus") {
       updatedCart = cartItems.map((item) => {
@@ -113,7 +113,14 @@ export const CartProvider = ({ children }) => {
 
   return (
     <CartContext.Provider
-      value={{ cartItems, setCartItems, addOrUpdateCartItem, handleItemClick, shippingChargesStatus, setShippingChargesStatus }}
+      value={{
+        cartItems,
+        setCartItems,
+        addOrUpdateCartItem,
+        handleItemClick,
+        shippingChargesStatus,
+        setShippingChargesStatus,
+      }}
     >
       {children}
     </CartContext.Provider>
