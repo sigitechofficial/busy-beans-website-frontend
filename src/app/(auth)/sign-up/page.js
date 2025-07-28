@@ -24,6 +24,7 @@ import { FaLongArrowAltLeft } from "react-icons/fa";
 import PhoneInput from "react-phone-input-2";
 import Select from "react-select";
 import Head from "next/head";
+import "react-phone-input-2/lib/style.css"; 
 
 export default function SignUpStep1() {
   const router = useRouter();
@@ -194,9 +195,7 @@ export default function SignUpStep1() {
           zipCode: userData?.address?.zipCode,
         },
       });
-      if (userData?.address?.companyaddress.trim() === "") {
-        info_toaster("Company address cannot be empty");
-      } else if (userData?.address?.addressLineOne.trim() === "") {
+      if (userData?.address?.addressLineOne.trim() === "") {
         info_toaster("address Line 1 cannot be empty");
       } else if (userData?.address?.addressLineTwo.trim() === "") {
         info_toaster("address Line 2 cannot be empty");
@@ -298,10 +297,10 @@ export default function SignUpStep1() {
             saleTaxNumber: userData?.info?.saleTaxNumber,
             emailToSendInvoices: userData?.info?.emailToSendInvoices,
             companyName: userData?.info?.companyName,
-            companyInfo: userData?.info?.companyInfo,
+            dispatchEmail: userData?.info?.companyInfo,
           },
           address: {
-            companyaddress: userData?.address?.companyaddress,
+            // companyaddress: userData?.address?.companyaddress,
             addressLineOne: userData?.address?.addressLineOne,
             addressLineTwo: userData?.address?.addressLineTwo,
             town: userData?.address?.town,
@@ -457,7 +456,7 @@ export default function SignUpStep1() {
                       1. Company Address
                     </p>
                     <div className="space-y-4">
-                      <div className="flex flex-col gap-y-2">
+                      {/* <div className="flex flex-col gap-y-2">
                         <label className="text-white font-medium">
                           Company Address
                         </label>
@@ -469,7 +468,7 @@ export default function SignUpStep1() {
                           placeholder="Enter company address"
                           className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                         />
-                      </div>
+                      </div> */}
                       <div className="flex flex-col gap-y-2">
                         <label className="text-white font-medium">
                           Address Line 1
@@ -504,7 +503,7 @@ export default function SignUpStep1() {
                           <Select
                             placeholder="Select Country"
                             className="w-full"
-                            styles={drawerSelectStyles2}
+                            styles={drawerSelectStyles}
                             value={
                               userData?.address?.country
                                 ? {
@@ -533,7 +532,7 @@ export default function SignUpStep1() {
                           <Select
                             placeholder="Select State"
                             className="w-full"
-                            styles={drawerSelectStyles2}
+                            styles={drawerSelectStyles}
                             value={
                               userData?.address?.state
                                 ? {
@@ -843,19 +842,7 @@ export default function SignUpStep1() {
                           className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                         />
                       </div>
-                      <div className="flex flex-col gap-y-2">
-                        <label className="text-white font-medium">
-                          Company Info
-                        </label>
-                        <input
-                          type="text"
-                          name="companyInfo"
-                          onChange={handleInfo}
-                          value={userData?.info?.companyInfo}
-                          placeholder="Enter Company Info"
-                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
-                        />
-                      </div>
+
                       <div className="flex flex-col gap-y-2">
                         <label
                           htmlFor="phone"
@@ -866,18 +853,23 @@ export default function SignUpStep1() {
                         <div className="grid grid-cols-10 gap-x-2 items-center">
                           <div className="col-span-2">
                             <PhoneInput
-                              country={"pk"}
+                 
+                              country={"us"}
                               inputStyle={{
                                 width: "100%",
-                                height: "45px",
+                                height: "42px",
                                 borderRadius: "12px",
                                 border: "1px solid #00000033",
-                                backgroundColor: "#3B3B3B",
-                                color: "#ffffff",
+                                backgroundColor: "#fff",
+                                color: "#000",
                               }}
                               buttonStyle={{
-                                backgroundColor: "#3B3B3B",
+                                backgroundColor: "#fff",
                                 border: "1px solid #86644C",
+                                borderRadius: "12px", // Keeps the rounded corners
+                                outline: "none", // Remove focus outline
+                                transition:
+                                  "border 0.3s ease, background-color 0.3s ease", // Smooth transition for hover
                               }}
                               containerStyle={{
                                 borderRadius: "12px",
@@ -917,6 +909,7 @@ export default function SignUpStep1() {
                         className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                       /> */}
                       </div>
+
                       <div className="flex flex-col gap-y-2">
                         <label className="text-white font-medium">
                           Sale Tax Number <span>(if applicable)</span>
@@ -930,6 +923,21 @@ export default function SignUpStep1() {
                           className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                         />
                       </div>
+
+                      <div className="flex flex-col gap-y-2">
+                        <label className="text-white font-medium">
+                          Dispatch Email
+                        </label>
+                        <input
+                          type="text"
+                          name="companyInfo"
+                          onChange={handleInfo}
+                          value={userData?.info?.companyInfo}
+                          placeholder="Enter Company Info"
+                          className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                        />
+                      </div>
+
                       <div className="flex flex-col gap-y-2">
                         <label className="text-white font-medium">
                           Email to send invoices

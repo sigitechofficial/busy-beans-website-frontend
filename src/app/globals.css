@@ -124,3 +124,17 @@ input[type="number"] {
   background-color: #322a23 !important;
   color: #ffffff !important;
 }
+
+
+/* Custom styling for the button */
+.phone-input-button {
+  border-radius: 12px; /* Ensure rounded corners by default */
+  border: 1px solid #86644C;
+  background-color: #fff;
+  transition: all 0.3s ease; /* Smooth transition */
+}
+
+.phone-input-button:active {
+  border-radius: 12px; /* Ensure rounded corners on active state */
+  background-color: #f0f0f0; /* Change background on active */
+}
