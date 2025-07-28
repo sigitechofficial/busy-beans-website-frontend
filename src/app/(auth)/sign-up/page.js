@@ -7,6 +7,7 @@ import { SignupAPI } from "@/utilities/PostAPI";
 import selectStyles, {
   drawerSelectStyles,
   drawerSelectStyles2,
+  drawerSelectStyles3,
   selectStyles2,
 } from "@/utilities/SelectStyle";
 import {
@@ -24,7 +25,7 @@ import { FaLongArrowAltLeft } from "react-icons/fa";
 import PhoneInput from "react-phone-input-2";
 import Select from "react-select";
 import Head from "next/head";
-import "react-phone-input-2/lib/style.css"; 
+import "react-phone-input-2/lib/style.css";
 
 export default function SignUpStep1() {
   const router = useRouter();
@@ -246,13 +247,10 @@ export default function SignUpStep1() {
   const handleStep2 = () => {
     if (!userData?.info?.companyName.trim()) {
       info_toaster("Company Name cannot be empty");
-    } else if (!userData?.info?.companyInfo.trim()) {
-      info_toaster("Company Info cannot be empty");
     } else if (!userData?.info?.phoneNumber.trim()) {
       info_toaster("Phone number cannot be empty");
-    } else if (!userData?.info?.emailToSendInvoices.trim()) {
-      info_toaster("Invoice email cannot be empty");
     } else if (
+      userData?.info?.emailToSendInvoices &&
       !emailValidity.test(userData?.info?.emailToSendInvoices.trim())
     ) {
       info_toaster("Invalid email format");
@@ -503,7 +501,7 @@ export default function SignUpStep1() {
                           <Select
                             placeholder="Select Country"
                             className="w-full"
-                            styles={drawerSelectStyles}
+                            styles={drawerSelectStyles3}
                             value={
                               userData?.address?.country
                                 ? {
@@ -532,7 +530,7 @@ export default function SignUpStep1() {
                           <Select
                             placeholder="Select State"
                             className="w-full"
-                            styles={drawerSelectStyles}
+                            styles={drawerSelectStyles3}
                             value={
                               userData?.address?.state
                                 ? {
@@ -681,7 +679,7 @@ export default function SignUpStep1() {
                               <Select
                                 placeholder="Select Country"
                                 className="w-full"
-                                styles={drawerSelectStyles2}
+                                styles={drawerSelectStyles3}
                                 value={
                                   userData?.billingAddress?.country
                                     ? {
@@ -714,7 +712,7 @@ export default function SignUpStep1() {
                               <Select
                                 placeholder="Select State"
                                 className="w-full"
-                                styles={drawerSelectStyles2}
+                                styles={drawerSelectStyles3}
                                 value={
                                   userData?.billingAddress?.state
                                     ? {
@@ -799,9 +797,6 @@ export default function SignUpStep1() {
                       </div>
                     )}
                     <div className="flex items-center justify-start gap-x-2 pb-4">
-                      <label className="text-white font-medium font-satoshi">
-                        Billing Address same as Shipping Address
-                      </label>
                       <input
                         checked={billingAddressStatus}
                         type="checkbox"
@@ -809,6 +804,9 @@ export default function SignUpStep1() {
                         onChange={handleBillingShippingAddress}
                         className="size-4 border border-borderColor text-black focus:border-black placeholder:text-secondary rounded-[4px] outline-none"
                       />
+                      <label className="text-white font-medium font-satoshi">
+                        Billing Address same as Shipping Address
+                      </label>
                     </div>
                   </div>
 
@@ -853,7 +851,6 @@ export default function SignUpStep1() {
                         <div className="grid grid-cols-10 gap-x-2 items-center">
                           <div className="col-span-2">
                             <PhoneInput
-                 
                               country={"us"}
                               inputStyle={{
                                 width: "100%",
@@ -933,14 +930,14 @@ export default function SignUpStep1() {
                           name="companyInfo"
                           onChange={handleInfo}
                           value={userData?.info?.companyInfo}
-                          placeholder="Enter Company Info"
+                          placeholder="Enter Email"
                           className="border border-inputBorder rounded-xl outline-none px-3 py-2"
                         />
                       </div>
 
                       <div className="flex flex-col gap-y-2">
                         <label className="text-white font-medium">
-                          Email to send invoices
+                        Invoice Email
                         </label>
                         <input
                           type="email"
@@ -988,7 +985,7 @@ export default function SignUpStep1() {
                       </div>
                       <div className="flex flex-col gap-y-2">
                         <label className="text-white font-medium">
-                          Email Address
+                          Login Email
                         </label>
                         <input
                           type="email"
@@ -1005,6 +1002,7 @@ export default function SignUpStep1() {
                         </label>
                         <input
                           type={visibility?.pass ? "text" : "password"}
+                          autoComplete="none"
                           name="password"
                           onChange={handleInfo}
                           value={userData?.info?.password}
@@ -1052,6 +1050,7 @@ export default function SignUpStep1() {
                         <input
                           type={visibility?.confirmPass ? "text" : "password"}
                           name="confirmPassword"
+                          autoComplete="none"
                           onChange={handleInfo}
                           value={userData?.info?.confirmPassword}
                           placeholder="Enter password again"

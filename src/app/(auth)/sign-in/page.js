@@ -243,6 +243,7 @@ export default function SignIn() {
                       Password
                     </label>
                     <input
+                    autoComplete="none"
                       type={visible ? "text" : "password"}
                       name="password"
                       onChange={handleChange}

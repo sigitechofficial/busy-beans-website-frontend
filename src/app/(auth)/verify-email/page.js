@@ -17,12 +17,12 @@ export default function VerifyEmail() {
 
   const router = useRouter();
 
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useState(30);
   const [loader, setLoader] = useState(false);
   const inputRefs = useRef([]);
 
   const handleResendOtp = async () => {
-    setTimer(60);
+    setTimer(30);
     if (otpStatus === "forgotPassword") {
       // router.push("/forgot-password");
       try {
