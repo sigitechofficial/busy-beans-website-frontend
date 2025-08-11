@@ -122,13 +122,17 @@ const page = () => {
     })
   );
 
-  const totalPrice = cartItems?.reduce((a, b) => {
-    return a + b?.price * b?.qty;
-  }, 0);
+  // const totalPrice = cartItems?.reduce((a, b) => {
+  //   return a + b?.price * b?.qty;
+  // }, 0);
 
-  totalWeight = cartItems?.reduce((a, b) => {
-    return a + b?.weight * b?.qty;
-  }, 0);
+  // totalWeight = cartItems?.reduce((a, b) => {
+  //   return a + b?.weight * b?.qty;
+  // }, 0);
+
+  const safeItems = Array.isArray(cartItems) ? cartItems : [];
+  const totalPrice = safeItems.reduce((a, b) => a + Number(b?.price || 0) * Number(b?.qty || 0), 0);
+  totalWeight = safeItems.reduce((a, b) => a + Number(b?.weight || 0) * Number(b?.qty || 0), 0);
 
   let getProfile = [];
   const [paymentModal, setPaymentModal] = useState(false);
@@ -293,11 +297,16 @@ const page = () => {
         try {
           const res = await PostAPI(`api/v1/users/book-order/${userId}`, {
             order: {
-              totalBill: totalPrice,
-              subTotal: totalPrice,
-              discountPrice: 0,
-              discountPercentage: 0,
-              itemsPrice: totalPrice,
+              // totalBill: totalPrice,
+              // subTotal: totalPrice,
+              // discountPrice: 0,
+              // discountPercentage: 0,
+              // itemsPrice: totalPrice,
+              totalBill: finalTotal,                     
+              subTotal: discountedSubtotal,              
+              discountPrice: discountAmount,            
+              discountPercentage: dp,               
+              itemsPrice: totalPrice, 
               vat: 0,
               totalWeight: totalWeight,
               note: order?.note,
@@ -495,33 +504,66 @@ const page = () => {
     }
   };
 
-  const fetchCharges = async () => {
-    try {
-      const res = await PostAPI("api/v1/admin/shipping-charges-on-weight", {
-        weight: totalWeight,
-      });
-      if (res?.data?.status === "success") {
-        if (shippingChargesStatus !== res?.data?.data?.charges) {
-          success_toaster("Charges Added Successfully");
-          setOrder((prevOrder) => ({
-            ...prevOrder,
-            shippingCharges: res?.data?.data?.charges,
-          }));
-          // setShippingChargesStatus(res?.data?.data?.charges);
-        }
-      } else if (res?.data?.status === "fail") {
-        setOrder((prevOrder) => ({
-          ...prevOrder,
-          shippingCharges: "",
-        }));
-        error_toaster("Invalid Weight");
-      } else {
-        throw new Error(res?.data?.message || "An unexpected error occurred.");
-      }
-    } catch (error) {
-      ErrorHandler(error);
-    }
-  };
+  // const fetchCharges = async () => {
+  //   try {
+  //     const res = await PostAPI("api/v1/admin/shipping-charges-on-weight", {
+  //       weight: totalWeight,
+  //     });
+  //     if (res?.data?.status === "success") {
+  //       if (shippingChargesStatus !== res?.data?.data?.charges) {
+  //         success_toaster("Charges Added Successfully");
+  //         setOrder((prevOrder) => ({
+  //           ...prevOrder,
+  //           shippingCharges: res?.data?.data?.charges,
+  //         }));
+  //         // setShippingChargesStatus(res?.data?.data?.charges);
+  //       }
+  //     } else if (res?.data?.status === "fail") {
+  //       setOrder((prevOrder) => ({
+  //         ...prevOrder,
+  //         shippingCharges: "",
+  //       }));
+  //       error_toaster("Invalid Weight");
+  //     } else {
+  //       throw new Error(res?.data?.message || "An unexpected error occurred.");
+  //     }
+  //   } catch (error) {
+  //     ErrorHandler(error);
+  //   }
+  // };
+
+  const fetchChargesForCustomer = async (customerId, weight) => {
+   if (!customerId || !Number(weight)) return;
+   try {
+     const res = await PostAPI(
+       `api/v1/admin/shipping-charges-on-weight/customer/${customerId}`,
+       { weight }
+     );
+     if (res?.data?.status === "success") {
+       const payload = res?.data?.data || {};
+       const shipping = Number(payload?.shippingCharges ?? payload?.charges ?? 0);
+       const discountPct = Number(payload?.discountPercentage ?? 0);
+       setOrder((prev) => ({
+         ...prev,
+         shippingCharges: shipping,
+         discountPercentage: discountPct,
+       }));
+     } else if (res?.data?.status === "fail") {
+       setOrder((prev) => ({ ...prev, shippingCharges: "", discountPercentage: 0 }));
+       error_toaster("Invalid Weight");
+     } else {
+       throw new Error(res?.data?.message || "An unexpected error occurred.");
+     }
+   } catch (error) {
+     ErrorHandler(error);
+   }
+ };
+
+  const dp = Number(order?.discountPercentage || 0);
+  const discountAmount = (Number(totalPrice || 0) * dp) / 100;
+  const discountedSubtotal = dp > 0 ? Number(totalPrice || 0) - discountAmount : Number(totalPrice || 0);
+  const finalTotal = discountedSubtotal + Number(order?.shippingCharges || 0);
+
   const fetchClientSecret = async () => {
     try {
       // const res = await PostAPI("api/v1/users/create-payment-intent", {
@@ -592,16 +634,25 @@ const page = () => {
     }
   }, [shippingChargesStatus]);
 
+  // useEffect(() => {
+  //   if (
+  //     !localStorage.getItem("loginStatus") ||
+  //     !localStorage.getItem("accessToken")
+  //   ) {
+  //     info_toaster("Please Login First");
+  //   } else {
+  //     fetchCharges();
+  //   }
+  // }, []);
+
   useEffect(() => {
-    if (
-      !localStorage.getItem("loginStatus") ||
-      !localStorage.getItem("accessToken")
-    ) {
-      info_toaster("Please Login First");
-    } else {
-      fetchCharges();
-    }
-  }, []);
+   const isAuthed = localStorage.getItem("loginStatus") && localStorage.getItem("accessToken");
+   if (!isAuthed) {
+     info_toaster("Please Login First");
+     return;
+   }
+   fetchChargesForCustomer(userId, totalWeight);
+  }, [userId, totalWeight]);
 
   const jsonLd = [
     {
@@ -1024,7 +1075,7 @@ const page = () => {
                 </p> */}
               </div>
               <div className="space-y-2.5 my-4">
-                <div className="flex items-center justify-between gap-x-2">
+                {/* <div className="flex items-center justify-between gap-x-2">
                   <h5 className="text-base text-checkoutTextColor">Subtotal</h5>
                   <h6>$ {totalPrice?.toFixed(2)}</h6>
                 </div>
@@ -1033,7 +1084,32 @@ const page = () => {
                     Shipping Charges
                   </h5>
                   <h6>$ {order?.shippingCharges}</h6>
-                </div>
+                </div> */}
+                  {dp > 0 ? (
+                    <>
+                      <div className="flex items-center justify-between gap-x-2">
+                        <h5 className="text-base text-checkoutTextColor">
+                          Subtotal <span className="opacity-70">(after {dp}% discount)</span>
+                        </h5>
+                        <h6>$ {discountedSubtotal.toFixed(2)}</h6>
+                      </div>
+                      <div className="flex items-center justify-between gap-x-2">
+                        <h5 className="text-base text-checkoutTextColor">Shipping Charges</h5>
+                        <h6>$ {Number(order?.shippingCharges || 0).toFixed(2)}</h6>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex items-center justify-between gap-x-2">
+                        <h5 className="text-base text-checkoutTextColor">Subtotal</h5>
+                        <h6>$ {Number(totalPrice || 0).toFixed(2)}</h6>
+                      </div>
+                      <div className="flex items-center justify-between gap-x-2">
+                        <h5 className="text-base text-checkoutTextColor">Shipping Charges</h5>
+                        <h6>$ {Number(order?.shippingCharges || 0).toFixed(2)}</h6>
+                      </div>
+                    </>
+                  )}
                 {deliveryData.how === 1 && (
                   <>
                     {/* <div className="flex items-center justify-between gap-x-2">
@@ -1059,10 +1135,11 @@ const page = () => {
                     Total
                   </h5>
                   <h6 className="font-semibold text-checkoutTextColor text-base">
-                    ${" "}
-                    {(
+                    {/* ${" "} */}
+                    {/* {(
                       Number(totalPrice) + Number(order?.shippingCharges)
-                    )?.toFixed(2)}
+                    )?.toFixed(2)} */}
+                    {finalTotal.toFixed(2)}
                   </h6>
                 </div>
                 <div className="border-dashed border" />
