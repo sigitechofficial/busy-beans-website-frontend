@@ -35,9 +35,9 @@ export default function Header() {
             <li>
               <Link href="/our-story">Our Story</Link>
             </li>
-            <li>
+            {/* <li>
               <Link href="/financing">Financing</Link>
-            </li>
+            </li> */}
             <li>
               <Link href="/recepies">Resources</Link>
             </li>

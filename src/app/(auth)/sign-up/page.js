@@ -17,15 +17,19 @@ import {
 } from "@/utilities/Toaster";
 import { BASE_URL } from "@/utilities/URL";
 import axios from "axios";
+import api from "../../../utilities/StatusErrorHandler";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import PhoneInput from "react-phone-input-2";
 import Select from "react-select";
 import Head from "next/head";
 import "react-phone-input-2/lib/style.css";
+import { getMessagingInstance, onMessage } from "@/utilities/firebase";
+import { requestDeviceToken } from "@/utilities/requestFCMToken";
+
 
 export default function SignUpStep1() {
   const router = useRouter();
@@ -85,13 +89,28 @@ export default function SignUpStep1() {
       label: country?.name,
     })
   );
+  
+  useEffect(() => {
+    getMessagingInstance().then((messaging) => {
+      if (messaging) {
+        onMessage(messaging, (payload) => {
+          console.log("📩 Foreground message:", payload);
+
+          success_toaster("Firebase Notification here");
+        });
+      }
+    });
+
+    // Request Device Token
+    requestDeviceToken();
+  }, []);
 
   const handleSelectedCountryStates = async (countryName) => {
     const selectedCountry = countriesData?.data?.data?.find(
       (country) => country?.name === countryName
     );
     try {
-      const res = await axios.get(
+      const res = await api.get(
         BASE_URL +
           `api/v1/admin/address-management/state?countryInSystemId=${selectedCountry?.id}`
       );
@@ -114,7 +133,7 @@ export default function SignUpStep1() {
 
   const handleSelectedCountryStatesCities = async (stateID) => {
     try {
-      const res = await axios.get(
+      const res = await api.get(
         BASE_URL +
           `api/v1/admin/address-management/city?stateInSystemId=${stateID}`
       );
@@ -286,6 +305,7 @@ export default function SignUpStep1() {
       try {
         setLoader(true);
         const res = await SignupAPI("api/v1/users/signup", {
+          tokenId: localStorage.getItem("devToken"),
           info: {
             name: userData?.info?.name,
             email: userData?.info?.email,

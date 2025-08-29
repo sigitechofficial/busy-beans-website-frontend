@@ -50,6 +50,7 @@ import StripeCardForm from "@/components/ui/StripeCardForm";
 import GetAPI from "@/utilities/GetAPI";
 import { drawerSelectStyles } from "@/utilities/SelectStyle";
 import axios from "axios";
+import api from "../../utilities/StatusErrorHandler";
 import { RxCross2 } from "react-icons/rx";
 import BackButton from "@/components/ui/BackButton";
 import Head from "next/head";
@@ -231,7 +232,7 @@ const page = () => {
       (country) => country?.name === countryName
     );
     try {
-      const res = await axios.get(
+      const res = await api.get(
         BASE_URL +
           `api/v1/admin/address-management/state?countryInSystemId=${selectedCountry?.id}`
       );
@@ -254,7 +255,7 @@ const page = () => {
 
   const handleSelectedCountryStatesCities = async (stateID) => {
     try {
-      const res = await axios.get(
+      const res = await api.get(
         BASE_URL +
           `api/v1/admin/address-management/city?stateInSystemId=${stateID}`
       );

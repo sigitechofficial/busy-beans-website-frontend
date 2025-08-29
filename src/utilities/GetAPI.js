@@ -1,12 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
-import { error_toaster, info_toaster } from "./Toaster";
-import axios from "axios";
-import { BASE_URL } from "./URL";
+import { error_toaster } from "./Toaster";
+import api from "./StatusErrorHandler";
 
 const GetAPI = (url) => {
   const [data, setData] = useState([]);
   useEffect(() => {
+    if (!url) return; 
+
     var config = {
       headers: {
         // accessToken: localStorage.getItem("accessToken"),
@@ -15,7 +16,7 @@ const GetAPI = (url) => {
     };
     const fetchData = () => {
       try {
-        axios.get(BASE_URL + url, config).then((dat) => {
+        api.get(url, config).then((dat) => {
           setData(dat.data);
         });
       } catch (error) {
@@ -45,7 +46,7 @@ const GetAPI = (url) => {
       },
     };
     try {
-      axios.get(BASE_URL + url, config).then((dat) => {
+      api.get(url, config).then((dat) => {
         setData(dat.data);
       });
     } catch (error) {

@@ -1,4 +1,5 @@
 "use client";
+import api from "./StatusErrorHandler";
 import axios from "axios";
 import { BASE_URL } from "./URL";
 import { error_toaster } from "./Toaster";
@@ -12,7 +13,7 @@ export const PostAPI = async (url, postData) => {
   };
 
   try {
-    let response = await axios.post(BASE_URL + url, postData, config);
+    let response = await api.post(url, postData, config);
     if (!response) {
       throw new Error("No response from server.");
     } else if (response?.status == "error") {
@@ -36,7 +37,7 @@ export const PostAPI = async (url, postData) => {
 
 export const SignupAPI = async (url, postData) => {
   try {
-    let response = await axios.post(BASE_URL + url, postData);
+    let response = await api.post(url, postData);
     if (!response) {
       throw new Error("No response from server.");
     } else if (response?.status == "error") {
@@ -60,7 +61,7 @@ export const SignupAPI = async (url, postData) => {
 
 export const loginAPI = async (url, postData) => {
   try {
-    const response = await axios.post(BASE_URL + url, postData);
+    const response = await api.post(url, postData);
     if (!response) {
       throw new Error("No response from server.");
     } else if (response?.status == "error") {

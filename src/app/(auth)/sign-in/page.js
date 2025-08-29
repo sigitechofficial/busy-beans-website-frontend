@@ -5,11 +5,13 @@ import ErrorHandler from "@/utilities/ErrorHandler";
 // import { handleGoogleLogin } from "@/utilities/LoginMethods";
 import { loginAPI } from "@/utilities/PostAPI";
 import { error_toaster, success_toaster } from "@/utilities/Toaster";
+import { getMessagingInstance, onMessage } from "@/utilities/firebase";
+import { requestDeviceToken } from "@/utilities/requestFCMToken";
 import { useFormik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Checkbox } from "primereact/checkbox";
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FaApple, FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
@@ -24,6 +26,22 @@ export default function SignIn() {
     email: "",
     password: "",
   };
+
+  useEffect(() => {
+    getMessagingInstance().then((messaging) => {
+      if (messaging) {
+        onMessage(messaging, (payload) => {
+          console.log("📩 Foreground message:", payload);
+
+          success_toaster("Firebase Notification here");
+        });
+      }
+    });
+
+    // Request Device Token
+    requestDeviceToken();
+  }, []);
+
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     useFormik({
       initialValues,
@@ -34,6 +52,7 @@ export default function SignIn() {
           let res = await loginAPI("api/v1/users/login", {
             email: values.email,
             password: values.password,
+            tokenId: localStorage.getItem("devToken"),
           });
           if (res?.data?.status === "success") {
             router.push("/");
