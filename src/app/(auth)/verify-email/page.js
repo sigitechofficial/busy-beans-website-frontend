@@ -68,8 +68,85 @@ export default function VerifyEmail() {
     }
   };
 
+  // const handleVerifyOTP = async () => {
+  //   if (otpStatus === "forgotPassword") {
+  //     setLoader(true);
+  //     try {
+  //       const res = await PostAPI("api/v1/users/otp/verfication", {
+  //         id: userID,
+  //         otp: `${inputRefs.current[0].value}${inputRefs.current[1].value}${inputRefs.current[2].value}${inputRefs.current[3].value}`,
+  //         on: "forgotPassword",
+  //       });
+  //       if (res?.data?.status === "success") {
+  //         router.push("/reset-password");
+  //         localStorage.setItem("userID", res?.data?.data?.data?.userId);
+  //         localStorage.removeItem("otpStatus");
+  //         localStorage.removeItem("userEmail");
+  //         setLoader(false);
+  //         success_toaster("OTP verified Successfully");
+  //       } else {
+  //         throw new Error(
+  //           res?.data?.message || "An unexpected error occurred."
+  //         );
+  //       }
+  //     } catch (error) {
+  //       ErrorHandler(error);
+  //       setLoader(false);
+  //     }
+  //   } else if (otpStatus === "signUp") {
+  //     setLoader(true);
+  //     try {
+  //       const res = await PostAPI("api/v1/users/otp/verfication", {
+  //         id: userID,
+  //         otp: `${inputRefs.current[0].value}${inputRefs.current[1].value}${inputRefs.current[2].value}${inputRefs.current[3].value}`,
+  //         on: "signup",
+  //       });
+  //       console.log("🚀 ~ handleVerifyOTP ~ res:", res);
+  //       if (res?.data?.status === "success") {
+  //         router.push("/");
+  //         setLoader(false);
+  //         success_toaster("Login Successfully");
+  //         localStorage.setItem("accessToken", res?.data?.data?.token);
+  //         localStorage.setItem("loginStatus", true);
+  //         localStorage.setItem("userName", res?.data?.data?.user?.name);
+  //         localStorage.setItem("userID", res?.data?.data?.user?.id);
+  //         localStorage.setItem("userEmail", res?.data?.data?.user?.email);
+  //         localStorage.setItem("addressId", res?.data?.data?.user?.address?.id);
+  //         localStorage.setItem("address", res?.data?.data?.user?.address?.id);
+  //         localStorage.setItem(
+  //           "address",
+  //           `${res?.data?.data?.user?.address?.companyaddress},
+  //           ${res?.data?.data?.user?.address?.addressLineOne}, 
+  //           ${res?.data?.data?.user?.address?.addressLineTwo}, 
+  //           ${res?.data?.data?.user?.address?.town}, 
+  //           ${res?.data?.data?.user?.address?.zipCode}, 
+  //           ${res?.data?.data?.user?.address?.country}, 
+  //           ${res?.data?.data?.user?.address?.state}`
+  //         );
+  //         localStorage.setItem(
+  //           "phoneNumber",
+  //           res?.data?.data?.user?.phoneNumber
+  //         );
+  //         localStorage.setItem(
+  //           "saleTaxNumber",
+  //           res?.data?.data?.user?.saleTaxNumber
+  //         );
+  //         localStorage.setItem("registerBy", res?.data?.data?.user?.registerBy);
+  //       } else {
+  //         throw new Error(
+  //           res?.data?.message || "An unexpected error occurred."
+  //         );
+  //       }
+  //     } catch (error) {
+  //       ErrorHandler(error);
+  //       setLoader(false);
+  //     }
+  //   }
+  // };
+
   const handleVerifyOTP = async () => {
     if (otpStatus === "forgotPassword") {
+      // 🔹 Forgot password OTP
       setLoader(true);
       try {
         const res = await PostAPI("api/v1/users/otp/verfication", {
@@ -82,18 +159,19 @@ export default function VerifyEmail() {
           localStorage.setItem("userID", res?.data?.data?.data?.userId);
           localStorage.removeItem("otpStatus");
           localStorage.removeItem("userEmail");
-          setLoader(false);
           success_toaster("OTP verified Successfully");
         } else {
-          throw new Error(
-            res?.data?.message || "An unexpected error occurred."
-          );
+          throw new Error(res?.data?.message || "An unexpected error occurred.");
         }
       } catch (error) {
         ErrorHandler(error);
+      } finally {
         setLoader(false);
       }
-    } else if (otpStatus === "signUp") {
+    }
+
+    else if (otpStatus === "signUp") {
+      // 🔹 Signup OTP
       setLoader(true);
       try {
         const res = await PostAPI("api/v1/users/otp/verfication", {
@@ -101,10 +179,8 @@ export default function VerifyEmail() {
           otp: `${inputRefs.current[0].value}${inputRefs.current[1].value}${inputRefs.current[2].value}${inputRefs.current[3].value}`,
           on: "signup",
         });
-        console.log("🚀 ~ handleVerifyOTP ~ res:", res);
+
         if (res?.data?.status === "success") {
-          router.push("/");
-          setLoader(false);
           success_toaster("Login Successfully");
           localStorage.setItem("accessToken", res?.data?.data?.token);
           localStorage.setItem("loginStatus", true);
@@ -112,33 +188,47 @@ export default function VerifyEmail() {
           localStorage.setItem("userID", res?.data?.data?.user?.id);
           localStorage.setItem("userEmail", res?.data?.data?.user?.email);
           localStorage.setItem("addressId", res?.data?.data?.user?.address?.id);
-          localStorage.setItem("address", res?.data?.data?.user?.address?.id);
-          localStorage.setItem(
-            "address",
-            `${res?.data?.data?.user?.address?.companyaddress},
-            ${res?.data?.data?.user?.address?.addressLineOne}, 
-            ${res?.data?.data?.user?.address?.addressLineTwo}, 
-            ${res?.data?.data?.user?.address?.town}, 
-            ${res?.data?.data?.user?.address?.zipCode}, 
-            ${res?.data?.data?.user?.address?.country}, 
-            ${res?.data?.data?.user?.address?.state}`
-          );
-          localStorage.setItem(
-            "phoneNumber",
-            res?.data?.data?.user?.phoneNumber
-          );
-          localStorage.setItem(
-            "saleTaxNumber",
-            res?.data?.data?.user?.saleTaxNumber
-          );
+          localStorage.setItem("phoneNumber", res?.data?.data?.user?.phoneNumber);
+          localStorage.setItem("saleTaxNumber", res?.data?.data?.user?.saleTaxNumber);
           localStorage.setItem("registerBy", res?.data?.data?.user?.registerBy);
+
+          router.push("/");
         } else {
-          throw new Error(
-            res?.data?.message || "An unexpected error occurred."
-          );
+          throw new Error(res?.data?.message || "Invalid OTP.");
         }
       } catch (error) {
         ErrorHandler(error);
+      } finally {
+        setLoader(false);
+      }
+    }
+
+    else if (otpStatus === "login") {
+      // 🔹 Login OTP
+      setLoader(true);
+      try {
+        const res = await PostAPI("api/v1/users/otp/verfication", {
+          id: userID,
+          otp: `${inputRefs.current[0].value}${inputRefs.current[1].value}${inputRefs.current[2].value}${inputRefs.current[3].value}`,
+          on: "login",
+        });
+
+        if (res?.data?.status === "success") {
+          success_toaster("Login Successfully");
+          localStorage.setItem("accessToken", res?.data?.data?.token);
+          localStorage.setItem("loginStatus", true);
+          localStorage.setItem("userName", res?.data?.data?.user?.name);
+          localStorage.setItem("userID", res?.data?.data?.user?.id);
+          localStorage.setItem("userEmail", res?.data?.data?.user?.email);
+          localStorage.setItem("addressId", res?.data?.data?.user?.address?.id);
+
+          router.push("/");
+        } else {
+          throw new Error(res?.data?.message || "Invalid OTP.");
+        }
+      } catch (error) {
+        ErrorHandler(error);
+      } finally {
         setLoader(false);
       }
     }

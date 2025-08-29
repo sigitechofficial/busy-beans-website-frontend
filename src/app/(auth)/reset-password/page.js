@@ -10,6 +10,7 @@ import ErrorHandler from "@/utilities/ErrorHandler";
 import MiniLoader from "@/components/ui/MiniLoader";
 import Head from "next/head";
 import { passwordStrength } from "@/utilities/authValidation";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function ResetPassword() {
   if (typeof window !== "undefined") {
@@ -150,6 +151,9 @@ export default function ResetPassword() {
     },
   ];
 
+  const [visibleNew, setVisibleNew] = useState(false);
+  const [visibleConfirm, setVisibleConfirm] = useState(false);
+
   return (
     <>
       <Head>
@@ -186,12 +190,12 @@ export default function ResetPassword() {
                   className="space-y-6 flex flex-col justify-between"
                 >
                   <div className="space-y-4">
-                    <div className="flex flex-col gap-y-2">
+                    <div className="flex flex-col gap-y-2 relative">
                       <label className="text-white font-medium">
                         New Password
                       </label>
                       <input
-                        type="password"
+                        type={visibleNew ? "text" : "password"}
                         name="newPassword"
                         onChange={(e) =>
                           setPasswords({
@@ -200,8 +204,20 @@ export default function ResetPassword() {
                           })
                         }
                         placeholder="Enter Password"
-                        className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                        className="border border-inputBorder rounded-xl outline-none px-3 py-2 pr-10"
+                        autoComplete="none"
                       />
+                        <button
+                          type="button"
+                          onClick={() => setVisibleNew(!visibleNew)}
+                          className="absolute right-3 top-9 text-labelColor"
+                        >
+                          {visibleNew ? (
+                            <AiOutlineEye size={24} color="#ffffff" />
+                          ) : (
+                            <AiOutlineEyeInvisible size={24} color="#ffffff" />
+                          )}
+                        </button>
                       {passwords?.newPassword.length > 0 && (
                         <p className="text-red-700 text font-semibold text-sm">
                           {!passwordStrength?.weak?.test(
@@ -225,7 +241,7 @@ export default function ResetPassword() {
                         Confirm Password
                       </label>
                       <input
-                        type="password"
+                        type={visibleConfirm ? "text" : "password"}
                         name="confirmPassword"
                         onChange={(e) =>
                           setPasswords({
@@ -234,8 +250,20 @@ export default function ResetPassword() {
                           })
                         }
                         placeholder="Enter Confirm Password"
-                        className="border border-inputBorder rounded-xl outline-none px-3 py-2"
+                        className="border border-inputBorder rounded-xl outline-none px-3 py-2 pr-10"
+                        autoComplete="none"
                       />
+                        <button
+                          type="button"
+                          onClick={() => setVisibleConfirm(!visibleConfirm)}
+                          className="absolute right-3 top-9 text-labelColor"
+                        >
+                          {visibleConfirm ? (
+                            <AiOutlineEye size={24} color="#ffffff" />
+                          ) : (
+                            <AiOutlineEyeInvisible size={24} color="#ffffff" />
+                          )}
+                        </button>
                     </div>
                   </div>
                   <div>

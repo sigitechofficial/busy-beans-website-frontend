@@ -153,7 +153,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
                 >
                   <div className="w-full h-[292px] mb-3">
                     <img
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                       src={BASE_URL + image}
                       alt=""
                     />

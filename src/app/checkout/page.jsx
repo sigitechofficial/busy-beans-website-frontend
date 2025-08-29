@@ -898,7 +898,7 @@ const page = () => {
                         <div className="flex gap-x-5">
                           <div className="border-2  border-gray-100 rounded-md sm:w-28 sm:h-20 w-6 h-6 ">
                             <img
-                              className="w-full h-full object-cover rounded-md overflow-hidden"
+                              className="w-full h-full object-contain rounded-md overflow-hidden"
                               src={BASE_URL + cart?.image}
                               alt={cart?.name}
                             />

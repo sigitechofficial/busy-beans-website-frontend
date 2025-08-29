@@ -164,7 +164,7 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                             <img
                               src={BASE_URL + cartI?.image}
                               alt="cutlery"
-                              className="w-full h-full rounded-md object-cover"
+                              className="w-full h-full rounded-md object-contain"
                             />
                           </div>
 

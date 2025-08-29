@@ -9,6 +9,7 @@ import { getMessagingInstance, onMessage } from "@/utilities/firebase";
 import { requestDeviceToken } from "@/utilities/requestFCMToken";
 import { useFormik } from "formik";
 import Link from "next/link";
+import { info_toaster } from "@/utilities/Toaster";
 import { useRouter } from "next/navigation";
 import { Checkbox } from "primereact/checkbox";
 import { useState, useEffect} from "react";
@@ -28,6 +29,7 @@ export default function SignIn() {
   };
 
   useEffect(() => {
+    info_toaster("If you are logging in for the first time, please use password 123456");
     getMessagingInstance().then((messaging) => {
       if (messaging) {
         onMessage(messaging, (payload) => {
@@ -113,7 +115,22 @@ export default function SignIn() {
             // );
             // setLoginStatus(true);
             success_toaster("Login Successfully");
-          } else {
+          } 
+
+          else if (
+            res?.data?.status === "verification-required" ||
+            res?.data?.message.toLowerCase().includes("otp sent")
+          ) {
+            localStorage.setItem("otpStatus", "login");
+            localStorage.setItem("userEmail", res?.data?.data?.email || values.email);
+            localStorage.setItem("userID", res?.data?.data?.id);
+
+            setLoader(false);
+
+            router.push("/verify-email");
+          } 
+
+          else {
             throw new Error(
               res?.data?.message || "An unexpected error occurred."
             );
@@ -223,6 +240,15 @@ export default function SignIn() {
             <h1 className="hidden md:block font-satoshi font-black text-white text-2xl lg:text-3xl">
               Sign In to Busy Bean
             </h1>
+            
+            <div className="bg-[#6F4E37] text-white p-6 rounded-lg max-w-xl mx-auto text-left">
+              <p className="text-base leading-relaxed">
+                Welcome to our new customer portal! <br />
+                If you are logging in for the first time, please use the default password{" "}
+                <span className="font-semibold">123456</span>.
+              </p>
+            </div>
+
             <div className="md:hidden">
               <img
                 src="/images/logocoffee.png"

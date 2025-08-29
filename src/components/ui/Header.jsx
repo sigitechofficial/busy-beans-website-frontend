@@ -41,9 +41,11 @@ export default function Header() {
             <li>
               <Link href="/recepies">Resources</Link>
             </li>
-            <li>
-              <Link href="/product">Products</Link>
-            </li>
+            {accessToken && (
+              <li>
+                <Link href="/product">Products</Link>
+              </li>
+            )}
           </ul>
         </div>
 
