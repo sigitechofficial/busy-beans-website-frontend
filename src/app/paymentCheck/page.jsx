@@ -19,7 +19,7 @@ export default function Payment() {
     const fetchInvoice = async () => {
       try {
         const response = await fetch(
-          `http://192.168.18.34:8011/api/v1/admin/order-management/fetch-invoice/${orderId}`,
+          `https://backendbb.trimworldwide.com/api/v1/admin/order-management/fetch-invoice/${orderId}`,
           { method: "POST", headers: { "Content-Type": "application/json" } }
         );
 

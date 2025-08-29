@@ -96,7 +96,7 @@ export default function SignUpStep1() {
         onMessage(messaging, (payload) => {
           console.log("📩 Foreground message:", payload);
 
-          success_toaster("Firebase Notification here");
+          // success_toaster("Firebase Notification here");
         });
       }
     });

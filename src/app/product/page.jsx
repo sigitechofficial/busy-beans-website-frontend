@@ -8,9 +8,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Navigation, Pagination, Mousewheel, Keyboard } from "swiper/modules";
+import { Navigation } from "swiper/modules";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import ProdBanner from "@/components/ui/ProdBanner";
 import ProdModal from "@/components/ui/ProdModal";
 import { useEffect, useState } from "react";
 import Loader from "@/components/ui/Loader";
@@ -40,7 +39,7 @@ export default function Product() {
 
   const { data } = GetAPI("api/v1/admin/product");
   const { data: categoryData } = GetAPI("api/v1/admin/category");
-  
+
   const handleOrderNowButton = (id) => {
     if (existingCartItems) {
       const item = existingCartItems.find((item) => item?.productId === id);
@@ -52,21 +51,48 @@ export default function Product() {
 
   const handleOrderNowButtonQty = (id) => {
     if (existingCartItems) {
-      const item = existingCartItems.find((item) => {
-        return item?.productId === id;
-      });
+      const item = existingCartItems.find((item) => item?.productId === id);
       return item ? item?.qty : 1;
     } else {
       return 1;
     }
   };
 
+  // priority order for categories & products
+  const priorityCategoryIds = [6, 4, 2];
+
+  // sort categories
   useEffect(() => {
-    const catList = [{ id: 0, name: "All" }];
-    categoryData?.data?.data?.map((cat) => catList.push(cat));
-    setCategoryList([...catList]);
+    if (!categoryData?.data?.data) return;
+
+    const sortedCategories = [...(categoryData?.data?.data || [])].sort(
+      (a, b) => {
+        const indexA = priorityCategoryIds.indexOf(a.id);
+        const indexB = priorityCategoryIds.indexOf(b.id);
+
+        if (indexA === -1 && indexB === -1) return 0;
+        if (indexA === -1) return 1;
+        if (indexB === -1) return -1;
+        return indexA - indexB;
+      }
+    );
+
+    const catList = [{ id: 0, name: "All" }, ...sortedCategories];
+
+    setCategoryList(catList);
     setCategoryID(0);
   }, [categoryData]);
+
+  // sort products
+  const sortedProducts = [...(data?.data?.data || [])].sort((a, b) => {
+    const indexA = priorityCategoryIds.indexOf(a.categoryId);
+    const indexB = priorityCategoryIds.indexOf(b.categoryId);
+
+    if (indexA === -1 && indexB === -1) return 0;
+    if (indexA === -1) return 1;
+    if (indexB === -1) return -1;
+    return indexA - indexB;
+  });
 
   const jsonLd = [
     {
@@ -91,7 +117,6 @@ export default function Product() {
       description:
         "Browse Busy Bean Coffee’s premium wholesale coffee beans, creamers, syrups, and café supplies tailored for foodservice businesses.",
     },
-    // Optional: Add individual products if needed
   ];
 
   return data.length === 0 ? (
@@ -125,7 +150,6 @@ export default function Product() {
           <button>Coffee Bean</button>
           <button>Coffee Bean</button>
         </div> */}
-
           <div className="relative pt-16 sm:px-5 overflow-visible flex flex-wrap w-[95%] md:w-[90%] 2xl:w-[75%] mx-auto">
             <Swiper
               spaceBetween={10}
@@ -177,11 +201,12 @@ export default function Product() {
             </div>
           </div>
 
+          {/* Products */}
           <div className="relative overflow-hidden">
             <div className="relative z-10 px-0 sm:px-5 w-[95%] md:w-[90%] 2xl:w-[75%] mx-auto pt-10 sm:pt-14 pb-10 sm:pb-28 justify-items-center grid grid-cols-2 xl:grid-cols-3 gap-x-2 sm:gap-x-5 gap-y-2 sm:gap-y-10 md:gap-y-16 text-white">
-              {data?.data?.data?.map((item, i) =>
+              {sortedProducts.map((item, i) =>
                 categoryID === 0 ? (
-                  <div className="w-full h-full" div key={i}>
+                  <div className="w-full h-full" key={i}>
                     <ProductCard
                       // onClick={() => router.push("/product/detail/1")}
                       name={item?.name}
@@ -210,9 +235,9 @@ export default function Product() {
                   </div>
                 ) : (
                   item?.categoryId === categoryID && (
-                    <div className="w-full h-full" div key={i}>
+                    <div className="w-full h-full" key={i}>
                       <ProductCard
-                        // onClick={() => router.push("/product/detail/1")}
+                      // onClick={() => router.push("/product/detail/1")}
                         name={item?.name}
                         weight={item?.weight}
                         imageURL={item?.image}
@@ -247,6 +272,7 @@ export default function Product() {
             </div>
             <div className="absolute bottom-0 left-0 w-[100vw] h-[300px] bg-gradient-to-t from-[#000000ab]"></div>
           </div>
+
           <div className="w-full sm:mt-10">
             <CoffeSolution />
           </div>

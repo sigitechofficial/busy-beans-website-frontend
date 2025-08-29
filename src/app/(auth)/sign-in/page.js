@@ -35,7 +35,7 @@ export default function SignIn() {
         onMessage(messaging, (payload) => {
           console.log("📩 Foreground message:", payload);
 
-          success_toaster("Firebase Notification here");
+          // success_toaster("Firebase Notification here");
         });
       }
     });
