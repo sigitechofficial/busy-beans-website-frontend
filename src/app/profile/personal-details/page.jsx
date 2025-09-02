@@ -1,18 +1,19 @@
 "use client";
 import MiniLoader from "@/components/ui/MiniLoader";
-import { PostAPI } from "@/utilities/PostAPI";
 import { PutAPI } from "@/utilities/PutAPI";
+import GetAPI from "@/utilities/GetAPI";
+import { useEffect, useState } from "react";
 import { info_toaster, success_toaster } from "@/utilities/Toaster";
-import React, { useState } from "react";
 import { FaCircleUser } from "react-icons/fa6";
 import Head from "next/head";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const personalDetails = () => {
-  const [model, setModel] = useState({
-    type: "",
-    open: false,
-  });
+  const [model, setModel] = useState({ type: "", open: false });
   const [loader, setLoader] = useState(false);
+  const [userId, setUserId] = useState(null);
+  const [sameAsShipping, setSameAsShipping] = useState(false);
+
   const [profile, setProfile] = useState({
     userId: "",
     name: "",
@@ -22,167 +23,216 @@ const personalDetails = () => {
     companyName: "",
     addressId: "",
     companyaddress: "",
-    addressLineOne: "",
-    addressLineTwo: "",
-    town: "",
-    zipCode: "",
-    country: "",
-    state: "",
+    shipping: {
+      addressLineOne: "",
+      addressLineTwo: "",
+      town: "",
+      zipCode: "",
+      country: "",
+      state: "",
+    },
+    billing: {
+      addressLineOne: "",
+      addressLineTwo: "",
+      town: "",
+      zipCode: "",
+      country: "",
+      state: "",
+    },
   });
 
-  let userData = {
-    addressId: "",
-    address: "",
-    phoneNumber: "",
-    registerBy: "",
-    saleTaxNumber: "",
-    userEmail: "",
-    userId: "",
-    name: "",
-    emailToSendInvoices: "",
-    companyName: "",
-    companyaddress: "",
-    addressLineOne: "",
-    addressLineTwo: "",
-    town: "",
-    zipCode: "",
-    country: "",
-    state: "",
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUserId(localStorage.getItem("userID"));
+    }
+  }, []);
+
+  const { data: customerDetail } = GetAPI(
+    userId ? `api/v1/users/view-customer-detail/${userId}` : null
+  );
+  
+  const areAddressesSame = (shipping, billing) => {
+    if (!shipping || !billing) return false;
+    const keys = ["addressLineOne", "addressLineTwo", "country", "state", "town", "zipCode"];
+    return keys.every((k) => (shipping?.[k] || "").trim() === (billing?.[k] || "").trim());
   };
 
-  if (typeof window !== "undefined") {
-    userData = {
-      addressId: localStorage.getItem("addressId") || "",
-      address: localStorage.getItem("address") || "",
-      phoneNumber: localStorage.getItem("phoneNumber") || "",
-      registerBy: localStorage.getItem("registerBy") || "",
-      saleTaxNumber: localStorage.getItem("saleTaxNumber") || "",
-      userEmail: localStorage.getItem("userEmail") || "",
-      userId: localStorage.getItem("userID") || "",
-      name: localStorage.getItem("userName"),
-      emailToSendInvoices: localStorage.getItem("emailToSendInvoices") || "",
-      companyName: localStorage.getItem("companyName") || "",
-      companyaddress: localStorage.getItem("address")?.split(",")[0] || "",
-      addressLineOne: localStorage.getItem("address")?.split(",")[1] || "",
-      addressLineTwo: localStorage.getItem("address")?.split(",")[2] || "",
-      town: localStorage.getItem("address")?.split(",")[3] || "",
-      zipCode: localStorage.getItem("address")?.split(",")[4] || "",
-      country: localStorage.getItem("address")?.split(",")[5] || "",
-      state: localStorage.getItem("address")?.split(",")[6] || "",
-    };
-  }
+  useEffect(() => {
+    if (customerDetail?.status === "success") {
+      const customer = customerDetail.data.customer;
+      const shipping = {
+        addressLineOne: customer.addresses?.[0]?.addressLineOne || "",
+        addressLineTwo: customer.addresses?.[0]?.addressLineTwo || "",
+        town: customer.addresses?.[0]?.town || "",
+        zipCode: customer.addresses?.[0]?.zipCode || "",
+        country: customer.addresses?.[0]?.country || "",
+        state: customer.addresses?.[0]?.state || "",
+      };
+      const billing = {
+        id: customer.billingAddresses?.[0]?.id || null,
+        addressLineOne: customer.billingAddresses?.[0]?.addressLineOne || "",
+        addressLineTwo: customer.billingAddresses?.[0]?.addressLineTwo || "",
+        town: customer.billingAddresses?.[0]?.town || "",
+        zipCode: customer.billingAddresses?.[0]?.zipCode || "",
+        country: customer.billingAddresses?.[0]?.country || "",
+        state: customer.billingAddresses?.[0]?.state || "",
+      };
+
+      setProfile({
+        userId: customer.id,
+        name: customer.name || "",
+        phoneNumber: customer.phoneNumber || "",
+        saleTaxNumber: customer.saleTaxNumber || "",
+        emailToSendInvoices: customer.emailToSendInvoices || "",
+        companyName: customer.companyName || "",
+        companyaddress: customer.addresses?.[0]?.companyaddress || "",
+        addressId: customer.addresses?.[0]?.id || "",
+        shipping,
+        billing,
+      });
+
+      setSameAsShipping(areAddressesSame(shipping, billing));
+    }
+  }, [customerDetail]);
+
+  const formatAddress = (addr) => (
+    <>
+      {addr.addressLineOne && <div>{addr.addressLineOne}</div>}
+      {addr.addressLineTwo && <div>{addr.addressLineTwo}</div>}
+      <div>
+        {addr.town}, {addr.state} {addr.zipCode}
+      </div>
+      <div>{addr.country}</div>
+    </>
+  );
 
   const handleProfileUpdate = async (type) => {
     let data = {};
+
     if (type === "address") {
-      data = {
-        addressId: userData?.addressId,
+      // Shipping
+      const shipping = {
+        addressId: profile?.addressId,
         addressData: {
-          companyaddress: profile.companyaddress,
-          addressLineOne: profile.addressLineOne,
-          addressLineTwo: profile.addressLineTwo,
-          town: profile.town,
-          zipCode: profile.zipCode,
-          country: profile.country,
-          state: profile.state,
+          companyaddress: profile.companyaddress || "",
+          addressLineOne: profile.shipping.addressLineOne,
+          addressLineTwo: profile.shipping.addressLineTwo,
+          town: profile.shipping.town,
+          zipCode: profile.shipping.zipCode,
+          country: profile.shipping.country,
+          state: profile.shipping.state,
         },
       };
-    } else if (type === "name") {
-      data = {
-        userId: userData?.userId,
-        userData: {
-          name: profile?.name,
-        },
+
+      // Billing
+      const billing = {
+        billingAddressId: profile?.billing?.id || null,
+        billingAddressData: sameAsShipping
+          ? { ...shipping.addressData } 
+          : {
+            companyaddress: profile.companyaddress || "",
+            addressLineOne: profile.billing.addressLineOne,
+            addressLineTwo: profile.billing.addressLineTwo,
+            town: profile.billing.town,
+            zipCode: profile.billing.zipCode,
+            country: profile.billing.country,
+            state: profile.billing.state,
+          },
       };
-    } else if (type === "companyName") {
+
       data = {
-        userId: userData?.userId,
-        userData: {
-          companyName: profile?.companyName,
-        },
+        ...shipping,
+        ...billing,
       };
-    } else if (type === "emailToSendInvoices") {
+    } else {
       data = {
-        userId: userData?.userId,
-        userData: {
-          emailToSendInvoices: profile?.emailToSendInvoices,
-        },
-      };
-    } else if (type === "saleTaxNumber") {
-      data = {
-        userId: userData?.userId,
-        userData: {
-          saleTaxNumber: profile?.saleTaxNumber,
-        },
-      };
-    } else if (type === "phoneNumber") {
-      data = {
-        userId: userData?.userId,
-        userData: {
-          phoneNumber: profile?.phoneNumber,
-        },
+        userId: profile?.userId,
+        userData: { [type]: profile?.[type] },
       };
     }
 
     setLoader(true);
-
     let res = await PutAPI("api/v1/users/drawer/update-profile", data);
 
     if (res?.data?.status === "success") {
       setLoader(false);
-
-      if (model.type === "address") {
-        localStorage.setItem(
-          "address",
-          `${profile?.companyaddress},
-          ${profile?.addressLineOne}, 
-          ${profile?.addressLineTwo}, 
-          ${profile?.town}, 
-          ${profile?.zipCode}, 
-          ${profile?.country}, 
-          ${profile?.state}`
-        );
-      } else if (model.type === "name") {
-        localStorage.setItem("userName", profile.name);
-      } else if (model.type === "companyName") {
-        localStorage.setItem("companyName", profile.companyName);
-      } else if (model.type === "emailToSendInvoices") {
-        localStorage.setItem(
-          "emailToSendInvoices",
-          profile.emailToSendInvoices
-        );
-      } else if (model.type === "saleTaxNumber") {
-        localStorage.setItem("saleTaxNumber", profile.saleTaxNumber);
-      } else if (model.type === "phoneNumber") {
-        localStorage.setItem("phoneNumber", profile.phoneNumber);
-      }
       setModel({ ...model, type: "" });
+      if (type === "address" && sameAsShipping) {
+        setProfile((prev) => ({
+          ...prev,
+          billing: { ...prev.shipping },
+        }));
+      }
       success_toaster("Profile Updated");
     } else {
       setLoader(false);
+      info_toaster("Failed to update");
+    }
+  };
 
-      info_toaster("failed !");
+  const [showPwForm, setShowPwForm] = useState(false);
+  const [pwLoading, setPwLoading] = useState(false);
+  const [pw, setPw] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [vis, setVis] = useState({ old: false, next: false, confirm: false });
+
+  const passwordErrors = [];
+  if (!pw.oldPassword) passwordErrors.push("Current password is required");
+  if (!pw.newPassword) passwordErrors.push("New password is required");
+  if (pw.newPassword && pw.newPassword.length < 8)
+    passwordErrors.push("New password must be at least 8 characters");
+  if (pw.newPassword && !/[A-Za-z]/.test(pw.newPassword))
+    passwordErrors.push("New password must include a letter");
+  if (pw.newPassword && !/\d/.test(pw.newPassword))
+    passwordErrors.push("New password must include a number");
+  if (pw.confirmPassword !== pw.newPassword)
+    passwordErrors.push("Confirm password does not match");
+
+  const handleChangePassword = async () => {
+    if (passwordErrors.length) {
+      info_toaster(passwordErrors[0]);
+      return;
+    }
+    setPwLoading(true);
+    try {
+      const res = await PutAPI("api/v1/users/drawer/update-profile", {
+        userData: {
+          userId: profile?.userId,
+          oldPassword: pw.oldPassword,
+          newPassword: pw.newPassword,
+        },
+      });
+
+      if (res?.data?.status === "success") {
+        success_toaster("Password updated successfully");
+        setShowPwForm(false);
+        setPw({ oldPassword: "", newPassword: "", confirmPassword: "" });
+      }
+    } finally {
+      setPwLoading(false);
     }
   };
 
   const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebPage",
-  name: "Personal Details",
-  url: "https://www.busybeancoffee.com/personal-details",
-  description:
-    "Manage your profile information like name, company details, billing email, address, phone number, and tax information on Busy Bean Coffee.",
-  isPartOf: {
-    "@type": "WebSite",
-    name: "Busy Bean Coffee",
-    url: "https://www.busybeancoffee.com",
-  },
-};
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Personal Details",
+    url: "https://www.busybeancoffee.com/personal-details",
+    description:
+      "Manage your profile information like name, company details, billing email, address, phone number, and tax information on Busy Bean Coffee.",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Busy Bean Coffee",
+      url: "https://www.busybeancoffee.com",
+    },
+  };
 
   return (
-<>
-
-       <Head>
+    <>
+      <Head>
         <title>Personal Details | Busy Bean Coffee</title>
         <meta
           name="description"
@@ -193,405 +243,311 @@ const personalDetails = () => {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </Head>
-    <div className="w-full ">
-      <div className=" bg-theme pt-32 sm:pt-[180px] pb-10 relative">
-        {/* overlay */}
-        <div className="w-full h-full absolute top-0 left-0 z-10 [&>img]:opacity-[0.05] bg-gradient-to-b from-[#00000097] to-transparent pointer-events-none"></div>
-        {/* content */}
-        {!userData?.userEmail ? (
-          <div className="h-[50vh] flex justify-center items-center">
-            <MiniLoader />
-          </div>
-        ) : (
-          <div className="w-[90%] md:w-[75%] mx-auto bg-themeLight border-theme border text-white rounded-xl shadow-md pb-10 relative z-20">
-            <div className="flex justify-between items-center mx-6 md:mx-14 border-b  border-theme py-3 sm:py-6">
-              <div className="space-y-2 font-satoshi">
-                <h4 className="font-bold text-xl sm:text-3xl">
-                  Personal details
-                </h4>
-                <p className="text-sm opacity-60">
-                  Upload your info and find how it’s used.
-                </p>
-              </div>
-              <div>
+      <div className="w-full ">
+        <div className=" bg-theme pt-32 sm:pt-[180px] pb-10 relative">
+          <div className="w-full h-full absolute top-0 left-0 z-10 [&>img]:opacity-[0.05] bg-gradient-to-b from-[#00000097] to-transparent pointer-events-none"></div>
+
+          {!profile?.userId ? (
+            <div className="h-[50vh] flex justify-center items-center">
+              <MiniLoader />
+            </div>
+          ) : (
+            <div className="w-[90%] md:w-[75%] mx-auto bg-themeLight border-theme border text-white rounded-xl shadow-md pb-10 relative z-20">
+              {/* Header */}
+              <div className="flex justify-between items-center mx-6 md:mx-14 border-b border-theme py-3 sm:py-6">
+                <div className="space-y-2 font-satoshi">
+                  <h4 className="font-bold text-xl sm:text-3xl">
+                    Personal details
+                  </h4>
+                  <p className="text-sm opacity-60">
+                    Upload your info and find how it’s used.
+                  </p>
+                </div>
                 <FaCircleUser size={50} />
               </div>
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 border-b border-theme py-3 sm:py-6 font-inter">
-              <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2">
-                Name
-              </p>{" "}
-              {model.type === "name" ? (
-                <input
-                  className="w-full p-2 rounded-lg bg-transparent outline-none border border-theme/50"
-                  type="text"
-                  name="name"
-                  id="name"
-                  value={profile?.name}
-                  onChange={(e) =>
-                    setProfile({ ...profile, name: e.target.value })
-                  }
-                />
-              ) : (
-                <p className="text-sm sm:text-base font-light opacity-60">
-                  {userData?.name}
-                </p>
-              )}
-              {model.type === "name" ? (
-                <button
-                  className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
-                  onClick={() => {
-                    handleProfileUpdate("name");
-                  }}
-                >
-                  Save
-                </button>
-              ) : (
-                <p
-                  onClick={() => {
-                    setProfile({ ...profile, name: userData.name });
-                    setModel({ ...model, type: "name" });
-                  }}
-                  className="text-sm sm:text-lg font-medium flex justify-end"
-                >
-                  Edit
-                </p>
-              )}
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 border-b border-theme py-3 sm:py-6 font-inter">
-              <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2">
-                Company Name
-              </p>
-              {model.type === "companyName" ? (
-                <input
-                  className="w-full p-2 rounded-lg bg-transparent outline-none border border-theme/50"
-                  type="text"
-                  name="name"
-                  id="name"
-                  value={profile?.companyName}
-                  onChange={(e) =>
-                    setProfile({ ...profile, companyName: e.target.value })
-                  }
-                />
-              ) : (
-                <p className="text-sm sm:text-base font-light opacity-60">
-                  {userData?.companyName}
-                </p>
-              )}
-              {model.type === "companyName" ? (
-                <button
-                  className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
-                  onClick={() => {
-                    handleProfileUpdate("companyName");
-                  }}
-                >
-                  Save
-                </button>
-              ) : (
-                <p
-                  onClick={() => {
-                    setProfile({
-                      ...profile,
-                      companyName: userData.companyName,
-                    });
-                    setModel({ ...model, type: "companyName" });
-                  }}
-                  className="text-sm sm:text-lg font-medium flex justify-end"
-                >
-                  Edit
-                </p>
-              )}
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 py-3 sm:py-6 font-inter max-lg:border-b border-theme ">
-              <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2">
-                Email address
-              </p>
-              <div className="text-lg font-light space-y-2">
-                <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2 opacity-60">
-                  {userData?.userEmail}
-                </p>
-                <p className="text-xs opacity-60">
-                  This is the email address you can to sign in.
-                </p>
-              </div>
-            </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 border-b border-theme py-3 sm:py-6 font-inter">
-              <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2">
-                Email to send invoice
-              </p>{" "}
-              <div className="text-lg font-light space-y-2">
-                {model.type === "emailToSendInvoices" ? (
-                  <input
-                    className="w-full p-2 rounded-lg bg-transparent outline-none border border-theme/50"
-                    type="text"
-                    name="emailToSendInvoices"
-                    id="emailToSendInvoices"
-                    value={profile?.emailToSendInvoices}
-                    onChange={(e) =>
-                      setProfile({
-                        ...profile,
-                        emailToSendInvoices: e.target.value,
-                      })
-                    }
-                  />
-                ) : (
-                  <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2 opacity-60">
-                    {userData?.emailToSendInvoices}
-                  </p>
-                )}
-                <p className="text-xs opacity-60">
-                  This email use to send Invoice
-                </p>
-              </div>
-              {model.type === "emailToSendInvoices" ? (
-                <button
-                  className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
-                  onClick={() => {
-                    handleProfileUpdate("emailToSendInvoices");
-                  }}
-                >
-                  Save
-                </button>
-              ) : (
-                <p
-                  onClick={() => {
-                    setProfile({
-                      ...profile,
-                      emailToSendInvoices: userData.emailToSendInvoices,
-                    });
-                    setModel({ ...model, type: "emailToSendInvoices" });
-                  }}
-                  className="text-sm sm:text-lg font-medium flex justify-end"
-                >
-                  Edit
-                </p>
-              )}
+              {/* Name */}
+              <Section
+                label="Name"
+                field="name"
+                profile={profile}
+                setProfile={setProfile}
+                model={model}
+                setModel={setModel}
+                handleUpdate={handleProfileUpdate}
+              />
+
+              {/* Company Name */}
+              <Section
+                label="Company Name"
+                field="companyName"
+                profile={profile}
+                setProfile={setProfile}
+                model={model}
+                setModel={setModel}
+                handleUpdate={handleProfileUpdate}
+              />
+
+              {/* Email to send invoice */}
+              <Section
+                label="Email to send invoice"
+                field="emailToSendInvoices"
+                profile={profile}
+                setProfile={setProfile}
+                model={model}
+                setModel={setModel}
+                handleUpdate={handleProfileUpdate}
+              />
+
+              {/* Phone Number */}
+              <Section
+                label="Phone Number"
+                field="phoneNumber"
+                profile={profile}
+                setProfile={setProfile}
+                model={model}
+                setModel={setModel}
+                handleUpdate={handleProfileUpdate}
+              />
+
+              {/* Sales Tax Number */}
+              <Section
+                label="Sales Tax Number"
+                field="saleTaxNumber"
+                profile={profile}
+                setProfile={setProfile}
+                model={model}
+                setModel={setModel}
+                handleUpdate={handleProfileUpdate}
+              />
+
+              {/* Address */}
+              <AddressSection
+                profile={profile}
+                setProfile={setProfile}
+                model={model}
+                setModel={setModel}
+                sameAsShipping={sameAsShipping}
+                setSameAsShipping={setSameAsShipping}
+                handleUpdate={handleProfileUpdate}
+                formatAddress={formatAddress}
+              />
+
+              {/* Password */}
+              <PasswordSection
+                showPwForm={showPwForm}
+                setShowPwForm={setShowPwForm}
+                pw={pw}
+                setPw={setPw}
+                vis={vis}
+                setVis={setVis}
+                passwordErrors={passwordErrors}
+                handleChangePassword={handleChangePassword}
+                pwLoading={pwLoading}
+              />
             </div>
-            <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 border-b border-theme py-3 sm:py-6 font-inter">
-              <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2">
-                Phone Number
-              </p>{" "}
-              {model.type === "phoneNumber" ? (
-                <input
-                  className="w-full p-2 rounded-lg bg-transparent outline-none border border-theme/50"
-                  type="text"
-                  name="phoneNumber"
-                  id="phoneNumber"
-                  value={profile?.phoneNumber}
-                  onChange={(e) =>
-                    setProfile({
-                      ...profile,
-                      phoneNumber: e.target.value,
-                    })
-                  }
-                />
-              ) : (
-                <p className="text-sm sm:text-base font-light opacity-60">
-                  {userData?.phoneNumber}
-                </p>
-              )}
-              {model.type === "phoneNumber" ? (
-                <button
-                  className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
-                  onClick={() => {
-                    handleProfileUpdate("phoneNumber");
-                  }}
-                >
-                  Save
-                </button>
-              ) : (
-                <p
-                  onClick={() => {
-                    setProfile({
-                      ...profile,
-                      phoneNumber: userData.phoneNumber,
-                    });
-                    setModel({ ...model, type: "phoneNumber" });
-                  }}
-                  className="text-sm sm:text-lg font-medium flex justify-end"
-                >
-                  Edit
-                </p>
-              )}
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 border-b border-theme py-3 sm:py-6 font-inter">
-              <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2">
-                Sales Tax Number
-              </p>
-              {model.type === "saleTaxNumber" ? (
-                <input
-                  className="w-full p-2 rounded-lg bg-transparent outline-none border border-theme/50"
-                  type="text"
-                  name="saleTaxNumber"
-                  id="saleTaxNumber"
-                  value={profile?.saleTaxNumber}
-                  onChange={(e) =>
-                    setProfile({
-                      ...profile,
-                      saleTaxNumber: e.target.value,
-                    })
-                  }
-                />
-              ) : (
-                <p className="text-sm sm:text-base font-light opacity-60">
-                  {userData?.saleTaxNumber}
-                </p>
-              )}
-              {model.type === "saleTaxNumber" ? (
-                <button
-                  className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
-                  onClick={() => {
-                    handleProfileUpdate("saleTaxNumber");
-                  }}
-                >
-                  Save
-                </button>
-              ) : (
-                <p
-                  onClick={() => {
-                    setProfile({
-                      ...profile,
-                      saleTaxNumber: userData.saleTaxNumber,
-                    });
-                    setModel({ ...model, type: "saleTaxNumber" });
-                  }}
-                  className="text-sm sm:text-lg font-medium flex justify-end"
-                >
-                  Edit
-                </p>
-              )}
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 border-b border-theme py-3 sm:py-6 font-inter">
-              <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2">
-                Address
-              </p>{" "}
-              {model.type === "address" ? (
-                <div className="w-full space-y-2">
-                  <div>
-                    <label htmlFor="country">Country</label>
-                    <input
-                      className="w-full p-2 rounded-lg bg-transparent outline-none border border-theme/50"
-                      type="text"
-                      name="country"
-                      id="country"
-                      value={profile?.country}
-                      onChange={(e) =>
-                        setProfile({ ...profile, country: e.target.value })
-                      }
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="addressLineOne">Address 1</label>
-                    <input
-                      className="w-full p-2 rounded-lg bg-transparent outline-none border border-theme/50"
-                      type="text"
-                      name="addressLineOne"
-                      id="addressLineOne"
-                      value={profile?.addressLineOne}
-                      onChange={(e) =>
-                        setProfile({
-                          ...profile,
-                          addressLineOne: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="state">State</label>
-                    <input
-                      className="w-full p-2 rounded-lg bg-transparent outline-none border border-theme/50"
-                      type="text"
-                      name="state"
-                      id="state"
-                      value={profile?.state}
-                      onChange={(e) =>
-                        setProfile({ ...profile, state: e.target.value })
-                      }
-                    />
-                  </div>
-                  <div className="flex gap-x-4 w-full">
-                    <div>
-                      <label htmlFor="town">City</label>
-                      <input
-                        className="w-full p-2 rounded-lg bg-transparent outline-none border border-theme/50"
-                        type="text"
-                        name="town"
-                        id="town"
-                        value={profile?.town}
-                        onChange={(e) =>
-                          setProfile({ ...profile, town: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="zipCode">Zip Code</label>
-                      <input
-                        className="w-full p-2 rounded-lg bg-transparent outline-none border border-theme/50"
-                        type="text"
-                        name="zipCode"
-                        id="zipCode"
-                        value={profile?.zipCode}
-                        onChange={(e) =>
-                          setProfile({ ...profile, zipCode: e.target.value })
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <p className="text-sm sm:text-base font-light opacity-60">
-                  {userData?.address?.split(",").join("")}
-                </p>
-              )}
-              {model.type === "address" ? (
-                <button
-                  className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto h-max p-1 rounded-md"
-                  onClick={() => {
-                    handleProfileUpdate("address");
-                  }}
-                >
-                  Save
-                </button>
-              ) : (
-                <p
-                  className="text-sm sm:text-lg font-medium flex justify-end"
-                  onClick={() => {
-                    setProfile({
-                      ...profile,
-                      addressLineOne: userData.addressLineOne.trim(),
-                      addressLineTwo: userData.addressLineTwo.trim(),
-                      town: userData.town.trim(),
-                      zipCode: userData.zipCode.trim(),
-                      country: userData.country.trim(),
-                      state: userData.state.trim(),
-                      addressId: userData.addressId,
-                    });
-                    setModel({ ...model, type: "address" });
-                  }}
-                >
-                  Edit
-                </p>
-              )}
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 border-b border-theme py-3 sm:py-6 font-inter">
-              <p className="text-sm sm:text-lg font-medium max-lg:col-span-2 max-md:mb-2">
-                Password
-              </p>{" "}
-              <p className="text-sm sm:text-base font-light opacity-60">
-                ********
-              </p>{" "}
-              <p className="text-sm sm:text-lg font-medium flex justify-end">
-                Change Password
-              </p>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
-
     </>
   );
 };
+
+// ---------------- Reusable Sub Components ------------------
+
+const Section = ({ label, field, profile, setProfile, model, setModel, handleUpdate }) => (
+  <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 border-b border-theme py-3 sm:py-6 font-inter">
+    <p className="text-sm sm:text-lg font-medium max-lg:col-span-2">{label}</p>
+    {model.type === field ? (
+      <input
+        className="w-full p-2 rounded-lg bg-transparent outline-none border border-theme/50"
+        type="text"
+        value={profile?.[field] || ""}
+        onChange={(e) => setProfile({ ...profile, [field]: e.target.value })}
+      />
+    ) : (
+      <p className="text-sm sm:text-base font-light opacity-60">{profile?.[field]}</p>
+    )}
+    {model.type === field ? (
+      <button
+        className="text-sm sm:text-lg font-medium flex justify-end w-max bg-red-50 text-black ml-auto p-1 rounded-md"
+        onClick={() => handleUpdate(field)}
+      >
+        Save
+      </button>
+    ) : (
+      <p
+        onClick={() => setModel({ ...model, type: field })}
+        className="text-sm sm:text-lg font-medium flex justify-end cursor-pointer"
+      >
+        Edit
+      </p>
+    )}
+  </div>
+);
+
+const AddressSection = ({
+  profile,
+  setProfile,
+  model,
+  setModel,
+  handleUpdate,
+  formatAddress,
+  sameAsShipping,
+  setSameAsShipping,
+}) => {
+  return (
+    <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 border-b border-theme py-6 font-inter">
+      <p className="text-sm sm:text-lg font-medium col-span-2 lg:col-span-3 mb-4">
+        Address
+      </p>
+
+      {model.type === "address" ? (
+        <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Shipping */}
+          <div className="space-y-3">
+            <h5 className="font-semibold">Shipping Address</h5>
+            {["addressLineOne", "addressLineTwo", "town", "zipCode", "state", "country"].map(
+              (field, i) => (
+                <input
+                  key={i}
+                  placeholder={field}
+                  value={profile.shipping[field]}
+                  onChange={(e) =>
+                    setProfile({
+                      ...profile,
+                      shipping: { ...profile.shipping, [field]: e.target.value },
+                    })
+                  }
+                  className="w-full p-2 rounded-lg border border-theme/50 bg-transparent"
+                />
+              )
+            )}
+          </div>
+
+          {/* Billing */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h5 className="font-semibold">Billing Address</h5>
+              <label className="flex items-center gap-2 text-xs">
+                <input
+                  type="checkbox"
+                  checked={sameAsShipping}
+                  onChange={(e) => setSameAsShipping(e.target.checked)}
+                />
+                Same as Shipping
+              </label>
+            </div>
+            {["addressLineOne", "addressLineTwo", "town", "zipCode", "state", "country"].map(
+              (field, i) => (
+                <input
+                  key={i}
+                  placeholder={field}
+                  value={profile.billing[field]}
+                  onChange={(e) =>
+                    setProfile({
+                      ...profile,
+                      billing: { ...profile.billing, [field]: e.target.value },
+                    })
+                  }
+                  disabled={sameAsShipping}
+                  className={`w-full p-2 rounded-lg border border-theme/50 bg-transparent ${sameAsShipping ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                />
+              )
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm sm:text-base font-light opacity-80">
+          <div>
+            <h5 className="font-semibold">SHIPPING</h5>
+            {formatAddress(profile.shipping)}
+          </div>
+          <div>
+            <h5 className="font-semibold">BILLING</h5>
+            {formatAddress(profile.billing)}
+          </div>
+        </div>
+      )}
+
+      {model.type === "address" ? (
+        <div className="flex items-center justify-end col-span-2 lg:col-span-3 mt-4">
+          <button
+            className="text-sm sm:text-lg font-medium w-max bg-red-50 text-black px-4 py-2 rounded-md"
+            onClick={() => handleUpdate("address")}
+          >
+            Save
+          </button>
+        </div>
+      ) : (
+        <p
+          onClick={() => setModel({ ...model, type: "address" })}
+          className="text-sm sm:text-lg font-medium flex justify-end cursor-pointer self-center col-span-2 lg:col-span-3 mt-4"
+        >
+          Edit
+        </p>
+      )}
+    </div>
+  );
+};
+
+const PasswordSection = ({ showPwForm, setShowPwForm, pw, setPw, vis, setVis, passwordErrors, handleChangePassword, pwLoading }) => (
+  <div className="mx-6 md:mx-14 border-b border-theme py-3 sm:py-6 font-inter">
+    <div className="grid grid-cols-2 lg:grid-cols-3">
+      <p className="text-sm sm:text-lg font-medium max-lg:col-span-2">Password</p>
+      <p className="text-sm sm:text-base font-light opacity-60">********</p>
+      <button
+        onClick={() => setShowPwForm((s) => !s)}
+        className="text-sm sm:text-lg font-medium flex justify-end"
+      >
+        {showPwForm ? "Close" : "Change Password"}
+      </button>
+    </div>
+
+    {showPwForm && (
+      <div className="mt-4 grid gap-3 lg:grid-cols-3">
+        {["oldPassword", "newPassword", "confirmPassword"].map((field, i) => (
+          <div key={i}>
+            <label className="text-xs opacity-70">
+              {field === "oldPassword" ? "Current Password" : field === "newPassword" ? "New Password" : "Confirm Password"}
+            </label>
+            <div className="relative">
+              <input
+                type={vis[field] ? "text" : "password"}
+                className="w-full p-2 rounded-lg bg-transparent outline-none border border-theme/50"
+                value={pw[field]}
+                onChange={(e) => setPw({ ...pw, [field]: e.target.value })}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-2.5"
+                onClick={() => setVis((v) => ({ ...v, [field]: !v[field] }))}
+              >
+                {vis[field] ? <AiOutlineEye size={22} /> : <AiOutlineEyeInvisible size={22} />}
+              </button>
+            </div>
+          </div>
+        ))}
+
+        {passwordErrors.length > 0 && (
+          <div className="lg:col-span-3 text-xs text-red-300">
+            <ul className="list-disc ml-5">{passwordErrors.map((e, i) => <li key={i}>{e}</li>)}</ul>
+          </div>
+        )}
+
+        <div className="lg:col-span-3 flex justify-end mt-2">
+          <button
+            className="px-4 py-2 rounded-md bg-red-50 text-black disabled:opacity-60"
+            onClick={handleChangePassword}
+            disabled={pwLoading || passwordErrors.length > 0}
+          >
+            {pwLoading ? "Updating..." : "Save New Password"}
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+);
 
 export default personalDetails;

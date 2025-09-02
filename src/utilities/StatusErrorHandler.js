@@ -24,8 +24,6 @@ const api = axios.create({ baseURL: BASE_URL });
 const shouldLogout = (error) => {
   const r = error?.response;
   return (
-    r?.status === 401 ||
-    r?.data?.error?.statusCode === 401 ||
     r?.data?.status === "authentication-fail" ||
     /not logged in/i.test(r?.data?.message ?? "")
   );
