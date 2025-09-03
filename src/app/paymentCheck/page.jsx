@@ -5,16 +5,17 @@ import { error_toaster } from "@/utilities/Toaster";
 
 export default function Payment() {
   const router = useRouter();
-  const [orderId, setOrderId] = useState<string | null>(null);
+  const [orderId, setOrderId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [initialized, setInitialized] = useState(false); 
 
   useEffect(() => {
+    if (typeof window === "undefined") return; 
     const params = new URLSearchParams(window.location.search);
     const id = params.get("orderId");
     setOrderId(id);
-    setInitialized(true); 
+    setInitialized(true);
   }, []);
 
   useEffect(() => {
