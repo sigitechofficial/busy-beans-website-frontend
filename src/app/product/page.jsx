@@ -17,6 +17,7 @@ import Head from "next/head";
 
 export default function Product() {
   if (typeof window !== "undefined") {
+    var userID = localStorage.getItem("userID")
     var existingCartItems = localStorage.getItem("cartItems")
       ? JSON.parse(localStorage.getItem("cartItems"))
       : [];
@@ -37,7 +38,7 @@ export default function Product() {
     wholesalePrice: "",
   });
 
-  const { data } = GetAPI("api/v1/admin/product");
+  const { data } = GetAPI(`api/v1/users/product/${userID}`);
   const { data: categoryData } = GetAPI("api/v1/admin/category");
 
   const handleOrderNowButton = (id) => {

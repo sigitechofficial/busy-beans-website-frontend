@@ -5,15 +5,17 @@ import { error_toaster } from "@/utilities/Toaster";
 
 export default function Payment() {
   const router = useRouter();
-  const [orderId, setOrderId] = useState(null);
+  const [orderId, setOrderId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [initialized, setInitialized] = useState(false); 
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    setOrderId(params.get("orderId"));
+    const id = params.get("orderId");
+    setOrderId(id);
+    setInitialized(true); 
   }, []);
-
-  const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchInvoice = async () => {
@@ -55,6 +57,8 @@ export default function Payment() {
       }
     };
 
+    if (!initialized) return;
+
     if (orderId) {
       fetchInvoice();
     } else {
@@ -63,7 +67,7 @@ export default function Payment() {
       setErrorMessage(msg);
       error_toaster(msg);
     }
-  }, [orderId, router]);
+  }, [orderId, initialized, router]);
 
   return (
     <div
@@ -93,14 +97,7 @@ export default function Payment() {
           <h3>Processing your payment request...</h3>
         ) : errorMessage ? (
           <>
-            <div
-              style={{
-                fontSize: "48px",
-                marginBottom: "20px",
-              }}
-            >
-              ❌
-            </div>
+            <div style={{ fontSize: "48px", marginBottom: "20px" }}>❌</div>
             <h2>Payment Error</h2>
             <p style={{ margin: "15px 0" }}>{errorMessage}</p>
             <button
@@ -124,20 +121,6 @@ export default function Payment() {
             <p>
               Your order ID is <strong>{orderId}</strong>
             </p>
-            {/* <button
-              style={{
-                marginTop: "20px",
-                backgroundColor: "#8F5D46",
-                color: "white",
-                border: "none",
-                padding: "15px 30px",
-                fontSize: "18px",
-                borderRadius: "8px",
-                cursor: "pointer",
-              }}
-            >
-              Pay Now
-            </button> */}
           </>
         )}
       </div>
