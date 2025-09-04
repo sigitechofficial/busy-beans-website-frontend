@@ -5,6 +5,7 @@ import { BiPlus } from "react-icons/bi";
 import { success_toaster } from "@/utilities/Toaster";
 import { BASE_URL } from "@/utilities/URL";
 import { useCart } from "@/utilities/cartContext";
+import { IoMdClose } from "react-icons/io";
 
 const ProdModal = ({ productModalData, productModal, setProductModal }) => {
   // console.log("🚀 ~ ProdModal ~ productModalData:", productModalData);
@@ -12,6 +13,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
     productId,
     image,
     name,
+    grind,
     description,
     qty,
     discount,
@@ -40,6 +42,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
   const [orderStatus, setOrderStatus] = useState({
     image: "",
     name: "",
+    grind: "",
     description: "",
     qty: "",
     discount: "",
@@ -51,6 +54,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
     const newItem = {
       productId,
       name,
+      grind,
       description,
       qty: orderStatus.qty,
       discount,
@@ -75,6 +79,7 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
     setOrderStatus({
       image: image,
       name: name,
+      grind: grind,
       description: description,
       qty: qty,
       discount: discount,
@@ -157,12 +162,23 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
                       src={BASE_URL + image}
                       alt=""
                     />
+                    <button
+                      onClick={() => setProductModal(false)}
+                      className="absolute top-3 right-3 bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-8 h-8 flex items-center justify-center"
+                    >
+                      <IoMdClose size={20} />
+                    </button>
                   </div>
                   <div className=" px-4">
                     <h4 className="!text-[32px] max-w-[400px]  text-theme-black-2 font-omnes font-bold capitalize  leading-10">
                       {name}
                     </h4>
-                    <p className="font-sf text-lg my-5 text-white">${price}</p>
+                    <p className="font-sf text-lg my-5">${price}</p>
+                    {grind && (
+                      <p className="capitalize text-sm font-sf text-theme-black-2 font-medium mt-2">
+                        <span className="font-semibold">Grind:</span> {grind}
+                      </p>
+                    )}
                     <p className="capitalize text-sm font-sf text-theme-black-2  font-normal mt-3">
                       {description}
                     </p>

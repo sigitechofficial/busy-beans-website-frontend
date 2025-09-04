@@ -1,10 +1,15 @@
 "use client";
+import Select from "react-select";
+import api from "@/utilities/StatusErrorHandler";
+import { BASE_URL } from "@/utilities/URL";
+import ErrorHandler from "@/utilities/ErrorHandler";
 import MiniLoader from "@/components/ui/MiniLoader";
 import { PutAPI } from "@/utilities/PutAPI";
 import GetAPI from "@/utilities/GetAPI";
 import { useEffect, useState } from "react";
 import { info_toaster, success_toaster } from "@/utilities/Toaster";
 import { FaCircleUser } from "react-icons/fa6";
+import { drawerSelectStyles2 } from "@/utilities/SelectStyle";
 import Head from "next/head";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
@@ -219,7 +224,7 @@ const personalDetails = () => {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: "Personal Details",
+    name: "Account Details",
     url: "https://www.busybeancoffee.com/personal-details",
     description:
       "Manage your profile information like name, company details, billing email, address, phone number, and tax information on Busy Bean Coffee.",
@@ -233,7 +238,7 @@ const personalDetails = () => {
   return (
     <>
       <Head>
-        <title>Personal Details | Busy Bean Coffee</title>
+        <title>Account Details | Busy Bean Coffee</title>
         <meta
           name="description"
           content="Update and manage your personal details like name, email, phone number, company name, and tax ID."
@@ -257,7 +262,7 @@ const personalDetails = () => {
               <div className="flex justify-between items-center mx-6 md:mx-14 border-b border-theme py-3 sm:py-6">
                 <div className="space-y-2 font-satoshi">
                   <h4 className="font-bold text-xl sm:text-3xl">
-                    Personal details
+                    Account details
                   </h4>
                   <p className="text-sm opacity-60">
                     Upload your info and find how it’s used.
@@ -396,6 +401,51 @@ const AddressSection = ({
   sameAsShipping,
   setSameAsShipping,
 }) => {
+  const { data: countriesData } = GetAPI("api/v1/admin/address-management/country");
+  const [allStates, setAllStates] = useState([]);
+  const [billingStates, setBillingStates] = useState([]);
+
+  const allCountriesData =
+    countriesData?.data?.data?.map((c) => ({
+      value: c?.id,
+      label: c?.name,
+      iso: c?.isoCode,
+    })) || [];
+
+  const fetchStates = async (countryId, type) => {
+    try {
+      const res = await api.get(`${BASE_URL}api/v1/admin/address-management/state?countryInSystemId=${countryId}`);
+      if (res?.data?.status === "success") {
+        const tempStates = res?.data?.data?.data?.map((s) => ({
+          value: s?.id,
+          label: s?.name,
+        }));
+        if (type === "shipping") setAllStates(tempStates);
+        else setBillingStates(tempStates);
+      }
+    } catch (err) {
+      ErrorHandler(err);
+    }
+  };
+  useEffect(() => {
+    if (profile.shipping?.country) {
+      const selectedCountry = allCountriesData.find(
+        (c) => c.label === profile.shipping.country
+      );
+      if (selectedCountry) {
+        fetchStates(selectedCountry.value, "shipping");
+      }
+    }
+    if (profile.billing?.country) {
+      const selectedCountry = allCountriesData.find(
+        (c) => c.label === profile.billing.country
+      );
+      if (selectedCountry) {
+        fetchStates(selectedCountry.value, "billing");
+      }
+    }
+  }, [profile.shipping?.country, profile.billing?.country, countriesData]);
+
   return (
     <div className="grid grid-cols-2 lg:grid-cols-3 mx-6 md:mx-14 border-b border-theme py-6 font-inter">
       <p className="text-sm sm:text-lg font-medium col-span-2 lg:col-span-3 mb-4">
@@ -405,30 +455,89 @@ const AddressSection = ({
       {model.type === "address" ? (
         <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Shipping */}
-          <div className="space-y-3">
-            <h5 className="font-semibold">Shipping Address</h5>
-            {["addressLineOne", "addressLineTwo", "town", "zipCode", "state", "country"].map(
-              (field, i) => (
-                <input
-                  key={i}
-                  placeholder={field}
-                  value={profile.shipping[field]}
-                  onChange={(e) =>
-                    setProfile({
-                      ...profile,
-                      shipping: { ...profile.shipping, [field]: e.target.value },
-                    })
-                  }
-                  className="w-full p-2 rounded-lg border border-theme/50 bg-transparent"
-                />
-              )
-            )}
+          <div className="space-y-1">
+            <h5 className="font-semibold mb-2">Shipping Address</h5>
+
+            <label>Address Line 1</label>
+            <input
+              value={profile.shipping.addressLineOne}
+              onChange={(e) =>
+                setProfile({
+                  ...profile,
+                  shipping: { ...profile.shipping, addressLineOne: e.target.value },
+                })
+              }
+              className="w-full p-2 rounded-lg border border-theme/50 bg-transparent"
+            />
+
+            <label>Address Line 2</label>
+            <input
+              value={profile.shipping.addressLineTwo}
+              onChange={(e) =>
+                setProfile({
+                  ...profile,
+                  shipping: { ...profile.shipping, addressLineTwo: e.target.value },
+                })
+              }
+              className="w-full p-2 rounded-lg border border-theme/50 bg-transparent"
+            />
+
+            <label>Country</label>
+            <Select
+              options={allCountriesData}
+              value={allCountriesData.find((c) => c.label === profile.shipping.country) || null}
+              onChange={(val) => {
+                setProfile({
+                  ...profile,
+                  shipping: { ...profile.shipping, country: val.label, state: "" },
+                });
+                fetchStates(val.value, "shipping");
+              }}
+              styles={drawerSelectStyles2}
+            />
+
+            <label>State</label>
+            <Select
+              options={allStates}
+              value={allStates.find((s) => s.label === profile.shipping.state) || null}
+              onChange={(val) =>
+                setProfile({
+                  ...profile,
+                  shipping: { ...profile.shipping, state: val.label },
+                })
+              }
+              styles={drawerSelectStyles2}
+            />
+
+            <label>Town</label>
+            <input
+              value={profile.shipping.town}
+              onChange={(e) =>
+                setProfile({
+                  ...profile,
+                  shipping: { ...profile.shipping, town: e.target.value },
+                })
+              }
+              className="w-full p-2 rounded-lg border border-theme/50 bg-transparent"
+            />
+
+            <label>Zip Code</label>
+            <input
+              value={profile.shipping.zipCode}
+              onChange={(e) =>
+                setProfile({
+                  ...profile,
+                  shipping: { ...profile.shipping, zipCode: e.target.value },
+                })
+              }
+              className="w-full p-2 rounded-lg border border-theme/50 bg-transparent"
+            />
           </div>
 
           {/* Billing */}
-          <div className="space-y-3">
+          <div className="space-y-1">
             <div className="flex items-center justify-between">
-              <h5 className="font-semibold">Billing Address</h5>
+              <h5 className="font-semibold mb-2">Billing Address</h5>
               <label className="flex items-center gap-2 text-xs">
                 <input
                   type="checkbox"
@@ -438,24 +547,87 @@ const AddressSection = ({
                 Same as Shipping
               </label>
             </div>
-            {["addressLineOne", "addressLineTwo", "town", "zipCode", "state", "country"].map(
-              (field, i) => (
-                <input
-                  key={i}
-                  placeholder={field}
-                  value={profile.billing[field]}
-                  onChange={(e) =>
-                    setProfile({
-                      ...profile,
-                      billing: { ...profile.billing, [field]: e.target.value },
-                    })
-                  }
-                  disabled={sameAsShipping}
-                  className={`w-full p-2 rounded-lg border border-theme/50 bg-transparent ${sameAsShipping ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
-                />
-              )
-            )}
+
+            <label>Address Line 1</label>
+            <input
+              value={profile.billing.addressLineOne}
+              disabled={sameAsShipping}
+              onChange={(e) =>
+                setProfile({
+                  ...profile,
+                  billing: { ...profile.billing, addressLineOne: e.target.value },
+                })
+              }
+              className={`w-full p-2 rounded-lg border border-theme/50 bg-transparent ${sameAsShipping ? "opacity-50 cursor-not-allowed" : ""}`}
+            />
+
+            <label>Address Line 2</label>
+            <input
+              value={profile.billing.addressLineTwo}
+              disabled={sameAsShipping}
+              onChange={(e) =>
+                setProfile({
+                  ...profile,
+                  billing: { ...profile.billing, addressLineTwo: e.target.value },
+                })
+              }
+              className={`w-full p-2 rounded-lg border border-theme/50 bg-transparent ${sameAsShipping ? "opacity-50 cursor-not-allowed" : ""}`}
+            />
+
+            <label>Country</label>
+            <Select
+              options={allCountriesData}
+              value={allCountriesData.find((c) => c.label === profile.billing.country) || null}
+              onChange={(val) => {
+                setProfile({
+                  ...profile,
+                  billing: { ...profile.billing, country: val.label, state: "" },
+                });
+                fetchStates(val.value, "billing");
+              }}
+              styles={drawerSelectStyles2}
+              isDisabled={sameAsShipping}
+            />
+
+            <label>State</label>
+            <Select
+              options={billingStates}
+              value={billingStates.find((s) => s.label === profile.billing.state) || null}
+              onChange={(val) =>
+                setProfile({
+                  ...profile,
+                  billing: { ...profile.billing, state: val.label },
+                })
+              }
+              styles={drawerSelectStyles2}
+              isDisabled={sameAsShipping}
+            />
+
+            <label>Town</label>
+            <input
+              value={profile.billing.town}
+              disabled={sameAsShipping}
+              onChange={(e) =>
+                setProfile({
+                  ...profile,
+                  billing: { ...profile.billing, town: e.target.value },
+                })
+              }
+              className={`w-full p-2 rounded-lg border border-theme/50 bg-transparent ${sameAsShipping ? "opacity-50 cursor-not-allowed" : ""}`}
+            />
+
+            <label>Zip Code</label>
+            <input
+              value={profile.billing.zipCode}
+              disabled={sameAsShipping}
+              onChange={(e) =>
+                setProfile({
+                  ...profile,
+                  billing: { ...profile.billing, zipCode: e.target.value },
+                })
+              }
+              className={`w-full p-2 rounded-lg border border-theme/50 bg-transparent ${sameAsShipping ? "opacity-50 cursor-not-allowed" : ""}`}
+            />
           </div>
         </div>
       ) : (

@@ -3,6 +3,7 @@ import BrandsMarquee from "@/components/ui/BrandsMarquee";
 import CustomerCarousel from "@/components/ui/Carousel";
 import CoffeSolution from "@/components/ui/CoffeSolution";
 import SwiperSider from "@/components/ui/SwiperSlider";
+import { info_toaster } from "@/utilities/Toaster";
 import socket from "@/utilities/Socket";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -143,14 +144,20 @@ export default function Home() {
           <h4 className="text-center bg-gradient-to-r from-[#F8E4BE] to-[#F9C06A38] w-max bg-clip-text text-transparent text-3xl sm:text-5xl lg:text-7xl 2xl:text-[120px] font-robotoSerif font-bold mx-auto lg:leading-[85px] 2xl:leading-[125px]">
             The Future Of Coffee <br /> For Business
           </h4>
-
           <p
-            onClick={() => router.push("/product/")}
+            onClick={() => {
+              const isLoggedIn = localStorage.getItem("loginStatus") === "true";
+              if (isLoggedIn) {
+                router.push("/product/");
+              } else {
+                info_toaster("Please login first");
+                router.push("/sign-in"); 
+              }
+            }}
             className="h-10 sm:h-14 w-36 sm:w-40 rounded-xl font-robotoSerif font-bold text-base text-[#F8E4BE] bg-themeLight mx-auto flex justify-center items-center mt-10 sm:mt-20 shadow-customYellow cursor-pointer"
           >
             Order Now
           </p>
-
           <div className="w-full h-20 absolute bottom-0 left-0 bg-[url(/images/frame1st.png)] bg-cover bg-center bg-no-repeat z-10"></div>
         </div>
 
@@ -198,7 +205,7 @@ export default function Home() {
           </h4>
 
           <p className="font-robotoSerif sm:text-xl font-semibold text-white text-center py-6 sm:py-10">
-            "Message From Our Founders"
+            &quot;Message From Our Founders&quot;
           </p>
           <p className="text-center text-sm sm:text-lg text-white max-w-[1000px] mx-auto font-switzer font-extralight sm:leading-9">
             Hello and thank you for visiting. We would love to welcome you to

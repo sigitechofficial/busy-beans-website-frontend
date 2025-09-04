@@ -155,16 +155,42 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                           )}
                         </div>
                         <div className="flex flex-col gap-2 text-theme-black-2">
-                          <h2 className="text-2xl font-semibold font-omnes mt-3 capitalize">
-                            Hi,
-                            {userName ? userName?.split(" ")[0] : "User"}
-                          </h2>
-                          <p className="font-sf  text-sm font-normal text-theme-black-2 text-opacity-60">
-                            {userName ? <>{phoneNumber ?? ""}</> : <></>}
-                          </p>
-                          <p className="font-sf  text-sm font-normal text-theme-black-2 text-opacity-60">
-                            {userEmail ?? "user@gmail.com"}
-                          </p>
+                          {loginStatus === "true" ? (
+                            <>
+                              <h2 className="text-2xl font-semibold font-omnes mt-3 capitalize">
+                                Hi, {userName?.split(" ")[0]}
+                              </h2>
+                              {phoneNumber && (
+                                <p className="font-sf text-sm font-normal text-theme-black-2 text-opacity-60">
+                                  {phoneNumber}
+                                </p>
+                              )}
+                              <p className="font-sf text-sm font-normal text-theme-black-2 text-opacity-60">
+                                {userEmail}
+                              </p>
+                            </>
+                          ) : (
+                            <div className="flex flex-col gap-3 mt-4 w-full">
+                              <button
+                                onClick={() => {
+                                  router.push("/sign-in");
+                                  setProfileDrawer(false);
+                                }}
+                                className="bg-themeLight text-white px-6 py-3 rounded-lg font-semibold text-base w-full"
+                              >
+                                Log in
+                              </button>
+                              <button
+                                onClick={() => {
+                                  router.push("/sign-up");
+                                  setProfileDrawer(false);
+                                }}
+                                className="bg-white text-themeLight px-6 py-3 rounded-lg font-semibold text-base w-full border border-themeLight"
+                              >
+                                Sign up
+                              </button>
+                            </div>
+                          )}
                           <div className="flex gap-10">
                             {/* <div>
                               <p className="text-base font-bold  font-sf  capitalize">
@@ -275,7 +301,7 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                           /> */}
                           <DrawerItem
                             Icon={LiaUserFriendsSolid}
-                            text={"Personal details"}
+                            text={"Account details"}
                             onClick={() => {
                               if (
                                 !localStorage.getItem("loginStatus") ||
@@ -288,7 +314,7 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                               }
                             }}
                           />
-                          <DrawerItem
+                          {/* <DrawerItem
                             Icon={LiaUserFriendsSolid}
                             text={"Preferences"}
                             onClick={() => {
@@ -317,7 +343,7 @@ const ProfileDrawer = ({ profileDrawer, setProfileDrawer }) => {
                                 setProfileDrawer(false);
                               }
                             }}
-                          />
+                          /> */}
                         </div>
 
                         {loginStatus === "true" ? (

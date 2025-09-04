@@ -160,11 +160,11 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                           className="font-sf relative flex sm:flex-row items-start rounded-2xl h-full mb-3"
                         >
                           {/* Product Image */}
-                          <div className="flex justify-center sm:min-w-[100px] min-w-[72px] sm:h-[72px] h-[72px] rounded-2xl">
+                          <div className="flex justify-center sm:min-w-[100px] min-w-[72px] sm:h-[72px] h-[72px] rounded-md border border-quantityBtn">
                             <img
                               src={BASE_URL + cartI?.image}
                               alt="cutlery"
-                              className="w-full h-full rounded-md object-contain"
+                              className="w-full h-full object-contain"
                             />
                           </div>
 
@@ -265,16 +265,23 @@ const DrawerBeans = ({ drawerOpen: open, setDrawerOpen: setOpen }) => {
                     </button>
                   </div>
                 ) : (
-                  <div className="w-full text-center mt-4 mx-4">
-                    <Link href={"/product"}>
+
+                    <div className="w-full text-center mt-4 mx-4">
                       <button
-                        // onClick={() => router.push("/product")}
-                        className="bg-black  font-bold text-white rounded-full px-5 min-h-14 w-full"
+                        onClick={() => {
+                          const isLoggedIn = localStorage.getItem("loginStatus") === "true";
+                          if (isLoggedIn) {
+                            router.push("/product");
+                          } else {
+                            info_toaster("Please login first");
+                            router.push("/sign-in");
+                          }
+                        }}
+                        className="bg-black font-bold text-white rounded-full px-5 min-h-14 w-full"
                       >
                         Add items
                       </button>
-                    </Link>
-                  </div>
+                    </div>
                 )}
               </>
             </Drawer.Footer>
