@@ -9,7 +9,7 @@ import GetAPI from "@/utilities/GetAPI";
 import { useEffect, useState } from "react";
 import { info_toaster, success_toaster } from "@/utilities/Toaster";
 import { FaCircleUser } from "react-icons/fa6";
-import { drawerSelectStyles2 } from "@/utilities/SelectStyle";
+import { drawerSelectStyles3 } from "@/utilities/SelectStyle";
 import Head from "next/head";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
@@ -493,7 +493,7 @@ const AddressSection = ({
                 });
                 fetchStates(val.value, "shipping");
               }}
-              styles={drawerSelectStyles2}
+              styles={drawerSelectStyles3}
             />
 
             <label>State</label>
@@ -506,7 +506,7 @@ const AddressSection = ({
                   shipping: { ...profile.shipping, state: val.label },
                 })
               }
-              styles={drawerSelectStyles2}
+              styles={drawerSelectStyles3}
             />
 
             <label>Town</label>
@@ -585,7 +585,7 @@ const AddressSection = ({
                 });
                 fetchStates(val.value, "billing");
               }}
-              styles={drawerSelectStyles2}
+              styles={drawerSelectStyles3}
               isDisabled={sameAsShipping}
             />
 
@@ -599,7 +599,7 @@ const AddressSection = ({
                   billing: { ...profile.billing, state: val.label },
                 })
               }
-              styles={drawerSelectStyles2}
+              styles={drawerSelectStyles3}
               isDisabled={sameAsShipping}
             />
 
