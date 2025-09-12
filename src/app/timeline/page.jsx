@@ -8,10 +8,12 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { BsChatLeftTextFill } from "react-icons/bs";
 import { FaArrowLeft, FaCheck } from "react-icons/fa";
+import { info_toaster, success_toaster } from "@/utilities/Toaster";
 import Head from "next/head";
 
 const Timeline = () => {
   const [tab, setTab] = useState(1);
+  const [isLinkCopied, setIsLinkCopied] = useState(false);
   let orderId = "";
   let userID = "";
   if (typeof window !== "undefined") {
@@ -34,6 +36,21 @@ const Timeline = () => {
     );
     console.log("result?.on", result)
     return result?.on ?? "";
+  };
+
+  const handleCopyLink = () => {
+    const link = `https://www.busybeancoffee.com/paymentCheck?orderId=${data?.data?.order?.id}`;
+    navigator.clipboard.writeText(link)
+      .then(() => {
+        setIsLinkCopied(true); 
+        // info_toaster("Payment link copied to clipboard!");
+        setTimeout(() => {
+          setIsLinkCopied(false);
+        }, 2000);
+      })
+      .catch(() => {
+        info_toaster("Failed to copy the link."); 
+      });
   };
 
   const jsonLd = {
@@ -203,22 +220,45 @@ const Timeline = () => {
                       </p>
                     </div>
 
-                    <div className="space-y-2">
-                      {/* <button className="p-2 border rounded-lg">
-                    View Restaurant Info
-                  </button> */}
-                      <p className="p-2 border rounded-lg uppercase text-center">
-                        {data?.data?.order?.paymentMethod === "cod"
-                          ? "Cash on Delivery"
-                          : data?.data?.order?.paymentMethod}
-                      </p>
-                      <p className="p-2 border rounded-lg uppercase text-center">
-                        {data?.data?.order?.paymentStatus === "done"
-                          ? "Paid"
-                          : "Unpaid"}
-                      </p>
+                      <div className="flex justify-between space-x-5">
+                        <div className="space-y-2">
+                          <p className="p-2 border rounded-lg uppercase text-center">
+                            {data?.data?.order?.paymentMethod === "cod"
+                              ? "Cash on Delivery"
+                              : data?.data?.order?.paymentMethod}
+                          </p>
+                          <p className="p-2 border rounded-lg uppercase text-center">
+                            {data?.data?.order?.paymentStatus === "done"
+                              ? "Paid"
+                              : "Unpaid"}
+                          </p>
+                        </div>
+
+                        {/* Pay Online Button */}
+                        <div className="flex items-center gap-x-5">
+                          {data?.data?.order?.paymentStatus !== "done" && (
+                            <button
+                              onClick={() =>
+                                window.open(
+                                  `https://www.busybeancoffee.com/paymentCheck?orderId=${data?.data?.order?.id}`,
+                                  "_blank"
+                                )
+                              }
+                              className="mb-8 px-4 py-2 bg-theme text-white rounded inline-block hover:bg-theme-dark"
+                            >
+                              Pay Online
+                            </button>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                    <button
+                      onClick={handleCopyLink}
+                      className={`mb-4 px-4 py-2 rounded inline-block transition-colors ${isLinkCopied ? "bg-green-500 text-white" : "bg-theme text-white"
+                        }`}
+                    >
+                      {isLinkCopied ? "Link Copied!" : "Copy Payment Link"}
+                    </button>
                   <h4 className="text-2xl font-bold">Items</h4>
 
                   {data?.data?.order?.items?.map((item, idx) => {

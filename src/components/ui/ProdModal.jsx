@@ -190,38 +190,34 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
                   <div className="px-5 py-5 flex justify-center items-center gap-3 w-full">
                     <div className="shadow-smButtonShadow  w-40 h-14 rounded-full flex items-center justify-around text-[#707175] bg-white">
                       <button
-                        disabled={orderStatus?.qty === 0}
-                        onClick={() =>
-                          setOrderStatus({
-                            ...orderStatus,
-                            qty: orderStatus?.qty - 1,
-                          })
-                        }
-                        className={`${
-                          (orderStatus?.qty === 0 &&
-                            existingCartItems?.find(
-                              (ele) => ele?.productId === productId
-                            )) ||
-                          (orderStatus?.qty === 1 &&
-                            !existingCartItems?.find(
-                              (ele) => ele?.productId === productId
-                            ))
-                            ? "cursor-not-allowed bg-theme text-white text-opacity-20 border border-theme"
-                            : "hover:bg-white hover:text-theme border border-theme bg-theme text-white duration-300"
-                        } w-10 h-10 flex justify-center items-center rounded-full outline-none`}
+                        disabled={orderStatus?.qty <= 1 && !existingCartItems?.find((ele) => ele?.productId === productId)} 
+                        onClick={() => {
+                          if (orderStatus?.qty > 1 || (orderStatus?.qty > 0 && existingCartItems?.find((ele) => ele?.productId === productId))) {
+                            setOrderStatus({
+                              ...orderStatus,
+                              qty: orderStatus?.qty - 1,
+                            });
+                          }
+                        }}
+                        className={`${(orderStatus?.qty <= 1 &&
+                          !existingCartItems?.find((ele) => ele?.productId === productId)) || 
+                          (orderStatus?.qty === 0 && existingCartItems?.find((ele) => ele?.productId === productId)) 
+                          ? "cursor-not-allowed bg-theme text-white text-opacity-20 border border-theme"
+                          : "hover:bg-white hover:text-theme border border-theme bg-theme text-white duration-300"
+                          } w-10 h-10 flex justify-center items-center rounded-full outline-none`}
                       >
                         <RiSubtractFill />
                       </button>
-                      <span className="text-lg font-sf">
-                        {orderStatus?.qty}
-                      </span>
+
+                      <span className="text-lg font-sf">{orderStatus?.qty}</span>
+
                       <button
-                        onClick={() =>
+                        onClick={() => {
                           setOrderStatus({
                             ...orderStatus,
                             qty: orderStatus?.qty + 1,
-                          })
-                        }
+                          });
+                        }}
                         className="w-10 h-10 flex justify-center items-center rounded-full bg-theme text-white hover:bg-white hover:text-theme border border-theme duration-300"
                       >
                         <BiPlus />
@@ -234,15 +230,13 @@ const ProdModal = ({ productModalData, productModal, setProductModal }) => {
                       }`}
                     >
                       <div className="text-md text-center font-sf font-bold w-full">
-                        {qty > 0
-                          ? orderStatus?.qty === 0
+                        {qty === 0
+                          ? existingCartItems?.find((ele) => ele?.productId === productId)
                             ? "Remove from cart"
-                            : existingCartItems?.find(
-                                (ele) => ele?.productId === productId
-                              )
-                            ? "Update Cart"
                             : "Add to Cart"
-                          : ""}
+                          : existingCartItems?.find((ele) => ele?.productId === productId)
+                            ? "Update Cart"
+                            : "Add to Cart"}
                       </div>
                       {/* {qty > 0 ? (
                         <div className="text-md font-sf font-semibold">
