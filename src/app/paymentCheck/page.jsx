@@ -29,13 +29,13 @@ export default function Payment() {
         const result = await response.json();
         console.log("🚀 ~ fetchInvoice ~ result:", result);
 
-        if (result?.data?.status === "already-paid") {
-          router.push("/paymentCompleted");
+        if (result?.status === "already-paid" || result?.data?.status === "already-paid") {
+          router.replace(`/paymentCompleted?orderId=${orderId}`);
           return;
         }
 
-        if (result?.status === "error") {
-          const msg = result?.message || "Something went wrong with payment.";
+        if (result?.status === "error" || result?.error) {
+          const msg = result?.message || result?.error || "Something went wrong with payment.";
           setErrorMessage(msg);
           error_toaster(msg);
           return;
