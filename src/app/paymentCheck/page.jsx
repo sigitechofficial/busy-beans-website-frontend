@@ -29,7 +29,7 @@ export default function Payment() {
         const result = await response.json();
         console.log("🚀 ~ fetchInvoice ~ result:", result);
 
-        if (result?.data?.status === "already-complete") {
+        if (result?.data?.status === "already-paid") {
           router.push("/paymentCompleted");
           return;
         }
