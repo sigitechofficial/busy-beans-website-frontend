@@ -11,7 +11,7 @@ import "swiper/css/pagination";
 import { Navigation } from "swiper/modules";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import ProdModal from "@/components/ui/ProdModal";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Loader from "@/components/ui/Loader";
 import Head from "next/head";
 
@@ -40,7 +40,7 @@ export default function Product() {
   });
 
   const { data } = GetAPI(`api/v1/users/product/${userID}`);
-  const { data: categoryData } = GetAPI("api/v1/admin/category");
+  const { data: categoryData } = GetAPI("api/v1/admin/category?status=1");
 
   const handleOrderNowButton = (id) => {
     if (existingCartItems) {
@@ -86,15 +86,27 @@ export default function Product() {
   }, [categoryData]);
 
   // sort products
-  const sortedProducts = [...(data?.data?.data || [])].sort((a, b) => {
-    const indexA = priorityCategoryIds.indexOf(a.categoryId);
-    const indexB = priorityCategoryIds.indexOf(b.categoryId);
+  const activeCategoryIds = useMemo(() => {
+    const list = categoryData?.data?.data || [];
+    return new Set(list.map((c) => c.id));
+  }, [categoryData]);
 
-    if (indexA === -1 && indexB === -1) return 0;
-    if (indexA === -1) return 1;
-    if (indexB === -1) return -1;
-    return indexA - indexB;
-  });
+  // sort & filter products to only show products from active categories
+  const sortedProducts = useMemo(() => {
+    const products = (data?.data?.data || []).filter((p) =>
+      activeCategoryIds.has(p.categoryId)
+    );
+
+    return products.sort((a, b) => {
+      const indexA = priorityCategoryIds.indexOf(a.categoryId);
+      const indexB = priorityCategoryIds.indexOf(b.categoryId);
+
+      if (indexA === -1 && indexB === -1) return 0;
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+      return indexA - indexB;
+    });
+  }, [data, activeCategoryIds]);
 
   const jsonLd = [
     {
