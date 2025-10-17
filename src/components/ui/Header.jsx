@@ -46,6 +46,9 @@ export default function Header() {
                 <Link href="/product">Products</Link>
               </li>
             )}
+            {/* <li>
+              <Link href="/subscriptions">Subscriptions</Link>
+            </li> */}
           </ul>
         </div>
 
