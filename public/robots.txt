@@ -1,6 +1,0 @@
-
-User-agent: *
-Disallow: /private/
-
-Sitemap: https://www.busybeancoffee.com/product-sitemap.xml
-Sitemap: https://www.busybeancoffee.com/content-sitemap.xml
